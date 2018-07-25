@@ -77,9 +77,13 @@ if __name__ == "__main__":
 
     with ThreadPool() as p:
             for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line),lines), total=len(lines)):
-                #out_file.write(json.dumps(line) + "\n")
+                #at this point the line thing has list of sentences it think is evidence for the given claim
+                # line["predicted_pages"] = pages
+                # line["predicted_sentences"] = sents
+                # return line
                 processed[line["id"]] = line
-                logging.debug(line)
+                logging.warning("line:")
+                logging.warning(line)
                 sys.exit(1)
 
     logger.info("Done, writing to disk")

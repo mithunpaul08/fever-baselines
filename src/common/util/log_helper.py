@@ -11,7 +11,7 @@ class LogHelper():
         LogHelper.handler.setFormatter(logging.Formatter(FORMAT))
 
         LogHelper.handler2 = logging.FileHandler("old_log.log" ,mode='w')
-        LogHelper.handler2.setLevel(logging.DEBUG)
+        LogHelper.handler2.setLevel(logging.WARNING)
         LogHelper.handler.setFormatter(logging.Formatter(FORMAT))
 
         LogHelper.get_logger(LogHelper.__name__)
