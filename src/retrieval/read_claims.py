@@ -15,6 +15,7 @@ API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 logger=None
 load_ann_corpus=True
 data_folder_dev="/data/fever/"
+from src.retrieval.top_n import get_sentences_given_claim
 
 
 #for each claim, get the evidence sentences, annotate and write to disk
@@ -80,7 +81,7 @@ def read_test_data_annotate(args,jlr,logger,method):
         logging.debug("inside read_json")
         l = []
         counter=0
-        
+
         for eachline in (f):
             logging.debug(eachline)
             claim_full = json.loads(eachline)
@@ -99,7 +100,6 @@ def read_test_data_annotate(args,jlr,logger,method):
                 logger.debug("line_no is:" + str(line_no))
                 sent=get_sentences_given_claim(page,logger,line_no)
                 logger.debug("evidences for this claim_full  is:" + str(sent))
-
                 ev_claim.append(sent)
             all_evidences=' '.join(ev_claim)
             annotate_and_save_doc(claim, all_evidences,index, API, ann_head_tr, ann_body_tr, logger)
