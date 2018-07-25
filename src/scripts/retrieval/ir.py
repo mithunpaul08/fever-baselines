@@ -75,30 +75,30 @@ if __name__ == "__main__":
 
 
 
-    with ThreadPool() as p:
-            for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line),lines), total=len(lines)):
-                #at this point the line thing has list of sentences it think is evidence for the given claim
-                # line["predicted_pages"] = pages
-                # line["predicted_sentences"] = sents
-                # return line
-                processed[line["id"]] = line
+        with ThreadPool() as p:
+                for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line),lines), total=len(lines)):
+                    #at this point the line thing has list of sentences it think is evidence for the given claim
+                    # line["predicted_pages"] = pages
+                    # line["predicted_sentences"] = sents
+                    # return line
+                    processed[line["id"]] = line
 
 
 
-    for line in lines:
-            out_file.write(json.dumps(processed[line["id"]]) + "\n")
+        for line in lines:
+                out_file.write(json.dumps(processed[line["id"]]) + "\n")
 
-    logger.warning("Done, writing IR data to disk.")
+        logger.warning("Done, writing IR data to disk.")
 
-    logger.warning("Going to exit.")
+        logger.warning("Going to exit.")
 
 
 
-        #RTE Part from UofA
-    if(args.mode=="train"):
-        uofa_training(args,jlr,method,logger)
-    else:
-        if(args.mode=="test"):
-            uofa_testing(args,jlr,method,logger)
-    logger.info("Done, writing to disk")
+            #RTE Part from UofA
+        if(args.mode=="train"):
+            uofa_training(args,jlr,method,logger)
+        else:
+            if(args.mode=="test"):
+                uofa_testing(args,jlr,method,logger)
+        logger.info("Done, writing to disk")
 
