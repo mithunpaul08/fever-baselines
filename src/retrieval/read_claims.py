@@ -18,12 +18,12 @@ load_ann_corpus=True
 
 #for each claim, get the evidence sentences, annotate and write to disk
 def read_claims_annotate(args,jlr,logger,method):
-    try:
-        os.remove(ann_head_tr)
-        os.remove(ann_body_tr)
-
-    except OSError:
-        logger.error("not able to find file")
+    # try:
+    #     os.remove(ann_head_tr)
+    #     os.remove(ann_body_tr)
+    #
+    # except OSError:
+    #     logger.error("not able to find file")
 
     logger.debug("inside read_claims_annotate")
     #the outfile from evidence prediction/IR phase becomes the in file/ file which contains all evidences
@@ -72,7 +72,7 @@ def uofa_training(args,jlr,method,logger):
     #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
     tr_data=read_claims_annotate(args,jlr,logger,method)
     logger.info(
-        "Finished writing json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+        "Finished read_claims_annotate")
     sys.exit(1)
 
     gold_labels_tr = get_gold_labels(args, jlr)
