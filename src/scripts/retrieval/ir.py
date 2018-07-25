@@ -88,7 +88,11 @@ if __name__ == "__main__":
     for line in lines:
             out_file.write(json.dumps(processed[line["id"]]) + "\n")
 
-    logger.info("Done, writing to disk. Going to exit")
+    logger.warning("Done, writing IR data to disk.")
+
+    logger.warning("Going to exit.")
+    sys.exit(1)
+
 
         #RTE Part from UofA
     if(args.mode=="train"):
