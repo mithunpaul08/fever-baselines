@@ -80,6 +80,7 @@ def read_test_data_annotate(args,jlr,logger,method):
         logging.debug("inside read_json")
         l = []
         counter=0
+        logging.debug(f.readlines())
         for eachline in (f):
             logging.debug(eachline)
             claim_full = json.loads(eachline)
