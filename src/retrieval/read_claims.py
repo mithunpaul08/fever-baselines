@@ -26,8 +26,10 @@ def read_claims_annotate(args,jlr,logger,method):
     #     logger.error("not able to find file")
 
     logger.debug("inside read_claims_annotate")
+    logger.debug("name of out file is:"+str(args.out_file))
     #the outfile from evidence prediction/IR phase becomes the in file/ file which contains all evidences
     with open(args.out_file,"r") as f:
+        logger.debug("inside open with:")
         all_claims = jlr.process(f)
         obj_all_heads_bodies=[]
         ver_count=0
