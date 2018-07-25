@@ -90,15 +90,15 @@ if __name__ == "__main__":
 
         logger.warning("Done, writing IR data to disk.")
 
-        logger.warning("Going to exit.")
 
 
 
-            #RTE Part from UofA
-        if(args.mode=="train"):
-            uofa_training(args,jlr,method,logger)
-        else:
-            if(args.mode=="test"):
-                uofa_testing(args,jlr,method,logger)
-        logger.info("Done, writing to disk")
+        with open(args.out_file,"r") as f:
+
+            if(args.mode=="train"):
+                uofa_training(args,jlr,method,logger)
+            else:
+                if(args.mode=="test"):
+                    uofa_testing(args,jlr,method,logger)
+                    logger.info("Done, writing to disk")
 

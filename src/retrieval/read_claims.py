@@ -8,7 +8,7 @@ from rte.mithun.trainer import read_json_create_feat_vec,do_training,do_testing,
 import numpy as np
 import os,sys
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-
+import json
 ann_head_tr = "ann_head_tr.json"
 ann_body_tr = "ann_body_tr.json"
 API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
@@ -60,6 +60,45 @@ def read_claims_annotate(args,jlr,logger,method):
         return obj_all_heads_bodies
 
 
+def read_test_data_annotate(args,jlr,logger,method):
+    try:
+        os.remove(ann_head_tr)
+        os.remove(ann_body_tr)
+
+    except OSError:
+        logger.error("not able to find file")
+
+    logger.debug("inside read_claims_annotate")
+    logger.debug("name of out file is:"+str(args.out_file))
+    #the outfile from evidence prediction/IR phase becomes the in file/ file which contains all evidences
+    with open(args.out_file,"r") as f:
+        logging.debug("inside read_json")
+        l = []
+        counter=0
+        for eachline in (f):
+            claim_full = json.loads(eachline)
+            claim=claim_full["claim"]
+            logger.debug("just claim alone is:")
+            logger.debug(claim)
+            predicted_pages=claim_full["predicted_pages"]
+            predicted_sentences=claim_full["predicted_sentences"]
+            logger.debug("predicted_sentences:" + str(predicted_sentences))
+            logger.debug("predicted_pages:" + str(predicted_pages))
+            ev_claim=[]
+            for x in predicted_sentences:
+                page=x[0]
+                line_no=x[1]
+                logger.debug("page is:" + str(page))
+                logger.debug("line_no is:" + str(line_no))
+                sent=get_sentences_given_claim(page,logger,line_no)
+                logger.debug("evidences for this claim_full  is:" + str(sent))
+
+                ev_claim.append(sent)
+            all_evidences=' '.join(ev_claim)
+            annotate_and_save_doc(claim, all_evidences,index, API, ann_head_tr, ann_body_tr, logger)
+
+        return
+
 def print_cv(combined_vector,gold_labels_tr):
     logging.debug(gold_labels_tr.shape)
     logging.debug(combined_vector.shape)
@@ -72,7 +111,7 @@ def uofa_training(args,jlr,method,logger):
     logger.warning("got inside uofatraining")
 
     #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-    tr_data=read_claims_annotate(args,jlr,logger,method)
+    tr_data=read_test_data_annotate(args,jlr,logger,method)
     logger.info(
         "Finished read_claims_annotate")
     sys.exit(1)
