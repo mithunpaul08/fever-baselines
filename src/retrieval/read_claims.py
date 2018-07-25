@@ -14,7 +14,8 @@ ann_body_tr = "ann_body_tr.json"
 API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 logger=None
 load_ann_corpus=True
-#load_combined_vector=True
+data_folder_dev="/data/fever/"
+
 
 #for each claim, get the evidence sentences, annotate and write to disk
 def read_claims_annotate(args,jlr,logger,method):
@@ -68,15 +69,19 @@ def read_test_data_annotate(args,jlr,logger,method):
     except OSError:
         logger.error("not able to find file")
 
+
     logger.debug("inside read_claims_annotate")
     logger.debug("name of out file is:"+str(args.out_file))
     #the outfile from evidence prediction/IR phase becomes the in file/ file which contains all evidences
-    with open(args.out_file,"r") as f:
+    cwd=os.getcwd()
+    path =cwd+data_folder_dev+args.out_file
+    logging.debut(path)
+    with open(path,"r") as f:
         logging.debug("inside read_json")
         l = []
         counter=0
         for eachline in (f):
-            logging.debut(eachline)
+            logging.debug(eachline)
             claim_full = json.loads(eachline)
             claim=claim_full["claim"]
             logger.debug("just claim alone is:")
