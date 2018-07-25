@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
 
 
-        with open(args.out_file,"r") as f:
+    with open(args.out_file,"r") as f:
 
             if(args.mode=="train"):
                 uofa_training(args,jlr,method,logger)
