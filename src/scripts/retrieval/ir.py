@@ -91,7 +91,7 @@ if __name__ == "__main__":
     logger.warning("Done, writing IR data to disk.")
 
     logger.warning("Going to exit.")
-    sys.exit(1)
+
 
 
         #RTE Part from UofA

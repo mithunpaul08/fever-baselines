@@ -16,7 +16,12 @@ data_root="/work/mithunpaul/fever/my_fork/fever-baselines/data"
 
 `PYTHONPATH=src python src/scripts/retrieval/ir.py --db data/fever/fever.db --model data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz --in-file data/fever-data/dev.jsonl --out-file data/fever/dev.sentences.p5.s5.jsonl --max-page 5 --max-sent 5 --mode test --load_feat_vec False`
 ## to run dev in a different folder in server but feeding from same data fold
-`PYTHONPATH=src python src/scripts/retrieval/ir.py --db /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db --model /work/mithunpaul/fever/my_fork/fever-baselines/data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz --in-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever-data/dev.jsonl --out-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/dev.sentences.p5.s5.jsonl --max-page 5 --max-sent 5 --mode test`
+`PYTHONPATH=src python src/scripts/retrieval/ir.py --db /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db --model /work/mithunpaul/fever/my_fork/fever-baselines/data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz --in-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever-data/test.jsonl --out-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/test.sentences.p5.s5.jsonl --max-page 5 --max-sent 5 --mode test`
+
+## to run on test data
+PYTHONPATH=src python src/scripts/retrieval/ir.py --db /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db --model /work/mithunpaul/fever/my_fork/fever-baselines/data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz --in-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever-data/test.jsonl --out-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/test.sentences.p5.s5.jsonl --max-page 5 --max-sent 5 --mode train
+
+note: the mode is train for RTE part. This will just annotate data using pyproc
 
 ## Copy of Instructions from sheffield :might not be updated. use their instructions [page](https://github.com/sheffieldnlp/fever-baselines#evaluation)
 This is the PyTorch implementation of the FEVER pipeline baseline described in the NAACL2018 paper: [FEVER: A large-scale dataset for Fact Extraction and VERification.]()
