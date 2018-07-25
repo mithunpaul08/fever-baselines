@@ -62,12 +62,12 @@ def read_claims_annotate(args,jlr,logger,method):
 
 
 def read_test_data_annotate(args,jlr,logger,method):
-    try:
-        os.remove(ann_head_tr)
-        os.remove(ann_body_tr)
-
-    except OSError:
-        logger.error("not able to find file")
+    # try:
+    #     os.remove(ann_head_tr)
+    #     os.remove(ann_body_tr)
+    #
+    # except OSError:
+    #     logger.error("not able to find file")
 
 
     logger.debug("inside read_claims_annotate")
