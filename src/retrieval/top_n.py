@@ -50,6 +50,7 @@ class TopNDocsTopNSents(RetrievalMethod):
 
 
     def get_sentences_for_claim(self,claim_text,include_text=False):
+        logger = LogHelper.get_logger(__name__)
         #given a claim get a bunch of documents that might be relevant for it
         pages = self.get_docs_for_claim(claim_text)
         sorted_p = list(sorted(pages, reverse=True, key=lambda elem: elem[1]))
