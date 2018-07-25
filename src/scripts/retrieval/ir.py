@@ -68,19 +68,19 @@ if __name__ == "__main__":
 
 
 
+    #JUST GET CLAIMS FROM DEV OR TRAINING
     with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
         lines = jlr.process(f)
         logger.info("Processing lines")
-        logger.info(lines)
-        sys.exit(1)
 
-    logging.info("outside processing lines")
-    sys.exit(1)
+
 
     with ThreadPool() as p:
             for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line),lines), total=len(lines)):
                 #out_file.write(json.dumps(line) + "\n")
                 processed[line["id"]] = line
+                logging.debug(line)
+                sys.exit(1)
 
     logger.info("Done, writing to disk")
 
