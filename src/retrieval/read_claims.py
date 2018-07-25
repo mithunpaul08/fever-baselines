@@ -74,7 +74,7 @@ def read_test_data_annotate(args,jlr,logger,method):
     logger.debug("name of out file is:"+str(args.out_file))
     #the outfile from evidence prediction/IR phase becomes the in file/ file which contains all evidences
     cwd=os.getcwd()
-    path =cwd+args.out_file
+    path =cwd+"/"+args.out_file
     logger.debug("path is:"+str(path))
     with open(path,"r") as f:
         logging.debug("inside read_json")
