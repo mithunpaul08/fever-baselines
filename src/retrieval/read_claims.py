@@ -16,7 +16,7 @@ logger=None
 load_ann_corpus=True
 #load_combined_vector=True
 
-
+#for each claim, get the evidence sentences, annotate and write to disk
 def read_claims_annotate(args,jlr,logger,method):
     try:
         os.remove(ann_head_tr)
@@ -26,7 +26,8 @@ def read_claims_annotate(args,jlr,logger,method):
         logger.error("not able to find file")
 
     logger.debug("inside read_claims_annotate")
-    with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
+    #the outfile from evidence prediction/IR phase becomes the in file/ file which contains all evidences
+    with open(args.out_file,"r") as f:
         all_claims = jlr.process(f)
         obj_all_heads_bodies=[]
         ver_count=0

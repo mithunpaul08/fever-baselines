@@ -82,15 +82,13 @@ if __name__ == "__main__":
                 # line["predicted_sentences"] = sents
                 # return line
                 processed[line["id"]] = line
-                logging.warning("line:")
-                logging.warning(line)
-                sys.exit(1)
 
-    logger.info("Done, writing to disk")
+
 
     for line in lines:
             out_file.write(json.dumps(processed[line["id"]]) + "\n")
 
+    logger.info("Done, writing to disk. Going to exit")
 
         #RTE Part from UofA
     if(args.mode=="train"):
@@ -100,5 +98,3 @@ if __name__ == "__main__":
             uofa_testing(args,jlr,method,logger)
     logger.info("Done, writing to disk")
 
-    for line in all_claims:
-        out_file.write(json.dumps(processed[line["id"]]) + "\n")
