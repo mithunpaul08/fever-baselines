@@ -61,7 +61,7 @@ class TopNDocsTopNSents(RetrievalMethod):
             #query the db and get the list of sentences in a given wikipedia page
             lines = self.db.get_doc_lines(page)
             logger.info(lines)
-            sys.exit(1)
+
             lines = [line.split("\t")[1] if len(line.split("\t")[1]) > 1 else "" for line in
                      lines.split("\n")]
 
@@ -71,7 +71,6 @@ class TopNDocsTopNSents(RetrievalMethod):
         lines = []
         for p_line in p_lines:
             logger.info("value of sentence in p_line is:"+p_line[0])
-            sys.exit(1)
             lines.append({
                 "sentence": p_line[0],
                 "page": p_line[1],
