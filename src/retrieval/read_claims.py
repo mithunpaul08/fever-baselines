@@ -15,7 +15,7 @@ API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 logger=None
 load_ann_corpus=True
 data_folder_dev="/data/fever/"
-from src.retrieval.top_n import get_sentences_given_claim
+from .top_n import get_sentences_given_claim
 
 
 #for each claim, get the evidence sentences, annotate and write to disk
