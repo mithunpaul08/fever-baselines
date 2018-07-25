@@ -76,6 +76,7 @@ def read_test_data_annotate(args,jlr,logger,method):
         l = []
         counter=0
         for eachline in (f):
+            logging.debut(eachline)
             claim_full = json.loads(eachline)
             claim=claim_full["claim"]
             logger.debug("just claim alone is:")
