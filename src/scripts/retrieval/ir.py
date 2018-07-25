@@ -82,7 +82,7 @@ if __name__ == "__main__":
                 #out_file.write(json.dumps(line) + "\n")
                 processed[line["id"]] = line
 
-        logger.info("Done, writing to disk")
+    logger.info("Done, writing to disk")
 
     for line in lines:
             out_file.write(json.dumps(processed[line["id"]]) + "\n")
