@@ -65,19 +65,35 @@ if __name__ == "__main__":
 
 
     processed = dict()
+
+
+
+    with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
+        lines = jlr.process(f)
+        logger.info("Processing lines")
+        logger.info(lines)
+        sys.exit(1)
+
+    logging.info("outside processing lines")
+    sys.exit(1)
+
+    with ThreadPool() as p:
+            for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line),lines), total=len(lines)):
+                #out_file.write(json.dumps(line) + "\n")
+                processed[line["id"]] = line
+
+        logger.info("Done, writing to disk")
+
+    for line in lines:
+            out_file.write(json.dumps(processed[line["id"]]) + "\n")
+
+
+        #RTE Part from UofA
     if(args.mode=="train"):
         uofa_training(args,jlr,method,logger)
     else:
         if(args.mode=="test"):
             uofa_testing(args,jlr,method,logger)
-    with ThreadPool() as p:
-        for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line), all_claims), total=len(all_claims)):
-            processed[line["id"]] = line
-            logger.info("processed line is:"+str(line))
-            counter=counter+1
-            if(counter==10):
-                sys.exit(1)
-
     logger.info("Done, writing to disk")
 
     for line in all_claims:
