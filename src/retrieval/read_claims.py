@@ -231,7 +231,7 @@ def write_pred_str_disk(args,jlr,pred):
         #
         #     final_predictions.append(line)
 
-        for p,q in zip(pred,ir):
+        for index,(p,q) in enumerate(zip(pred,ir)):
             line=dict()
             label="not enough info"
             if(p==0):
@@ -243,6 +243,10 @@ def write_pred_str_disk(args,jlr,pred):
             line["id"]=q["id"]
             line["predicted_label"]=label
             line["predicted_evidence"]=q["predicted_sentences"]
+            logging.debug(q["id"])
+            logging.debug(label)
+            logging.debug(q["predicted_sentences"])
+            logging.debug(index)
 
             final_predictions.append(line)
 
