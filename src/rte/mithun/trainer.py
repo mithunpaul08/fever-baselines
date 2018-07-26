@@ -49,10 +49,13 @@ def read_json_create_feat_vec(load_ann_corpus_tr,args):
         cwd=os.getcwd()
         data_folder=None
         if(args.mode=="test"):
-            data_folder=data_folder_dev
+            data_folder=data_folder_test
         else:
             if(args.mode=="train"):
                 data_folder=data_folder_train
+            else:
+                if(args.mode=="dev"):
+                    data_folder=data_folder_dev
 
         bf=data_folder+annotated_body_split_folder
         bff=bf+annotated_only_lemmas
