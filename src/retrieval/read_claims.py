@@ -187,7 +187,7 @@ def annotate_save_quit(test_data,logger):
 def write_pred_str_disk(args,jlr):
     final_predictions=[]
     #pred=joblib.load(predicted_results)
-    with open(args.in_file,"r") as f:
+    with open(args.out-file,"r") as f:
         ir = jlr.process(f)
 
         for index,q in enumerate(ir):
