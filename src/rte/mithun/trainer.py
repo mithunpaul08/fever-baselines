@@ -84,6 +84,8 @@ def read_json_create_feat_vec(load_ann_corpus_tr,args):
         combined_vector = create_feature_vec(heads_lemmas, bodies_lemmas, heads_tags,
                                              bodies_tags,logging)
 
+        logging.info("shape of combined vector is :"+str(combined_vector.shape))
+        sys.exit(1)
         joblib.dump(combined_vector, combined_vector_training)
         logging.info("done generating feature vectors.")
 
