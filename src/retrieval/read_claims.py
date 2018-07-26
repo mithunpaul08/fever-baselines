@@ -186,16 +186,20 @@ def annotate_save_quit(test_data,logger):
 
 #load predictions, convert it based on label and write it as string.
 def write_pred_str_disk(args,jlr):
+    logging.debug("here1"+str(args.out_file))
     final_predictions=[]
     #pred=joblib.load(predicted_results)
     with open(args.out_file,"r") as f:
         ir = jlr.process(f)
+        logging.debug("here2"+str(len(ir)))
 
         for index,q in enumerate(ir):
+            logging.debug("here3")
             line=dict()
             logger.debug("p")
             label="not enough info"
             if(index%2 ==0):
+                logging.debug("here4")
                 label="supports"
             else:
                 label="refutes"
@@ -222,10 +226,12 @@ def write_pred_str_disk(args,jlr):
         #
         #     final_predictions.append(line)
 
-
+    logging.debug(len(final_predictions))
     with open(args.pred_file, "w+") as out_file:
         for x in final_predictions:
+
             out_file.write(json.dumps(x)+"\n")
+    return
 
 
 def annotate_and_save_doc(headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
