@@ -199,7 +199,7 @@ def write_pred_str_disk(args,jlr):
     final_predictions=[]
     #pred=joblib.load(predicted_results)
     with open(args.out_file,"r") as f:
-        ir = json.loads(jlr.process(f))
+        ir = jlr.process(f)
         logging.debug("here2"+str(len(ir)))
 
         for index,q in enumerate(ir):
