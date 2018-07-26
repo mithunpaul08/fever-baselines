@@ -124,12 +124,20 @@ def uofa_training(args,jlr,method,logger):
         "Finished read_claims_annotate")
     sys.exit(1)
 
-    gold_labels_tr = get_gold_labels(args, jlr)
+    gold_labels_tr =None
+    if(args.mode =="small"):
+        gold_labels_tr =get_gold_labels_small(args, jlr)
+    else:
+        gold_labels_tr = get_gold_labels(args, jlr)
+
     logging.info("number of rows in label list is is:" + str(len(gold_labels_tr)))
     combined_vector = read_json_create_feat_vec(load_ann_corpus,args)
 
     logging.warning("done with generating feature vectors. Model training next")
-    logging.info("gold_labels_tr is:" + str((gold_labels_tr)))
+    logging.info("gold_labels_tr is:" + str(len(gold_labels_tr)))
+    logging.info("shape of cv:" + str(combined_vector.shape))
+    logging.info("above two must match")
+
     do_training(combined_vector, gold_labels_tr)
     logging.warning("done with training. going to exit")
     sys.exit(1)
@@ -137,10 +145,13 @@ def uofa_training(args,jlr,method,logger):
 def uofa_dev(args, jlr, method, logger):
     logger.warning("got inside uofa_testing")
     gold_labels = get_gold_labels(args, jlr)
-    logging.info("number of rows in label list is is:" + str(len(gold_labels)))
+
     combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
     #print_cv(combined_vector, gold_labels)
-    logging.warning("done with generating feature vectors. Model loading and predicting next")
+    logging.info("done with generating feature vectors. Model loading and predicting next")
+    logging.info("shape of cv:"+str(combined_vector.shape))
+    logging.info("number of rows in label list is is:" + str(len(gold_labels)))
+    logging.info("above two must match")
     trained_model=load_model()
     logging.debug("weights:")
     #logging.debug(trained_model.coef_ )
@@ -151,8 +162,10 @@ def uofa_dev(args, jlr, method, logger):
     logging.warning("done testing. and the accuracy is:")
     acc=accuracy_score(gold_labels, pred)*100
     logging.warning(str(acc)+"%")
-    logging.debug(classification_report(gold_labels, pred))
-    logging.debug(confusion_matrix(gold_labels, pred))
+    logging.info(classification_report(gold_labels, pred))
+    logging.info(confusion_matrix(gold_labels, pred))
+
+    
 
     # get number of support vectors for each class
     #logging.debug(trained_model.n_support_)
@@ -280,4 +293,26 @@ def get_gold_labels(args,jlr):
                 #     if (label=="NOT ENOUGH INFO"):
                 #         labels = np.append(labels, 2)
 
+    return labels
+
+def get_gold_labels_small(args,jlr):
+    labels = np.array([[]])
+
+    counter=0
+    with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
+        all_claims = jlr.process(f)
+        for index,claim_full in tqdm(enumerate(all_claims),total=len(all_claims),desc="get_gold_labels:"):
+            counter+=1
+            label=claim_full["label"]
+            if (label == "SUPPORTS"):
+                labels = np.append(labels, 0)
+            else:
+                if (label == "REFUTES"):
+                    labels = np.append(labels, 1)
+                else:
+                    if (label=="NOT ENOUGH INFO"):
+                        labels = np.append(labels, 2)
+            logging.debug(index)
+            if (counter==10):
+                return labels
     return labels

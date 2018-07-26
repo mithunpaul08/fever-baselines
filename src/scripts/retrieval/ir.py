@@ -69,6 +69,7 @@ if __name__ == "__main__":
 
 
 
+
     # #JUST GET CLAIMS FROM DEV OR TRAINING
     # with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
     #     lines = jlr.process(f)
@@ -116,4 +117,5 @@ if __name__ == "__main__":
 #     ]
 #https://github.com/sheffieldnlp/fever-scorer
 #  }
+
 
