@@ -11,7 +11,7 @@ from retrieval.top_n import TopNDocsTopNSents
 from retrieval.fever_doc_db import FeverDocDB
 from common.dataset.reader import JSONLineReader
 from rte.riedel.data import FEVERGoldFormatter, FEVERLabelSchema
-from retrieval.read_claims import uofa_training,uofa_testing
+from retrieval.read_claims import uofa_training,uofa_testing,uofa_dev
 from rte.mithun.log import setup_custom_logger
 from fever.scorer import fever_score
 
@@ -98,9 +98,14 @@ if __name__ == "__main__":
     if(args.mode=="train"):
         uofa_training(args,jlr,method,logger)
     else:
-        if(args.mode=="test"):
-            uofa_testing(args,jlr,method,logger)
+        if(args.mode=="dev"):
+            uofa_dev(args,jlr,method,logger)
             logger.info("Done, testing ")
+
+        else:
+            if(args.mode=="test"):
+                uofa_testing(args,jlr,method,logger)
+                logger.info("Done, testing ")
 
 #                     {
 #     "id": 78526,

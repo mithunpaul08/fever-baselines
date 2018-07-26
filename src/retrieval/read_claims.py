@@ -134,7 +134,7 @@ def uofa_training(args,jlr,method,logger):
     logging.warning("done with training. going to exit")
     sys.exit(1)
 
-def uofa_testing(args,jlr,method,logger):
+def uofa_dev(args, jlr, method, logger):
     logger.warning("got inside uofa_testing")
     gold_labels = get_gold_labels(args, jlr)
     logging.info("number of rows in label list is is:" + str(len(gold_labels)))
@@ -156,6 +156,18 @@ def uofa_testing(args,jlr,method,logger):
 
     # get number of support vectors for each class
     #logging.debug(trained_model.n_support_)
+    logging.info("done with testing. going to exit")
+    sys.exit(1)
+
+
+def uofa_testing(args, jlr, method, logger):
+    logger.warning("got inside uofa_testing")
+    combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
+    logging.warning("done with generating feature vectors. Model loading and predicting next")
+    trained_model=load_model()
+    logging.debug("weights:")
+    pred=do_testing(combined_vector,trained_model)
+    logging.debug(str(pred))
     logging.info("done with testing. going to exit")
     sys.exit(1)
 
