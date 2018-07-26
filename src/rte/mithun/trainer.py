@@ -29,6 +29,7 @@ data_root="/work/mithunpaul/fever/my_fork/fever-baselines/"
 data_folder_train=data_root+"/data/fever-data-ann/train/"
 data_folder_train_small=data_root+"/data/fever-data-ann/train_small/"
 data_folder_dev=data_root+"/data/fever-data-ann/dev/"
+data_folder_test=data_root+"/data/fever-data-ann/test/"
 model_trained="model_trained.pkl"
 
 predicted_results="predicted_results.pkl"
@@ -49,14 +50,17 @@ def read_json_create_feat_vec(load_ann_corpus_tr,args):
         cwd=os.getcwd()
         data_folder=None
         if(args.mode=="test"):
-            data_folder=data_folder_dev
+            data_folder=data_folder_test
         else:
             if(args.mode=="train"):
                 data_folder=data_folder_train
             else:
                    if(args.mode=="small"):
                         data_folder=data_folder_train_small
+                    else:
 
+                      if(args.mode=="dev"):
+                          data_folder=data_folder_dev
 
         bf=data_folder+annotated_body_split_folder
         bff=bf+annotated_only_lemmas
@@ -103,6 +107,8 @@ def read_json_create_feat_vec(load_ann_corpus_tr,args):
         combined_vector = create_feature_vec(heads_lemmas, bodies_lemmas, heads_tags,
                                              bodies_tags,heads_deps,bodies_deps,heads_words, bodies_words)
 
+        logging.info("shape of combined vector is :"+str(combined_vector.shape))
+        
         joblib.dump(combined_vector, combined_vector_training)
         logging.info("done generating feature vectors.")
 

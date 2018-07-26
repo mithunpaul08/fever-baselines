@@ -50,17 +50,22 @@ class TopNDocsTopNSents(RetrievalMethod):
 
 
     def get_sentences_for_claim(self,claim_text,include_text=False):
-        #given a claim get a bunch of documents that might be relevant for it
+        logger = LogHelper.get_logger(__name__)
+
+        logger.debug("claim_text:")
+        logger.debug(claim_text)
+        #given a claim get a bunch of wikipedia pages that might be relevant for it
         pages = self.get_docs_for_claim(claim_text)
         sorted_p = list(sorted(pages, reverse=True, key=lambda elem: elem[1]))
+        #these are the wikipedia pages that the machine thinks is relevant.
         pages = [p[0] for p in sorted_p[:self.n_docs]]
         p_lines = []
         for page in pages:
-            logger.info("page:"+page)
+            logger.debug("page:"+page)
             #query the db and get the list of sentences in a given wikipedia page
             lines = self.db.get_doc_lines(page)
-            logger.info(lines)
-            sys.exit(1)
+            logger.debug(lines)
+
             lines = [line.split("\t")[1] if len(line.split("\t")[1]) > 1 else "" for line in
                      lines.split("\n")]
 
@@ -69,8 +74,7 @@ class TopNDocsTopNSents(RetrievalMethod):
 
         lines = []
         for p_line in p_lines:
-            logger.info("value of sentence in p_line is:"+p_line[0])
-            sys.exit(1)
+            logger.debug("value of sentence in p_line is:"+p_line[0])
             lines.append({
                 "sentence": p_line[0],
                 "page": p_line[1],

@@ -8,25 +8,30 @@ from rte.mithun.trainer import read_json_create_feat_vec,do_training,do_testing,
 import numpy as np
 import os,sys
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
-
+import json
 ann_head_tr = "ann_head_tr.json"
 ann_body_tr = "ann_body_tr.json"
 API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 logger=None
 load_ann_corpus=True
-#load_combined_vector=True
+data_folder_dev="/data/fever/"
+from sklearn.externals import joblib
+predicted_results="predicted_results.pkl"
 
-
+#for each claim, get the evidence sentences, annotate and write to disk
 def read_claims_annotate(args,jlr,logger,method):
-    try:
-        os.remove(ann_head_tr)
-        os.remove(ann_body_tr)
-
-    except OSError:
-        logger.error("not able to find file")
+    # try:
+    #     os.remove(ann_head_tr)
+    #     os.remove(ann_body_tr)
+    #
+    # except OSError:
+    #     logger.error("not able to find file")
 
     logger.debug("inside read_claims_annotate")
-    with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
+    logger.debug("name of out file is:"+str(args.out_file))
+    #the outfile from evidence prediction/IR phase becomes the in file/ file which contains all evidences
+    with open(args.out_file,"r") as f:
+        logger.debug("inside open with:")
         all_claims = jlr.process(f)
         obj_all_heads_bodies=[]
         ver_count=0
@@ -57,6 +62,51 @@ def read_claims_annotate(args,jlr,logger,method):
         return obj_all_heads_bodies
 
 
+def read_test_data_annotate(args,jlr,logger,method):
+    # try:
+    #     os.remove(ann_head_tr)
+    #     os.remove(ann_body_tr)
+    #
+    # except OSError:
+    #     logger.error("not able to find file")
+
+
+    logger.debug("inside read_claims_annotate")
+    logger.debug("name of out file is:"+str(args.out_file))
+    #the outfile from evidence prediction/IR phase becomes the in file/ file which contains all evidences
+    cwd=os.getcwd()
+    path =cwd+"/"+args.out_file
+    logger.debug("path is:"+str(path))
+    with open(path,"r") as f:
+        logging.debug("inside read_json")
+        l = []
+        counter=0
+
+        for eachline in (f):
+            logging.debug(eachline)
+            claim_full = json.loads(eachline)
+            claim=claim_full["claim"]
+            id=claim_full["id"]
+            logger.debug("just claim alone is:")
+            logger.debug(claim)
+            predicted_pages=claim_full["predicted_pages"]
+            predicted_sentences=claim_full["predicted_sentences"]
+            logger.debug("predicted_sentences:" + str(predicted_sentences))
+            logger.debug("predicted_pages:" + str(predicted_pages))
+            ev_claim=[]
+            for x in predicted_sentences:
+                page=x[0]
+                line_no=x[1]
+                logger.debug("page is:" + str(page))
+                logger.debug("line_no is:" + str(line_no))
+                sent=method.get_sentences_given_claim(page,logger,line_no)
+                logger.debug("evidences for this claim_full  is:" + str(sent))
+                ev_claim.append(sent)
+            all_evidences=' '.join(ev_claim)
+            annotate_and_save_doc(claim, all_evidences,id, API, ann_head_tr, ann_body_tr, logger)
+
+        return
+
 def print_cv(combined_vector,gold_labels_tr):
     logging.debug(gold_labels_tr.shape)
     logging.debug(combined_vector.shape)
@@ -69,9 +119,10 @@ def uofa_training(args,jlr,method,logger):
     logger.warning("got inside uofatraining")
 
     #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-    #tr_data=read_claims_annotate(args,jlr,logger,method)
-    # logger.info(
-    #     "Finished writing json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+    tr_data=read_test_data_annotate(args,jlr,logger,method)
+    logger.info(
+        "Finished read_claims_annotate")
+    sys.exit(1)
 
     gold_labels_tr =None
     if(args.mode =="small"):
@@ -91,7 +142,7 @@ def uofa_training(args,jlr,method,logger):
     logging.warning("done with training. going to exit")
     sys.exit(1)
 
-def uofa_testing(args,jlr,method,logger):
+def uofa_dev(args, jlr, method, logger):
     logger.warning("got inside uofa_testing")
     gold_labels = get_gold_labels(args, jlr)
 
@@ -121,6 +172,19 @@ def uofa_testing(args,jlr,method,logger):
     logging.info("done with testing. going to exit")
     sys.exit(1)
 
+
+def uofa_testing(args, jlr, method, logger):
+    logger.warning("got inside uofa_testing")
+    combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
+    logging.warning("done with generating feature vectors. Model loading and predicting next")
+    trained_model=load_model()
+    logging.debug("weights:")
+    pred=do_testing(combined_vector,trained_model)
+    write_pred_str_disk(args,jlr,pred)
+    logging.debug(str(pred))
+    logging.info("done with testing. going to exit")
+    sys.exit(1)
+
 def annotate_save_quit(test_data,logger):
 
     for i, d in tqdm(enumerate(test_data), total=len(test_data),desc="annotate_json:"):
@@ -129,6 +193,66 @@ def annotate_save_quit(test_data,logger):
 
     sys.exit(1)
 
+def read_json_alllines(json_file):
+    l=[]
+    with open(json_file) as f:
+            for eachline in (f):
+                d = json.loads(eachline)
+                l.append(d)
+
+    return l
+
+#load predictions, convert it based on label and write it as string.
+def write_pred_str_disk(args,jlr,pred):
+    logging.debug("here1"+str(args.out_file))
+    final_predictions=[]
+    #pred=joblib.load(predicted_results)
+    with open(args.out_file,"r") as f:
+        ir = jlr.process(f)
+        logging.debug("here2"+str(len(ir)))
+
+        # for index,q in enumerate(ir):
+        #     logging.debug("here3")
+        #
+        #     line=dict()
+        #     label="not enough info"
+        #     if(index%2 ==0):
+        #         logging.debug("here4")
+        #         label="supports"
+        #     else:
+        #         label="refutes"
+        #
+        #     line["id"]=q["id"]
+        #     line["predicted_label"]=label
+        #     line["predicted_evidence"]=q["predicted_sentences"]
+        #     logging.debug(q["predicted_sentences"])
+        #     logging.debug(q["id"])
+        #     logging.debug(label)
+        #
+        #     final_predictions.append(line)
+
+        for p,q in zip(pred,ir):
+            line=dict()
+            logger.debug("p")
+            label="not enough info"
+            if(p==0):
+                label="supports"
+            else:
+                if(p==1):
+                    label="refutes"
+
+            line["id"]=q["id"]
+            line["predicted_label"]=label
+            line["predicted_evidence"]=q["predicted_sentences"]
+
+            final_predictions.append(line)
+
+    logging.info(len(final_predictions))
+    with open(args.pred_file, "w+") as out_file:
+        for x in final_predictions:
+
+            out_file.write(json.dumps(x)+"\n")
+    return
 
 
 def annotate_and_save_doc(headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
