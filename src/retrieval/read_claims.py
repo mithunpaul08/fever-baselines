@@ -162,10 +162,6 @@ def uofa_dev(args, jlr, method, logger):
 
 def uofa_testing(args, jlr, method, logger):
     logger.warning("got inside uofa_testing")
-    logging.debug(args.out_file)
-    write_pred_str_disk(args,jlr)
-    sys.exit(1)
-
     combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
     logging.warning("done with generating feature vectors. Model loading and predicting next")
     trained_model=load_model()
@@ -194,7 +190,7 @@ def read_json_alllines(json_file):
     return l
 
 #load predictions, convert it based on label and write it as string.
-def write_pred_str_disk(args,jlr):
+def write_pred_str_disk(args,jlr,pred):
     logging.debug("here1"+str(args.out_file))
     final_predictions=[]
     #pred=joblib.load(predicted_results)
@@ -202,41 +198,41 @@ def write_pred_str_disk(args,jlr):
         ir = jlr.process(f)
         logging.debug("here2"+str(len(ir)))
 
-        for index,q in enumerate(ir):
-            logging.debug("here3")
-
-            line=dict()
-            label="not enough info"
-            if(index%2 ==0):
-                logging.debug("here4")
-                label="supports"
-            else:
-                label="refutes"
-
-            line["id"]=q["id"]
-            line["predicted_label"]=label
-            line["predicted_evidence"]=q["predicted_sentences"]
-            logging.debug(q["predicted_sentences"])
-            logging.debug(q["id"])
-            logging.debug(label)
-
-            final_predictions.append(line)
-
-        # for p,q in zip(pred,ir):
+        # for index,q in enumerate(ir):
+        #     logging.debug("here3")
+        #
         #     line=dict()
-        #     logger.debug("p")
         #     label="not enough info"
-        #     if(p==0):
+        #     if(index%2 ==0):
+        #         logging.debug("here4")
         #         label="supports"
         #     else:
-        #         if(p==1):
-        #             label="refutes"
+        #         label="refutes"
         #
         #     line["id"]=q["id"]
         #     line["predicted_label"]=label
         #     line["predicted_evidence"]=q["predicted_sentences"]
+        #     logging.debug(q["predicted_sentences"])
+        #     logging.debug(q["id"])
+        #     logging.debug(label)
         #
         #     final_predictions.append(line)
+
+        for p,q in zip(pred,ir):
+            line=dict()
+            logger.debug("p")
+            label="not enough info"
+            if(p==0):
+                label="supports"
+            else:
+                if(p==1):
+                    label="refutes"
+
+            line["id"]=q["id"]
+            line["predicted_label"]=label
+            line["predicted_evidence"]=q["predicted_sentences"]
+
+            final_predictions.append(line)
 
     logging.info(len(final_predictions))
     with open(args.pred_file, "w+") as out_file:
