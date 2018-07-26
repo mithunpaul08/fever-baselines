@@ -13,7 +13,7 @@ from common.dataset.reader import JSONLineReader
 from rte.riedel.data import FEVERGoldFormatter, FEVERLabelSchema
 from retrieval.read_claims import uofa_training,uofa_testing
 from rte.mithun.log import setup_custom_logger
-
+from fever.scorer import fever_score
 
 
 
@@ -69,36 +69,45 @@ if __name__ == "__main__":
 
 
     #JUST GET CLAIMS FROM DEV OR TRAINING
-    with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
-        lines = jlr.process(f)
-        logger.info("Processing lines")
+    # with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
+    #     lines = jlr.process(f)
+    #     logger.info("Processing lines")
+    #
+    #
+    #
+    #     with ThreadPool() as p:
+    #             for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line),lines), total=len(lines)):
+    #                 #at this point the line thing has list of sentences it think is evidence for the given claim
+    #                 # line["predicted_pages"] = pages
+    #                 # line["predicted_sentences"] = sents
+    #                 # return line
+    #                 processed[line["id"]] = line
+    #
+    #
+    #
+    #     for line in lines:
+    #             out_file.write(json.dumps(processed[line["id"]]) + "\n")
+    #
+    #     logger.warning("Done, writing IR data to disk.")
+    #
+    #
+    #
+    #
+    # with open(args.out_file,"r") as f:
 
+    if(args.mode=="train"):
+        uofa_training(args,jlr,method,logger)
+    else:
+        if(args.mode=="test"):
+            uofa_testing(args,jlr,method,logger)
+            logger.info("Done, testing ")
 
-
-        with ThreadPool() as p:
-                for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line),lines), total=len(lines)):
-                    #at this point the line thing has list of sentences it think is evidence for the given claim
-                    # line["predicted_pages"] = pages
-                    # line["predicted_sentences"] = sents
-                    # return line
-                    processed[line["id"]] = line
-
-
-
-        for line in lines:
-                out_file.write(json.dumps(processed[line["id"]]) + "\n")
-
-        logger.warning("Done, writing IR data to disk.")
-
-
-
-
-    with open(args.out_file,"r") as f:
-
-            if(args.mode=="train"):
-                uofa_training(args,jlr,method,logger)
-            else:
-                if(args.mode=="test"):
-                    uofa_testing(args,jlr,method,logger)
-                    logger.info("Done, writing to disk")
+#                     {
+#     "id": 78526,
+#     "predicted_label": "REFUTES",
+#     "predicted_evidence": [
+#         ["Lorelai_Gilmore", 3]
+#     ]
+#https://github.com/sheffieldnlp/fever-scorer
+#  }
 

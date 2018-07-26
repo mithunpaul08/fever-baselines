@@ -29,6 +29,7 @@ annotated_head_split_folder="split_head/"
 data_root="/work/mithunpaul/fever/my_fork/fever-baselines/"
 data_folder_train=data_root+"/data/fever-data-ann/train/"
 data_folder_dev=data_root+"/data/fever-data-ann/dev/"
+data_folder_test=data_root+"/data/fever-data-ann/test/"
 model_trained="model_trained.pkl"
 
 predicted_results="predicted_results.pkl"

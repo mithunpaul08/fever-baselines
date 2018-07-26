@@ -167,6 +167,17 @@ def annotate_save_quit(test_data,logger):
 
     sys.exit(1)
 
+#
+# def write_pred_str_disk():
+#
+#     logger.debug("got inside annotate_and_save_doc")
+#     logger.debug("headline:"+headline)
+#     logger.debug("body:" + body)
+#     doc1 = API.fastnlp.annotate(headline)
+#     doc1.id=index
+#     with open(json_file_tr_annotated_headline, "a") as out:
+#       out.write(doc1.to_JSON())
+#       out.write("\n")
 
 
 def annotate_and_save_doc(headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,

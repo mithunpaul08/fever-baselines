@@ -21,8 +21,11 @@ data_root="/work/mithunpaul/fever/my_fork/fever-baselines/data"
 ## to run dev in a different folder in server but feeding from same data fold
 `PYTHONPATH=src python src/scripts/retrieval/ir.py --db /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db --model /work/mithunpaul/fever/my_fork/fever-baselines/data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz --in-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever-data/test.jsonl --out-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/test.sentences.p5.s5.jsonl --max-page 5 --max-sent 5 --mode test`
 
-## to run on test data
+## to run training on test data from alternate folder
 PYTHONPATH=src python src/scripts/retrieval/ir.py --db /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db --model /work/mithunpaul/fever/my_fork/fever-baselines/data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz --in-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever-data/test.jsonl --out-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/test.sentences.p5.s5.jsonl --max-page 5 --max-sent 5 --mode train
+## to run testing on test data from alternate folder
+
+PYTHONPATH=src python src/scripts/retrieval/ir.py --db /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db --model /work/mithunpaul/fever/my_fork/fever-baselines/data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz --in-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever-data/test.jsonl --out-file /work/mithunpaul/fever/my_fork/fever-baselines/data/fever/test.sentences.p5.s5.jsonl --max-page 5 --max-sent 5 --mode test
 
 note: the mode is train for RTE part. This will just annotate data using pyproc
 
