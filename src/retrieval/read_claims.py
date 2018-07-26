@@ -161,10 +161,11 @@ def uofa_dev(args, jlr, method, logger):
 
 
 def uofa_testing(args, jlr, method, logger):
-
+    logger.warning("got inside uofa_testing")
+    logging.debug(args.out_file)
     write_pred_str_disk(args,jlr)
     sys.exit(1)
-    logger.warning("got inside uofa_testing")
+
     combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
     logging.warning("done with generating feature vectors. Model loading and predicting next")
     trained_model=load_model()
