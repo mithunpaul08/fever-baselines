@@ -105,7 +105,7 @@ if __name__ == "__main__":
             logger.info("Done, testing ")
 
         else:
-            if(args.mode=="test"):
+            if(args.mode=="test" or args.mode=="small"):
                 uofa_testing(args,jlr,method,logger)
                 logger.info("Done, testing ")
 
