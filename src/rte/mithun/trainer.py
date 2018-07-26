@@ -55,11 +55,10 @@ def read_json_create_feat_vec(load_ann_corpus_tr,args):
             if(args.mode=="train"):
                 data_folder=data_folder_train
             else:
-                   if(args.mode=="small"):
-                        data_folder=data_folder_train_small
-                    else:
-
-                      if(args.mode=="dev"):
+                if(args.mode=="small"):
+                    data_folder=data_folder_train_small
+                else:
+                    if(args.mode=="dev"):
                           data_folder=data_folder_dev
 
         bf=data_folder+annotated_body_split_folder
