@@ -53,6 +53,7 @@ if __name__ == "__main__":
     parser.add_argument('--parallel',type=str2bool,default=True)
     parser.add_argument('--mode', type=str, help='do training or testing' )
     parser.add_argument('--load_feat_vec', type=str2bool,default=False)
+    parser.add_argument('--pred_file', type=str, help='path to save predictions',default="predictions.jsonl")
 
 
     args = parser.parse_args()
@@ -68,7 +69,7 @@ if __name__ == "__main__":
 
 
 
-    #JUST GET CLAIMS FROM DEV OR TRAINING
+    # #JUST GET CLAIMS FROM DEV OR TRAINING
     # with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
     #     lines = jlr.process(f)
     #     logger.info("Processing lines")
@@ -78,16 +79,16 @@ if __name__ == "__main__":
     #     with ThreadPool() as p:
     #             for line in tqdm(get_map_function(args.parallel)(lambda line: process_line(method,line),lines), total=len(lines)):
     #                 #at this point the line thing has list of sentences it think is evidence for the given claim
-    #                 # line["predicted_pages"] = pages
-    #                 # line["predicted_sentences"] = sents
-    #                 # return line
+    #                 line["predicted_pages"] = pages
+    #                 line["predicted_sentences"] = sents
+    #                 return line
     #                 processed[line["id"]] = line
     #
     #
     #
-    #     for line in lines:
-    #             out_file.write(json.dumps(processed[line["id"]]) + "\n")
-    #
+        # for line in lines:
+        #         out_file.write(json.dumps(processed[line["id"]]) + "\n")
+
     #     logger.warning("Done, writing IR data to disk.")
     #
     #

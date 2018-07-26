@@ -15,8 +15,8 @@ API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 logger=None
 load_ann_corpus=True
 data_folder_dev="/data/fever/"
-
-
+from sklearn.externals import joblib
+predicted_results="predicted_results.pkl"
 
 #for each claim, get the evidence sentences, annotate and write to disk
 def read_claims_annotate(args,jlr,logger,method):
@@ -161,12 +161,16 @@ def uofa_dev(args, jlr, method, logger):
 
 
 def uofa_testing(args, jlr, method, logger):
+
+    write_pred_str_disk(args,jlr)
+    sys.exit(1)
     logger.warning("got inside uofa_testing")
     combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
     logging.warning("done with generating feature vectors. Model loading and predicting next")
     trained_model=load_model()
     logging.debug("weights:")
     pred=do_testing(combined_vector,trained_model)
+    write_pred_str_disk(args,jlr,pred)
     logging.debug(str(pred))
     logging.info("done with testing. going to exit")
     sys.exit(1)
@@ -179,17 +183,48 @@ def annotate_save_quit(test_data,logger):
 
     sys.exit(1)
 
-#
-# def write_pred_str_disk():
-#
-#     logger.debug("got inside annotate_and_save_doc")
-#     logger.debug("headline:"+headline)
-#     logger.debug("body:" + body)
-#     doc1 = API.fastnlp.annotate(headline)
-#     doc1.id=index
-#     with open(json_file_tr_annotated_headline, "a") as out:
-#       out.write(doc1.to_JSON())
-#       out.write("\n")
+#load predictions, convert it based on label and write it as string.
+def write_pred_str_disk(args,jlr):
+    final_predictions=[]
+    #pred=joblib.load(predicted_results)
+    with open(args.in_file,"r") as f:
+        ir = jlr.process(f)
+
+        for index,q in enumerate(ir):
+            line=dict()
+            logger.debug("p")
+            label="not enough info"
+            if(index%2 ==0):
+                label="supports"
+            else:
+                label="refutes"
+
+            line["id"]=q["id"]
+            line["predicted_label"]=label
+            line["predicted_evidence"]=q["predicted_sentences"]
+
+            final_predictions.append(line)
+
+        # for p,q in zip(pred,ir):
+        #     line=dict()
+        #     logger.debug("p")
+        #     label="not enough info"
+        #     if(p==0):
+        #         label="supports"
+        #     else:
+        #         if(p==1):
+        #             label="refutes"
+        #
+        #     line["id"]=q["id"]
+        #     line["predicted_label"]=label
+        #     line["predicted_evidence"]=q["predicted_sentences"]
+        #
+        #     final_predictions.append(line)
+
+
+    with open(args.pred_file, "w+") as out_file:
+        for x in final_predictions:
+            out_file.write(json.dumps(x)+"\n")
 
 
 def annotate_and_save_doc(headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
