@@ -86,6 +86,7 @@ def read_test_data_annotate(args,jlr,logger,method):
             logging.debug(eachline)
             claim_full = json.loads(eachline)
             claim=claim_full["claim"]
+            id=claim_full["id"]
             logger.debug("just claim alone is:")
             logger.debug(claim)
             predicted_pages=claim_full["predicted_pages"]
@@ -102,7 +103,7 @@ def read_test_data_annotate(args,jlr,logger,method):
                 logger.debug("evidences for this claim_full  is:" + str(sent))
                 ev_claim.append(sent)
             all_evidences=' '.join(ev_claim)
-            annotate_and_save_doc(claim, all_evidences,index, API, ann_head_tr, ann_body_tr, logger)
+            annotate_and_save_doc(claim, all_evidences,id, API, ann_head_tr, ann_body_tr, logger)
 
         return
 
