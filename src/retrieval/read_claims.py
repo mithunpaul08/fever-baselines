@@ -233,7 +233,6 @@ def write_pred_str_disk(args,jlr,pred):
 
         for p,q in zip(pred,ir):
             line=dict()
-            logger.debug("p")
             label="not enough info"
             if(p==0):
                 label="supports"
