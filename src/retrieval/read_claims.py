@@ -137,7 +137,7 @@ def print_cv(combined_vector,gold_labels_tr):
 def uofa_training(args,jlr,method,logger):
     logger.warning("got inside uofatraining")
 
-    this code annotates the given file using pyprocessors. Run it only once in its lifetime.
+    #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
     tr_data=read_claims_annotate(args,jlr,logger,method)
     logger.info(
         "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
