@@ -72,11 +72,11 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     datasets_in_vocab = ["train"]
 
     print(f'type of dataset is{type(all_datasets)}')
-    print(f'type of dataset is{type(treain_data)}')
+    print(f'type of dataset is{type(train_data)}')
     print(f'length of dataset is{len(all_datasets.data)}')
 
     logger.info(f'type of dataset is{type(all_datasets)}')
-    logger.info(f'type of dataset is{type(treain_data)}')
+    logger.info(f'type of dataset is{type(train_data)}')
     logger.info(f'length of dataset is{len(all_datasets.data)}')
 
     sys.exit(1)
