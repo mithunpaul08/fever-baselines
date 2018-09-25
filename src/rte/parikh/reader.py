@@ -155,7 +155,7 @@ class FEVERReader(DatasetReader):
         sys.exit(1)
 
 
-    def delete_if_exists(self,name,obj):
+    def delete_if_exists(self,name):
 
         if os.path.exists(name):
             append_write = 'w'  # make a new file if not
