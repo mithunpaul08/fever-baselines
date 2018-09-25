@@ -71,13 +71,21 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     all_datasets = [train_data]
     datasets_in_vocab = ["train"]
 
-    print(f'type of dataset is{type(all_datasets)}')
-    print(f'type of dataset is{type(train_data)}')
-    print(f'length of dataset is{len(train_data.data)}')
+    for dataset in all_datasets:
+        print(f'type of dataset is{type(dataset)}')
+        for my_instance in dataset.instances:
+            print(f'type of my_instance is{type(my_instance)}')
+            for my_field in my_instance:
+                print(f'type of my_field is{type(my_field)}')
+
+   
 
     logger.info(f'type of dataset is{type(all_datasets)}')
     logger.info(f'type of dataset is{type(train_data)}')
     logger.info(f'length of dataset is{len(all_datasets.data)}')
+
+
+    #code to annotate each claim and evidence
 
     sys.exit(1)
 
@@ -97,6 +105,9 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
                                             for instance in dataset.instances]))
     vocab.save_to_files(os.path.join(serialization_dir, "vocabulary"))
 
+
+    #By convention, all such classes have a from_params factory method that
+    # allows you to instantiate instances from a Params object, which is basically a dict of parameters
     model = Model.from_params(vocab, params.pop('model'))
     iterator = DataIterator.from_params(params.pop("iterator"))
 
