@@ -4,7 +4,7 @@ from processors import ProcessorsBaseAPI
 from tqdm import tqdm
 from processors import Document
 import logging
-from rte.mithun.trainer import read_json_create_feat_vec,do_training,do_testing,load_model,print_missed
+from rte.mithun.trainer import UofaTrainTest
 import numpy as np
 import os,sys
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
@@ -22,6 +22,8 @@ class UOFADataReader():
         self.predicted_results = "predicted_results.pkl"
         self.snli_filename = 'snli_fever.json'
         self.API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
+        self.obj_UofaTrainTest=UofaTrainTest()
+
 
 
     def read_claims_annotate(self,args,jlr,logger,method):
@@ -152,14 +154,14 @@ class UOFADataReader():
             gold_labels_tr = get_gold_labels(args, jlr)
 
         logging.info("number of rows in label list is is:" + str(len(gold_labels_tr)))
-        combined_vector = read_json_create_feat_vec(load_ann_corpus,args)
+        combined_vector = self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
 
         logging.warning("done with generating feature vectors. Model training next")
         logging.info("gold_labels_tr is:" + str(len(gold_labels_tr)))
         logging.info("shape of cv:" + str(combined_vector.shape))
         logging.info("above two must match")
 
-        do_training(combined_vector, gold_labels_tr)
+        self.obj_UofaTrainTest.do_training(combined_vector, gold_labels_tr)
 
         logging.warning("done with training. going to exit")
         sys.exit(1)
@@ -176,17 +178,17 @@ class UOFADataReader():
 
 
 
-        combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
+        combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
         #print_cv(combined_vector, gold_labels)
         logging.info("done with generating feature vectors. Model loading and predicting next")
         logging.info("shape of cv:"+str(combined_vector.shape))
         logging.info("number of rows in label list is is:" + str(len(gold_labels)))
         logging.info("above two must match")
         assert(combined_vector.shape[0]==len(gold_labels))
-        trained_model=load_model()
+        trained_model=self.obj_UofaTrainTest.load_model()
         logging.debug("weights:")
         #logging.debug(trained_model.coef_ )
-        pred=do_testing(combined_vector,trained_model)
+        pred=self.obj_UofaTrainTest.do_testing(combined_vector,trained_model)
 
 
 
@@ -391,16 +393,16 @@ class UOFADataReader():
         # logger.info(
         #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
         # sys.exit(1)
-        combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
+        combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
         #print_cv(combined_vector, gold_labels)
         logging.info("done with generating feature vectors. Model loading and predicting next")
         logging.info("shape of cv:"+str(combined_vector.shape))
         logging.info("number of rows in label list is is:" + str(len(gold_labels)))
         logging.info("above two must match")
-        trained_model=load_model()
+        trained_model=self.obj_UofaTrainTest.load_model()
         logging.debug("weights:")
         #logging.debug(trained_model.coef_ )
-        pred=do_testing(combined_vector,trained_model)
+        pred=self.obj_UofaTrainTest.do_testing(combined_vector,trained_model)
         logging.debug(str(pred))
         logging.debug("and golden labels are:")
         logging.debug(str(gold_labels))
