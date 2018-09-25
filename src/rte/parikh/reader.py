@@ -19,6 +19,10 @@ from common.util.random import SimpleRandom
 from retrieval.fever_doc_db import FeverDocDB
 from rte.riedel.data import FEVERPredictions2Formatter, FEVERLabelSchema, FEVERGoldFormatter
 from common.dataset.data_set import DataSet as FEVERDataSet
+from processors import Document
+from processors import ProcessorsBaseAPI
+from src.retrieval.read_claims import UOFADataReader
+
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
@@ -71,8 +75,10 @@ class FEVERReader(DatasetReader):
 
         ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
         ds.read()
+        counter=0
 
         for instance in tqdm.tqdm(ds.data):
+            counter=counter+1
             if instance is None:
                 continue
 
@@ -88,12 +94,12 @@ class FEVERReader(DatasetReader):
 
             hypothesis = instance["claim"]
             label = instance["label_text"]
-            logger.info(f'first hypothesis is:{hypothesis}')
-            logger.info(f'first label is:{label}')
-            logger.info(f'first premise is:{premise}')
-            if(label=="NOT ENOUGH INFO"):
-                sys.exit(1)
+
+
+
             #call you pyprocessors annotator here, and write to disk
+
+            self.uofa_annotate(hypothesis,premise,counter)
 
             instances.append(self.text_to_instance(premise, hypothesis, label))
         if not instances:
@@ -131,3 +137,11 @@ class FEVERReader(DatasetReader):
                            wiki_tokenizer=wiki_tokenizer,
                            token_indexers=token_indexers)
 
+    def uofa_annotate(self,claim, evidence,index):
+        objUOFADataReader=UOFADataReader()
+        logger.info(f' hypothesis is:{claim}')
+        logger.info(f'premise is:{evidence}')
+        logger.info(f' label is:{index}')
+        objUOFADataReader.annotate_and_save_doc(claim, evidence, index, objUOFADataReader.API, objUOFADataReader.ann_head_tr, objUOFADataReader.ann_body_tr, logger)
+        logger.info("done annotation one document. going to exit")
+        sys.exit(1)

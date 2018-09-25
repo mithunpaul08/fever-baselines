@@ -14,6 +14,7 @@ from common.util.random import SimpleRandom
 from retrieval.fever_doc_db import FeverDocDB
 from rte.parikh.reader import FEVERReader
 
+
 import argparse
 import logging
 import sys
@@ -70,17 +71,6 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
     all_datasets = [train_data]
     datasets_in_vocab = ["train"]
-
-
-
-    logger.info(f'type of dataset is{type(all_datasets)}')
-    logger.info(f'type of dataset is{type(train_data)}')
-    logger.info(f'length of dataset is{len(all_datasets.data)}')
-
-
-    #code to annotate each claim and evidence
-
-    sys.exit(1)
 
 
     validation_data_path = params.pop('validation_data_path', None)
