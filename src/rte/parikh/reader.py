@@ -1,5 +1,5 @@
 from typing import Dict
-import json
+import json,sys
 import logging
 
 from overrides import overrides
@@ -91,7 +91,10 @@ class FEVERReader(DatasetReader):
             print(f'first hypothesis is:{hypothesis}')
             print(f'first label is:{label}')
             print(f'first premise is:{premise}')
-            sys.exit(1)
+            if(label=="NOT ENOUGH INFO"):
+                sys.exit(1)
+            #call you pyprocessors annotator here, and write to disk
+
             instances.append(self.text_to_instance(premise, hypothesis, label))
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
