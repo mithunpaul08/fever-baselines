@@ -22,6 +22,10 @@ from common.dataset.data_set import DataSet as FEVERDataSet
 from processors import Document
 from processors import ProcessorsBaseAPI
 from retrieval.read_claims import UOFADataReader
+from allennlp.data.dataset import Dataset
+from allennlp.data.dataset_readers.dataset_reader import DatasetReader
+from allennlp.data.fields import Field, TextField, LabelField
+from allennlp.data.instance import Instance
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
@@ -150,8 +154,20 @@ class FEVERReader(DatasetReader):
         print(f' hypothesis is:{claim}')
         print(f'premise is:{evidence}')
         print(f' label is:{index}')
-        objUOFADataReader.annotate_and_save_doc(claim, evidence, index, objUOFADataReader.API, objUOFADataReader.ann_head_tr, objUOFADataReader.ann_body_tr, logger)
-        print("done annotation one document. going to exit")
+        head_ann,body_ann= objUOFADataReader.annotate_and_save_doc(claim, evidence, index, objUOFADataReader.API, objUOFADataReader.ann_head_tr, objUOFADataReader.ann_body_tr, logger)
+        heads_entities=head_ann.sentences[0].entities
+        heads_lemmas= head_ann.sentences[0].entities
+        heads_words=head_ann.sentences[0].words
+        bodies_entities = body_ann.sentences[0].entities
+        bodies_lemmas = body_ann.sentences[0].entities
+        bodies_words = body_ann.sentences[0].words
+
+        print(f'{heads_entities}')
+        print(f'{heads_lemmas}')
+        print(f'{heads_words}')
+        print(f'{bodies_entities}')
+        print(f'{bodies_lemmas}')
+        print(f'{bodies_words}')
         sys.exit(1)
 
 
@@ -161,3 +177,50 @@ class FEVERReader(DatasetReader):
             append_write = 'w'  # make a new file if not
             with open(name, append_write) as outfile:
                 outfile.write("")
+
+    def convert_NER_form(self,heads_entities, bodies_entities, heads_lemmas,
+                                                bodies_lemmas, heads_words, bodies_words, labels_no_nei):
+
+        instances=[]
+
+        for he, be, hl, bl, hw, bw, lbl in (zip(heads_entities, bodies_entities, heads_lemmas,
+                                                bodies_lemmas, heads_words, bodies_words, labels_no_nei)):
+
+            he_split_list = he.data.split(" ")
+            hl_split_list = hl.data.split(" ")
+            hw_split_list = hw.data.split(" ")
+
+            be_split_list = be.data.split(" ")
+            bl_split_list = bl.data.split(" ")
+            bw_split_list = bw.data.split(" ")
+
+            neutered_headline = []
+            neutered_body = []
+
+            for hee, hll, hww in zip(he_split_list, hl_split_list, hw_split_list):
+
+                # if no NER tag exists, use the lemma itself, else use the NER tag
+                if (hee == 'O'):
+                    neutered_headline.append(hww)
+                    # if NER tag exists use the NER tag
+                else:
+                    neutered_headline.append(hee)
+
+            for bee, bll, bww in zip(be_split_list, bl_split_list, bw_split_list):
+
+                # if no NER tag exists, use the lemma itself, else use the NER tag
+                if (bee == 'O'):
+                    neutered_body.append(bww)
+                    # if NER tag exists use the NER tag
+                else:
+                    neutered_body.append(bee)
+
+            premise = "".join(neutered_headline)
+            hypothesis = "".join(neutered_body)
+            label = lbl
+
+            inst = self.text_to_instance(premise, hypothesis, label)
+
+            instances.append(inst)
+
+        return Dataset(instances)
