@@ -88,6 +88,10 @@ class FEVERReader(DatasetReader):
 
             hypothesis = instance["claim"]
             label = instance["label_text"]
+            print(f'first hypothesis is:{hypothesis}')
+            print(f'first label is:{label}')
+            print(f'first premise is:{premise}')
+            sys.exit(1)
             instances.append(self.text_to_instance(premise, hypothesis, label))
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "

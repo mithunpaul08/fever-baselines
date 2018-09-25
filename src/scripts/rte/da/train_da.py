@@ -78,7 +78,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
             for my_field in my_instance:
                 print(f'type of my_field is{type(my_field)}')
 
-   
+
 
     logger.info(f'type of dataset is{type(all_datasets)}')
     logger.info(f'type of dataset is{type(train_data)}')
