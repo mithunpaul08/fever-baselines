@@ -73,8 +73,6 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     all_datasets = [train_data]
     datasets_in_vocab = ["train"]
 
-    sys.exit(1)
-
     validation_data_path = params.pop('validation_data_path', None)
     if validation_data_path is not None:
         logger.info("Reading validation data from %s", validation_data_path)
