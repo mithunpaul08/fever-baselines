@@ -148,12 +148,12 @@ class FEVERReader(DatasetReader):
                            token_indexers=token_indexers)
 
     def uofa_annotate(self,claim, evidence,index,objUOFADataReader):
-        logger.info(f' hypothesis is:{claim}')
-        logger.info(f'premise is:{evidence}')
-        logger.info(f' label is:{index}')
-        print(f' hypothesis is:{claim}')
-        print(f'premise is:{evidence}')
-        print(f' label is:{index}')
+        # logger.info(f' hypothesis is:{claim}')
+        # logger.info(f'premise is:{evidence}')
+        # logger.info(f' label is:{index}')
+        # print(f' hypothesis is:{claim}')
+        # print(f'premise is:{evidence}')
+        # print(f' label is:{index}')
         head_ann,body_ann= objUOFADataReader.annotate_and_save_doc(claim, evidence, index, objUOFADataReader.API, objUOFADataReader.ann_head_tr, objUOFADataReader.ann_body_tr, logger)
 
         # heads_entities=head_ann.sentences[0].entities
