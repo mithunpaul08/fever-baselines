@@ -21,7 +21,7 @@ from rte.riedel.data import FEVERPredictions2Formatter, FEVERLabelSchema, FEVERG
 from common.dataset.data_set import DataSet as FEVERDataSet
 from processors import Document
 from processors import ProcessorsBaseAPI
-from src.retrieval.read_claims import UOFADataReader
+from retrieval.read_claims import UOFADataReader
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
