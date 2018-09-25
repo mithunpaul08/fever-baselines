@@ -1,5 +1,5 @@
 from typing import Dict
-import json,sys
+import json,sys,os
 import logging
 
 from overrides import overrides
@@ -77,6 +77,12 @@ class FEVERReader(DatasetReader):
         ds.read()
         counter=0
 
+        objUOFADataReader = UOFADataReader()
+        # DELETE THE FILE IF IT EXISTS every time before the loop
+        self.delete_if_exists(objUOFADataReader.ann_head_tr)
+        self.delete_if_exists(objUOFADataReader.ann_body_tr)
+
+
         for instance in tqdm.tqdm(ds.data):
             counter=counter+1
             if instance is None:
@@ -99,7 +105,7 @@ class FEVERReader(DatasetReader):
 
             #call you pyprocessors annotator here, and write to disk
 
-            self.uofa_annotate(hypothesis,premise,counter)
+            self.uofa_annotate(hypothesis,premise,counter,objUOFADataReader)
 
             instances.append(self.text_to_instance(premise, hypothesis, label))
         if not instances:
@@ -137,11 +143,21 @@ class FEVERReader(DatasetReader):
                            wiki_tokenizer=wiki_tokenizer,
                            token_indexers=token_indexers)
 
-    def uofa_annotate(self,claim, evidence,index):
-        objUOFADataReader=UOFADataReader()
+    def uofa_annotate(self,claim, evidence,index,objUOFADataReader):
         logger.info(f' hypothesis is:{claim}')
         logger.info(f'premise is:{evidence}')
         logger.info(f' label is:{index}')
+        print(f' hypothesis is:{claim}')
+        print(f'premise is:{evidence}')
+        print(f' label is:{index}')
         objUOFADataReader.annotate_and_save_doc(claim, evidence, index, objUOFADataReader.API, objUOFADataReader.ann_head_tr, objUOFADataReader.ann_body_tr, logger)
-        logger.info("done annotation one document. going to exit")
+        print("done annotation one document. going to exit")
         sys.exit(1)
+
+
+    def delete_if_exists(self,name,obj):
+
+        if os.path.exists(name):
+            append_write = 'w'  # make a new file if not
+            with open(name, append_write) as outfile:
+                outfile.write("")
