@@ -105,8 +105,6 @@ class FEVERReader(DatasetReader):
             hypothesis = instance["claim"]
             label = instance["label_text"]
 
-
-
             #call you pyprocessors annotator here, and write to disk
 
             self.uofa_annotate(hypothesis,premise,counter,objUOFADataReader)

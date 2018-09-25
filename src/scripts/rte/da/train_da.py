@@ -13,7 +13,7 @@ from common.util.log_helper import LogHelper
 from common.util.random import SimpleRandom
 from retrieval.fever_doc_db import FeverDocDB
 from rte.parikh.reader import FEVERReader
-
+from sklearn.externals import joblib
 
 import argparse
 import logging
@@ -68,6 +68,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     train_data_path = params.pop('train_data_path')
     logger.info("Reading training data from %s", train_data_path)
     train_data = dataset_reader.read(train_data_path)
+    joblib.dump(train_data, "fever_tr_dataset_format.pkl")
 
     all_datasets = [train_data]
     datasets_in_vocab = ["train"]
@@ -79,8 +80,13 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
         validation_data = dataset_reader.read(validation_data_path)
         all_datasets.append(validation_data)
         datasets_in_vocab.append("validation")
+        joblib.dump(validation_data, "fever_dev_dataset_format.pkl")
     else:
         validation_data = None
+
+
+
+
 
     logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
     vocab = Vocabulary.from_params(params.pop("vocabulary", {}),
