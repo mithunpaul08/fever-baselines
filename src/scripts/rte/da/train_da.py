@@ -71,13 +71,6 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     all_datasets = [train_data]
     datasets_in_vocab = ["train"]
 
-    for dataset in all_datasets:
-        print(f'type of dataset is{type(dataset)}')
-        for my_instance in dataset.instances:
-            print(f'type of my_instance is{type(my_instance)}')
-            for my_field in my_instance:
-                print(f'type of my_field is{type(my_field)}')
-
 
 
     logger.info(f'type of dataset is{type(all_datasets)}')

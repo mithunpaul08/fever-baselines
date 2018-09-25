@@ -88,9 +88,9 @@ class FEVERReader(DatasetReader):
 
             hypothesis = instance["claim"]
             label = instance["label_text"]
-            print(f'first hypothesis is:{hypothesis}')
-            print(f'first label is:{label}')
-            print(f'first premise is:{premise}')
+            logger.info(f'first hypothesis is:{hypothesis}')
+            logger.info(f'first label is:{label}')
+            logger.info(f'first premise is:{premise}')
             if(label=="NOT ENOUGH INFO"):
                 sys.exit(1)
             #call you pyprocessors annotator here, and write to disk
