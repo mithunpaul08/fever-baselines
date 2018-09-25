@@ -261,9 +261,6 @@ class UOFADataReader():
         logger.debug("headline:"+headline)
         logger.debug("body:" + body)
         doc1 = API.fastnlp.annotate(headline)
-        print(doc1.sentences[0].lemmas)
-        print(doc1.sentences[0].entities)
-        sys.exit(1)
         doc1.id=index
         with open(json_file_tr_annotated_headline, "a") as out:
           out.write(doc1.to_JSON())
