@@ -1,6 +1,6 @@
 import csv,os
 from random import shuffle
-from src.retrieval.read_claims import annotate_and_save_doc
+from retrieval.read_claims import annotate_and_save_doc
 from tqdm import tqdm
 from processors import ProcessorsBaseAPI
 
