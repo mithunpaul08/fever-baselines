@@ -1,3 +1,5 @@
+import csv
+from random import shuffle
 
 
 class load_fever_DataSet():
