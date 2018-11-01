@@ -1,6 +1,6 @@
 import csv,os
 from random import shuffle
-from retrieval.read_claims import annotate_and_save_doc
+from retrieval.read_claims import UOFADataReader
 from tqdm import tqdm
 from processors import ProcessorsBaseAPI
 
@@ -47,7 +47,8 @@ class load_fever_DataSet():
 
         except OSError:
             print("not able to find file")
-
+        objUOFADataReader = UOFADataReader()
+        
         for s in (tqdm.tqdm(d.stances)):
 
             headline = s['Headline']
@@ -57,5 +58,7 @@ class load_fever_DataSet():
             hypothesis = headline
             premise = actualBody
 
-            annotate_and_save_doc(hypothesis, premise,bodyid, self.API, ann_head_tr, ann_body_tr, logger)
+
+
+            objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid, self.API, ann_head_tr, ann_body_tr, logger)
 
