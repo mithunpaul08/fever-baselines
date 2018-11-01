@@ -3,7 +3,7 @@
 class load_fever_DataSet():
     def __init__(self, cwd,bodies, stances):
 
-        self.path = cwd+"/data/"
+        self.path = cwd+"/data/fnc/"
 
         #read the stances into a dictionary. Note that stances are in the format: Headline,Body ID,Stance
         self.stances = self.read(stances)
