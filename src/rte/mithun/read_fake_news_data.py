@@ -30,34 +30,4 @@ class load_fever_DataSet():
 
         return rows
 
-    def read(self, file_path: str):
-
-        instances = []
-
-        ds = FEVERDataSet(file_path, reader=self.reader, formatter=self.formatter)
-        ds.read()
-
-        for instance in tqdm.tqdm(ds.data):
-            if instance is None:
-                continue
-
-            if not self._sentence_level:
-                pages = set(ev[0] for ev in instance["evidence"])
-                premise = " ".join([self.db.get_doc_text(p) for p in pages])
-            else:
-                lines = set([self.get_doc_line(d[0], d[1]) for d in instance['evidence']])
-                premise = " ".join(lines)
-
-            if len(premise.strip()) == 0:
-                premise = ""
-
-            hypothesis = instance["claim"]
-            label = instance["label_text"]
-            instances.append(self.text_to_instance(premise, hypothesis, label))
-        if not instances:
-            raise ConfigurationError("No instances were read from the given filepath {}. "
-                                     "Is the path correct?".format(file_path))
-        return Dataset(instances)
-
-
 
