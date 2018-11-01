@@ -1,8 +1,8 @@
 import os
-
+import read_data
+import os,csv,sys
 from copy import deepcopy
 from typing import List, Union, Dict, Any
-
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
 from allennlp.common import Params
@@ -15,7 +15,7 @@ from allennlp.training import Trainer
 from common.util.log_helper import LogHelper
 from retrieval.fever_doc_db import FeverDocDB
 from rte.parikh.reader import FEVERReader
-
+from rte.mithun.read_fake_news_data import load_fever_DataSet
 import argparse
 import logging
 import sys
@@ -72,6 +72,54 @@ def eval_model(db: FeverDocDB, args) -> Model:
 
 
 
+def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
+    archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
+    config = archive.config
+    ds_params = config["dataset_reader"]
+    model = archive.model
+    model.eval()
+
+    reader = FEVERReader(db,
+                         sentence_level=ds_params.pop("sentence_level", False),
+                         wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
+                         claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
+                         token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
+    cwd = os.getcwd()
+    fnc_data_set = read_data.load_training_DataSet(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
+    data=reader.read_fnc(fnc_data_set)
+
+
+
+    actual = []
+    predicted = []
+
+    if args.log is not None:
+        f = open(args.log,"w+")
+
+    for item in data:
+        if item.fields["premise"] is None or item.fields["premise"].sequence_length() == 0:
+            cls = "NOT ENOUGH INFO"
+        else:
+            prediction = model.forward_on_instance(item, args.cuda_device)
+            cls = model.vocab._index_to_token["labels"][np.argmax(prediction["label_probs"])]
+
+        actual.append(item.fields["label"].label)
+        predicted.append(cls)
+
+        if args.log is not None:
+            f.write(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
+
+    if args.log is not None:
+        f.close()
+
+    print(accuracy_score(actual, predicted))
+    print(classification_report(actual, predicted))
+    print(confusion_matrix(actual, predicted))
+
+    return model
+
+
+
 if __name__ == "__main__":
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
@@ -95,4 +143,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
-    eval_model(db,args)
+    eval_model_fnc_data(db,args)
