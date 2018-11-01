@@ -85,7 +85,7 @@ def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
                          token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
     cwd = os.getcwd()
     fnc_data_set = load_fever_DataSet(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
-    data=reader.read_fnc(fnc_data_set)
+    data=reader.read_fnc(fnc_data_set).instances
 
 
 

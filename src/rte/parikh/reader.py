@@ -108,7 +108,7 @@ class FEVERReader(DatasetReader):
             bodyid = s['Body ID']
             actualBody = d.articles[bodyid]
             label = s['Stance']
-            
+
 
             if not (label == "unrelated"):
 
