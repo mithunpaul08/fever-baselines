@@ -98,7 +98,7 @@ class FEVERReader(DatasetReader):
         return Dataset(instances)
 
 
-    @overrides
+
     def read_fnc(self, d):
         instances = []
 
