@@ -102,7 +102,7 @@ class FEVERReader(DatasetReader):
     def read_fnc(self, d):
         instances = []
 
-        for s in (d.stances):
+        for s in tqdm.tqdm(d.stances):
 
             headline = s['Headline']
             bodyid = s['Body ID']
@@ -118,13 +118,15 @@ class FEVERReader(DatasetReader):
                     new_label = "SUPPORTS"
                 if (label == 'disagree'):
                         new_label = "REFUTES"
-                print(new_label)
+
                 hypothesis =headline
                 premise = actualBody
                 instances.append(self.text_to_instance(premise, hypothesis, new_label))
-                print(premise)
-                print(hypothesis)
-                sys.exit(1)
+
+                # print(new_label)
+                # print(premise)
+                # print(hypothesis)
+                # sys.exit(1)
 
 
 
