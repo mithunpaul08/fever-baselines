@@ -1,3 +1,6 @@
+import csv,sys
+from random import shuffle
+
 from typing import Dict
 import json,os
 import logging
@@ -242,6 +245,45 @@ class FEVERReader(DatasetReader):
             raise ConfigurationError("No instances were read from the given filepath {}. "
                                      "Is the path correct?".format(file_path))
         return Dataset(instances)
+
+
+
+    def read_fnc(self, d):
+        instances = []
+
+        for s in tqdm.tqdm(d.stances):
+
+            headline = s['Headline']
+            bodyid = s['Body ID']
+            actualBody = d.articles[bodyid]
+            label = s['Stance']
+
+
+            if not (label == "unrelated"):
+
+                if(label=='discuss'):
+                    new_label="NOT ENOUGH INFO"
+                if (label == 'agree'):
+                    new_label = "SUPPORTS"
+                if (label == 'disagree'):
+                        new_label = "REFUTES"
+
+                hypothesis =headline
+                premise = actualBody
+                instances.append(self.text_to_instance(premise, hypothesis, new_label))
+
+                # print(new_label)
+                # print(premise)
+                # print(hypothesis)
+                # sys.exit(1)
+
+
+
+        if not instances:
+            raise ConfigurationError("No instances were read from the given filepath {}. "
+                                     "Is the path correct?")
+        return Dataset(instances)
+
 
     @overrides
     def text_to_instance(self,  # type: ignore
