@@ -1,9 +1,12 @@
-import csv
+import csv,os
 from random import shuffle
-
+from src.retrieval.read_claims import annotate_and_save_doc
+from tqdm import tqdm
+from processors import ProcessorsBaseAPI
 
 class load_fever_DataSet():
     def __init__(self, cwd,bodies, stances):
+        API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
         self.path = cwd+"/data/fnc/"
 
@@ -32,4 +35,27 @@ class load_fever_DataSet():
 
         return rows
 
+
+    def annotate_fnc(self,d):
+
+        ann_head_tr = "ann_head_tr.json"
+        ann_body_tr = "ann_body_tr.json"
+
+        try:
+            os.remove(ann_head_tr)
+            os.remove(ann_body_tr)
+
+        except OSError:
+            print("not able to find file")
+
+        for s in (tqdm.tqdm(d.stances)):
+
+            headline = s['Headline']
+            bodyid = s['Body ID']
+            actualBody = d.articles[bodyid]
+
+            hypothesis = headline
+            premise = actualBody
+
+            annotate_and_save_doc(hypothesis, premise,bodyid, self.API, ann_head_tr, ann_body_tr, logger)
 

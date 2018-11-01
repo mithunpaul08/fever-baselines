@@ -28,7 +28,7 @@ def read_claims_annotate(args,jlr,logger,method):
         logger.error("not able to find file")
 
     logger.debug("inside read_claims_annotate")
-    with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
+    with open(args.in_file,"r") as f:
         all_claims = jlr.process(f)
         obj_all_heads_bodies=[]
         ver_count=0
@@ -132,6 +132,8 @@ def read_claims_annotate(args,jlr,logger,method):
         return obj_all_heads_bodies
 
 
+
+
 def print_cv(combined_vector,gold_labels_tr):
     logging.debug(gold_labels_tr.shape)
     logging.debug(combined_vector.shape)
@@ -143,13 +145,13 @@ def print_cv(combined_vector,gold_labels_tr):
 def uofa_training(args,jlr):
     #logger.warning("got inside uofatraining")
 
-    #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-    # tr_data=read_claims_annotate(args,jlr,logger,method)
-    # logger.info(
-    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
-    # sys.exit(1)
-    # logger.info(
-    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+    this code annotates the given file using pyprocessors. Run it only once in its lifetime.
+    tr_data=read_claims_annotate(args,jlr,logger,method)
+    logger.info(
+        "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+    sys.exit(1)
+    logger.info(
+        "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
 
     gold_labels_tr =None
     if(args.mode =="small"):
