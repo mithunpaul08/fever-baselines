@@ -17,24 +17,22 @@ class load_fever_DataSet():
         path = cwd + "/data/fnc/"
 
         # read the stances into a dictionary. Note that stances are in the format: Headline,Body ID,Stance
-        stances = self.read(stances)
-        articles = self.read(bodies)
+        stances = self.read(path,stances)
+        articles = self.read(path,bodies)
 
-        articles = dict()
-
-        # make the body ID an integer value
-        for s in self.stances:
-            s['Body ID'] = int(s['Body ID'])
-
-        # copy all bodies into a dictionary
-        for article in articles:
-            articles[int(article['Body ID'])] = article['articleBody']
+        # articles_dict = dict()
+        #
+        # # make the body ID an integer value
+        # for s in self.stances:
+        #     s['Body ID'] = int(s['Body ID'])
+        #
+        # # copy all bodies into a dictionary
+        # for article in articles_list:
+        #     articles_dict[int(article2['Body ID'])] = article['articleBody']
 
         return stances,articles
 
-    def read(self,filename):
-
-
+    def read(self,path,filename):
 
         rows = []
         with open(self.path  + filename, encoding='utf8') as f:
