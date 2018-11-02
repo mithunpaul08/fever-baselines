@@ -112,7 +112,8 @@ def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
     cwd = os.getcwd()
     fnc_data_set = load_fever_DataSet(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
 
-
+    print(len(fnc_data_set))
+    print(type(fnc_data_set))
     #to annotate with pyprocessors
     load_fever_DataSet.annotate_fnc(fnc_data_set)
     print("done with annotation. going to exit")
