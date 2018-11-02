@@ -35,7 +35,7 @@ class load_fever_DataSet():
     def read(self,path,filename):
 
         rows = []
-        with open(self.path  + filename, encoding='utf8') as f:
+        with open(path  + filename, encoding='utf8') as f:
             reader = csv.DictReader(f)
             rows = [r for r in reader]
 
