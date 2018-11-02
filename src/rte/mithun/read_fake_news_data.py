@@ -48,7 +48,7 @@ class load_fever_DataSet():
         except OSError:
             print("not able to find file")
         objUOFADataReader = UOFADataReader()
-        
+
         for s in (tqdm.tqdm(d.stances)):
 
             headline = s['Headline']

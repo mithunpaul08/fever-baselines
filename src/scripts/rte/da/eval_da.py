@@ -14,9 +14,7 @@ from allennlp.training import Trainer
 from common.util.log_helper import LogHelper
 from retrieval.fever_doc_db import FeverDocDB
 from rte.parikh.reader import FEVERReader
-
 from rte.mithun.read_fake_news_data import load_fever_DataSet
-
 from tqdm import tqdm
 
 import argparse
