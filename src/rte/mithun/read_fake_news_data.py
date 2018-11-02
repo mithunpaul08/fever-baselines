@@ -7,8 +7,8 @@ from processors import ProcessorsBaseAPI
 class load_fever_DataSet():
     API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
-    def __init__(self):
-        path=""
+    # def __init__(self):
+    #     path=""
 
 
 
