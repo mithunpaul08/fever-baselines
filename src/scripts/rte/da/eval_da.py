@@ -110,8 +110,9 @@ def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
                          claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
                          token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
     cwd = os.getcwd()
-    fnc_data_set = load_fever_DataSet(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
+    #fnc_data_set = load_fever_DataSet(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
 
+    load_fever_DataSet.read("")
     print(len(fnc_data_set))
     print(type(fnc_data_set))
     #to annotate with pyprocessors
