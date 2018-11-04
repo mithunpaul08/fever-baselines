@@ -5,7 +5,7 @@ from tqdm import tqdm
 from processors import ProcessorsBaseAPI
 
 class load_fever_DataSet():
-    API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
+
 
 
 
@@ -42,6 +42,8 @@ class load_fever_DataSet():
 
     def annotate_fnc(self, stances,articles):
 
+        API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
+
         ann_head_tr = "ann_head_tr.json"
         ann_body_tr = "ann_body_tr.json"
 
@@ -64,5 +66,9 @@ class load_fever_DataSet():
             actualBody=dump["articleBody"]
             hypothesis = headline
             premise = actualBody
+            print(f"dump:{dump}")
+            print(f"actualBody:{actualBody}")
+            print(f"hypothesis:{hypothesis}")
+            print(f"premise:{premise}")
             objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid,API, ann_head_tr, ann_body_tr, logger)
 
