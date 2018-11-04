@@ -63,7 +63,7 @@ class load_fever_DataSet():
             bodyid = s['Body ID']
             print(headline)
             print(bodyid)
-            sys.exit(1)
+          
 
             actualBody = articles[bodyid]
 
