@@ -61,10 +61,14 @@ class load_fever_DataSet():
 
             headline = s['Headline']
             bodyid = s['Body ID']
+
             actualBody = data.articles[bodyid]
 
             hypothesis = headline
             premise = actualBody
+            print(hypothesis)
+            print(premise)
+            sys.exit(1)
 
 
 
