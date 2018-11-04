@@ -65,7 +65,8 @@ class load_fever_DataSet():
             print(bodyid)
 
 
-            actualBody = articles[bodyid]
+            dump = articles[bodyid]
+            actualBody=dump["articleBody"]
 
             hypothesis = headline
             premise = actualBody
