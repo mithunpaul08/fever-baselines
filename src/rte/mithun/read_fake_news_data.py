@@ -40,7 +40,7 @@ class load_fever_DataSet():
         return rows
 
 
-    def annotate_fnc(self, stances,articles):
+    def annotate_fnc(self, stances,articles,logger):
 
         API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
