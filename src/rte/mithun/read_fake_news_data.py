@@ -68,7 +68,7 @@ class load_fever_DataSet():
             #actualBody=dump["articleBody"]
             hypothesis = headline
             premise = actualBody
-            print(f"dump:{dump}")
+            #print(f"dump:{dump}")
             print(f"actualBody:{actualBody}")
             print(f"hypothesis:{hypothesis}")
             print(f"premise:{premise}")
