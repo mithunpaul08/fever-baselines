@@ -60,10 +60,10 @@ class load_fever_DataSet():
         for s in (tqdm(stances,total=len(stances),desc="for each stance:")):
 
             headline = s['Headline']
-            bodyid = s['Body ID']
+            bodyid = int(s['Body ID'])
             print(headline)
             print(bodyid)
-          
+
 
             actualBody = articles[bodyid]
 
