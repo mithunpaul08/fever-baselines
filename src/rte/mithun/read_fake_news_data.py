@@ -7,10 +7,6 @@ from processors import ProcessorsBaseAPI
 class load_fever_DataSet():
     API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
-    # def __init__(self):
-    #     path=""
-
-
 
 
     def read_parent(self,cwd,bodies,stances):
@@ -65,5 +61,5 @@ class load_fever_DataSet():
             actualBody=dump["articleBody"]
             hypothesis = headline
             premise = actualBody
-            objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid, self.API, ann_head_tr, ann_body_tr, logger)
+            objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid,API, ann_head_tr, ann_body_tr, logger)
 
