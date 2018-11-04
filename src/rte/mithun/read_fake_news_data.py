@@ -44,7 +44,7 @@ class load_fever_DataSet():
         return rows
 
 
-    def annotate_fnc(self, data):
+    def annotate_fnc(self, stances,articles):
 
         ann_head_tr = "ann_head_tr.json"
         ann_body_tr = "ann_body_tr.json"
@@ -57,12 +57,15 @@ class load_fever_DataSet():
             print("not able to find file")
         objUOFADataReader = UOFADataReader()
 
-        for s in (tqdm.tqdm(data.stances)):
+        for s in (tqdm.tqdm(stances)):
 
             headline = s['Headline']
             bodyid = s['Body ID']
+            print(headline)
+            print(bodyid)
+            sys.exit(1)
 
-            actualBody = data.articles[bodyid]
+            actualBody = articles[bodyid]
 
             hypothesis = headline
             premise = actualBody
