@@ -114,7 +114,13 @@ def eval_model_fnc_data(db: FeverDocDB, args,logger) -> Model:
 
     #to annotate with pyprocessors
     stances,articles= fnc_data_set.read_parent(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
-    load_fever_DataSet.annotate_fnc(cwd, stances,articles,logger)
+
+    dict_articles = {}
+    # copy all bodies into a dictionary
+    for article in articles:
+        dict_articles[int(article['Body ID'])] = article['articleBody']
+
+    load_fever_DataSet.annotate_fnc(cwd, stances,dict_articles,logger)
     print("done with annotation. going to exit")
     sys.exit(1)
 

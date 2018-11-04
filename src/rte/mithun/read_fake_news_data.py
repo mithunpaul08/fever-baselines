@@ -42,6 +42,8 @@ class load_fever_DataSet():
 
     def annotate_fnc(self, stances,articles,logger):
 
+
+
         API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
         ann_head_tr = "ann_head_tr.json"
@@ -62,8 +64,8 @@ class load_fever_DataSet():
             print(f"index:{index}")
             print(f"Headline:{headline}")
             print(f"bodyid:{bodyid}")
-            dump = articles[bodyid]
-            actualBody=dump["articleBody"]
+            actualBody = articles[bodyid]
+            #actualBody=dump["articleBody"]
             hypothesis = headline
             premise = actualBody
             print(f"dump:{dump}")
