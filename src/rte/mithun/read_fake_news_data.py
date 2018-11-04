@@ -57,7 +57,7 @@ class load_fever_DataSet():
             print("not able to find file")
         objUOFADataReader = UOFADataReader()
 
-        for s in (tqdm.tqdm(stances)):
+        for s in (tqdm(stances,total=len(stances),desc="for each stance:")):
 
             headline = s['Headline']
             bodyid = s['Body ID']
