@@ -30,6 +30,10 @@ class load_fever_DataSet():
 
     def read(self,path,filename):
 
+        #this is to make sure that the shuffling happens same way every time. I had to do this, because the annotation process
+        #itself was hanging up in between. So if its shuffled same way, i can atleast restart from where i left.
+        random.seed(448)
+
         rows = []
         with open(path  + filename, encoding='utf8') as f:
             reader = csv.DictReader(f)
