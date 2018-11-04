@@ -61,20 +61,9 @@ class load_fever_DataSet():
 
             headline = s['Headline']
             bodyid = int(s['Body ID'])
-            print(headline)
-            print(bodyid)
-
-
             dump = articles[bodyid]
             actualBody=dump["articleBody"]
-
             hypothesis = headline
             premise = actualBody
-            print(hypothesis)
-            print(premise)
-            sys.exit(1)
-
-
-
             objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid, self.API, ann_head_tr, ann_body_tr, logger)
 
