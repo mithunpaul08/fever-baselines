@@ -265,12 +265,13 @@ class UOFADataReader():
 
 
     def annotate_and_save_doc(self, headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
-                              logger):
+                              logger,label):
         logger.debug("got inside annotate_and_save_doc")
         logger.debug("headline:"+headline)
         logger.debug("body:" + body)
         doc1 = API.fastnlp.annotate(headline)
         doc1.id=index
+        doc1.label = label
         with open(json_file_tr_annotated_headline, "a") as out:
           out.write(doc1.to_JSON())
           out.write("\n")
