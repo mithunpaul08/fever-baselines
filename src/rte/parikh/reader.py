@@ -127,7 +127,7 @@ class FEVERReader(DatasetReader):
                 #
                 # if (counter > 50):
 
-                #print("hypothesis:" + hypothesis)
+               # print("hypothesis:" + hypothesis)
                # print("premise:" + premise)
 
                 premise_ann,hypothesis_ann =self.uofa_annotate(hypothesis, premise, counter,objUOFADataReader,head_file,body_file)
@@ -170,7 +170,7 @@ class FEVERReader(DatasetReader):
             #load the labels from the disk
             lbl_file= objUofaTrainTest.label_folder+objUofaTrainTest.label_dev_file
             all_labels= objUofaTrainTest.read_csv_list(lbl_file)
-            
+
 
 
             bf = data_folder + objUofaTrainTest.annotated_body_split_folder

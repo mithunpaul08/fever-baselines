@@ -108,6 +108,12 @@ def eval_model_fnc(db: FeverDocDB, args) -> Model:
 
     logger.info("Reading training data from %s", args.in_file)
 
+    reader = FEVERReader(db,
+                         sentence_level=ds_params.pop("sentence_level", False),
+                         wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
+                         claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
+                         token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
+
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
     do_annotation_live = False

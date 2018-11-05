@@ -5,22 +5,24 @@
 To run the the training and evaluation using the smartNER either just do `./run_all_train_test.sh`
 or use these commands below
 @server@jenny
-
+## for training:
 `rm -rf logs/`
 
 `PYTHONPATH=src python src/scripts/rte/da/train_da.py data/fever/fever.db config/fever_nn_ora_sent.json logs/da_nn_sent --cuda-device $CUDA_DEVICE`
 
 `mkdir -p data/models`
 
+## for dev:
+
 `cp logs/da_nn_sent/model.tar.gz data/models/decomposable_attention.tar.gz`
 
 `PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db data/models/decomposable_attention.tar.gz data/fever/dev.ns.pages.p1.jsonl`
 
-This assumes that you are on the same folder. If your data folder is somewhere else, use this 
+The above command assumes that you are on the same folder. If your data folder is somewhere else, use this 
 
-for training:
+## for training:
 `PYTHONPATH=src python src/scripts/rte/da/train_da.py /net/kate/storage/work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db config/fever_nn_ora_sent.json logs/da_nn_sent --cuda-device $CUDA_DEVICE`
-for dev:
+## for dev:
 `PYTHONPATH=src python src/scripts/rte/da/eval_da.py /net/kate/storage/work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db data/models/decomposable_attention.tar.gz /net/kate/storage/work/mithunpaul/fever/my_fork/fever-baselines/data/fever/dev.ns.pages.p1.jsonl`
 
 
