@@ -97,7 +97,7 @@ def eval_model(db: FeverDocDB, args) -> Model:
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args,logger) -> Model:
+def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
@@ -181,8 +181,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
-    eval_model_fnc_data(db,args,logger)
+    #convert_fnc_to_fever_and_annotate(db, args, logger)
    
 
-    #eval_model(db,args)
+    eval_model(db,args)
 
