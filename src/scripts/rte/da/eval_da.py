@@ -105,11 +105,6 @@ def eval_model_fnc(db: FeverDocDB, args) -> Model:
     model = archive.model
     model.eval()
 
-    reader = FEVERReader(db,
-                                 sentence_level=ds_params.pop("sentence_level",False),
-                                 wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
-                                 claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
-                                 token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
     logger.info("Reading training data from %s", args.in_file)
 
@@ -177,17 +172,19 @@ def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
     cwd = os.getcwd()
     fnc_data_set = load_fever_DataSet()
 
-    #to annotate with pyprocessors
-    stances,articles= fnc_data_set.read_parent(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
+    #to annotate with pyprocessors- comment this part out if you are doing just evaluation
+    # stances,articles= fnc_data_set.read_parent(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
+    #
+    # dict_articles = {}
+    # # copy all bodies into a dictionary
+    # for article in articles:
+    #     dict_articles[int(article['Body ID'])] = article['articleBody']
+    #
+    # load_fever_DataSet.annotate_fnc(cwd, stances,dict_articles,logger)
+    # print("done with annotation. going to exit")
+    # sys.exit(1)
 
-    dict_articles = {}
-    # copy all bodies into a dictionary
-    for article in articles:
-        dict_articles[int(article['Body ID'])] = article['articleBody']
-
-    load_fever_DataSet.annotate_fnc(cwd, stances,dict_articles,logger)
-    print("done with annotation. going to exit")
-    sys.exit(1)
+    ###########end of pyprocessors annotation
 
     data=reader.read_fnc(fnc_data_set).instances
 
@@ -249,7 +246,7 @@ if __name__ == "__main__":
 
     #this will ideally be used only once. i.e when you convert the fake news data into fever format and annotate it with pyprocessors
     convert_fnc_to_fever_and_annotate(db, args, logger)
-    #eval_model_fnc(db,args)
+    eval_model_fnc(db,args)
    
 
     #eval_model(db,args)

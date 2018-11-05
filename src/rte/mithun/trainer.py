@@ -32,6 +32,8 @@ class UofaTrainTest():
         self.annotated_only_tags = "ann_tags.json"
         self.annotated_only_dep = "ann_deps.json"
         self.annotated_words = "ann_words.json"
+        self.label_dev_file="labels_dev.csv"
+
         self.annotated_body_split_folder = "split_body/"
         self.annotated_head_split_folder = "split_head/"
         # pick based on which folder you are running from. if not on home folder:
@@ -39,6 +41,8 @@ class UofaTrainTest():
         self.data_folder_train = self.data_root + "/data/fever-data-ann/train/"
         self.data_folder_train_small = self.data_root + "/data/fever-data-ann/train_small/"
         self.data_folder_dev = self.data_root + "/data/fever-data-ann/dev/"
+        self.label_folder = self.data_root + "/data/labels/"
+
         self.data_folder_test = self.data_root + "/data/fever-data-ann/test/"
         self.model_trained = "model_trained.pkl"
         self.path_glove_server = "/data/nlp/corpora/glove/6B/glove.6B.300d.txt"
@@ -1104,6 +1108,27 @@ class UofaTrainTest():
 
         return py_proc_doc_list
 
+    def read_csv_list(filename):
+        import csv
+        reader = csv.reader(open(filename, 'r'))
+        labels = []
+
+        for row in reader:
+            # print(row)
+            # sys.exit(1)
+            k, v = row
+            labels.append(v)
+        return labels
+
+
+    def read_csv_dict(self,filename):
+        import csv
+        reader = csv.reader(open(filename, 'r'))
+        d = {}
+        for row in reader:
+            k, v = row
+            d[k] = v
+        return d
 
     def read_json(self, json_file):
         l = []

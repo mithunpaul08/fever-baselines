@@ -166,6 +166,16 @@ class FEVERReader(DatasetReader):
                             print("run_name == test")
                             data_folder = objUofaTrainTest.data_folder_test
 
+
+            #load the labels from the disk
+            lbl_file= objUofaTrainTest.label_folder+objUofaTrainTest.label_dev_file
+            all_labels= objUofaTrainTest.read_csv_list(lbl_file)
+            
+
+
+            bf = data_folder + objUofaTrainTest.annotated_body_split_folder
+            bfl = bf + objUofaTrainTest.annotated_only_lemmas
+
             bf = data_folder + objUofaTrainTest.annotated_body_split_folder
             bfl = bf + objUofaTrainTest.annotated_only_lemmas
             bfw = bf + objUofaTrainTest.annotated_words
@@ -176,9 +186,14 @@ class FEVERReader(DatasetReader):
             hfw = hf + objUofaTrainTest.annotated_words
             hfe = hf + objUofaTrainTest.annotated_only_entities
 
+
+
+
             #print(f"hfl:{hfl}")
             #print(f"bfl:{bfl}")
             #print("going to read annotated data from disk:")
+
+
 
             heads_lemmas = objUofaTrainTest.read_json(hfl)
             bodies_lemmas = objUofaTrainTest.read_json(bfl)
@@ -188,6 +203,8 @@ class FEVERReader(DatasetReader):
             bodies_words = objUofaTrainTest.read_json(bfw)
 
             print(f"length of bodies_words:{len(bodies_words)}")
+            print(f"length of all_labels:{len(all_labels)}")
+            sys.exit(1)
 
             counter=0
             for he, be, hl, bl, hw, bw,instance in\
