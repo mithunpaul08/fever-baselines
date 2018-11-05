@@ -78,10 +78,10 @@ class load_fever_DataSet():
 
             # get the label/original class and write it to disk
             label = s['Stance']
-            print(f"hypothesis:{hypothesis}")
-            print(f"premise:{premise}")
-            print(f"label{label}")
-            sys.exit(1)
+            # print(f"hypothesis:{hypothesis}")
+            # print(f"premise:{premise}")
+            # print(f"label{label}")
+
 
             objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid,API, ann_head_tr, ann_body_tr, logger,label)
 
