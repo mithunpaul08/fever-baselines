@@ -330,7 +330,9 @@ class UOFADataReader():
 
     def write_label_to_disk(self, index,label,label_file):
         with open(label_file, "a") as out:
-          out.write(index,+","+label)
+          out.write(index)
+          out.write(",")
+          out.write(label)
           out.write("\n")
 
     def get_gold_labels(args,jlr):
