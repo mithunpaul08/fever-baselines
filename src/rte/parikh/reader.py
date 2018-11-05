@@ -204,7 +204,7 @@ class FEVERReader(DatasetReader):
 
             print(f"length of bodies_words:{len(bodies_words)}")
             print(f"length of all_labels:{len(all_labels)}")
-            sys.exit(1)
+            
 
             counter=0
             #h stands for headline and b for body
