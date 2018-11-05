@@ -226,7 +226,9 @@ class FEVERReader(DatasetReader):
                     print(f"hw: {hw}")
                     print(f"bw: {bw}")
                     print(f"premise_ann: {premise_ann}")
+                    print("\n")
                     print(f"hypothesis_ann: {hypothesis_ann}")
+                    print("\n")
                     print(f"label: {label}")
                     sys.exit(1)
                 #
