@@ -251,7 +251,7 @@ if __name__ == "__main__":
     db = FeverDocDB(args.db)
 
     #this will ideally be used only once. i.e when you convert the fake news data into fever format and annotate it with pyprocessors
-    convert_fnc_to_fever_and_annotate(db, args, logger)
+    #convert_fnc_to_fever_and_annotate(db, args, logger)
     eval_model_fnc(db,args)
    
 
