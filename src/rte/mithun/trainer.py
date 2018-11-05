@@ -35,7 +35,7 @@ class UofaTrainTest():
         self.annotated_body_split_folder = "split_body/"
         self.annotated_head_split_folder = "split_head/"
         # pick based on which folder you are running from. if not on home folder:
-        self.data_root = "/work/mithunpaul/fever/my_fork/fever-baselines"
+        self.data_root = "/net/kate/storage/work/mithunpaul/fever/test_on_fnc_branch/fever-baselines"
         self.data_folder_train = self.data_root + "/data/fever-data-ann/train/"
         self.data_folder_train_small = self.data_root + "/data/fever-data-ann/train_small/"
         self.data_folder_dev = self.data_root + "/data/fever-data-ann/dev/"
