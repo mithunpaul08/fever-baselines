@@ -213,12 +213,11 @@ class FEVERReader(DatasetReader):
 
                 premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
-                print(f"hw: {hw}")
-                print(f"bw: {bw}")
+                print(f"***********starting new sentence\n\n")
+                print(f"headline words: {hw}")
+                print(f"body words: {bw}")
                 print(f"hypothesis_ann: {hypothesis_ann}")
-                print("\n")
                 print(f"premise_ann: {premise_ann}")
-                print("\n")
 
                 label = instance["label_text"]
                 print(f"label: {label}")
