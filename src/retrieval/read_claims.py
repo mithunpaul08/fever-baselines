@@ -294,7 +294,6 @@ class UOFADataReader():
 
         return doc1,doc2
 
-
     def write_snli_format(headline,body,logger,label):
 
         logger.debug("got inside write_snli_format")
@@ -326,6 +325,13 @@ class UOFADataReader():
 
 
         return
+
+
+
+    def write_label_to_disk(self, index,label,label_file):
+        with open(label_file, "a") as out:
+          out.write(index,+","+label)
+          out.write("\n")
 
     def get_gold_labels(args,jlr):
         labels = np.array([[]])

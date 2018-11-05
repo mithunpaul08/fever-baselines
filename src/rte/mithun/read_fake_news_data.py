@@ -52,10 +52,12 @@ class load_fever_DataSet():
 
         ann_head_tr = "ann_head_tr.json"
         ann_body_tr = "ann_body_tr.json"
+        labels_file = "label_id.csv"
 
         try:
             os.remove(ann_head_tr)
             os.remove(ann_body_tr)
+            os.remove(labels_file)
 
         except OSError:
             print("not able to find file")
@@ -84,6 +86,7 @@ class load_fever_DataSet():
 
 
             objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid,API, ann_head_tr, ann_body_tr, logger,label)
+            objUOFADataReader.write_label_to_disk(bodyid,label,labels_file)
 
 
 
