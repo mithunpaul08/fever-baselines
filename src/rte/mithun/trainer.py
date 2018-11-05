@@ -1108,7 +1108,7 @@ class UofaTrainTest():
 
         return py_proc_doc_list
 
-    def read_csv_list(filename):
+    def read_csv_list(self,filename):
         import csv
         reader = csv.reader(open(filename, 'r'))
         labels = []

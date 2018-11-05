@@ -207,6 +207,7 @@ class FEVERReader(DatasetReader):
             sys.exit(1)
 
             counter=0
+            #h stands for headline and b for body
             for he, be, hl, bl, hw, bw,instance in\
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
@@ -228,6 +229,9 @@ class FEVERReader(DatasetReader):
 
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
+
+                print(f"hypothesis before annotation: {hw}")
+                print(f"premise before annotation: {bw}")
 
                 premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
