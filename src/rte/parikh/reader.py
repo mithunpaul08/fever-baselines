@@ -215,16 +215,19 @@ class FEVERReader(DatasetReader):
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
                 print("value of the first premise and hypothesis after smart ner replacement is")
                 print(premise_ann)
+                print("\n")
                 print(hypothesis_ann)
 
                 label = instance["label_text"]
+                print(f"label: {label}")
+
 
                 if(label=="NOT ENOUGH INFO"):
                     print(f"hw: {hw}")
                     print(f"bw: {bw}")
                     print(f"premise_ann: {premise_ann}")
                     print(f"hypothesis_ann: {hypothesis_ann}")
-                    #print(f"label: {label}")
+                    print(f"label: {label}")
                     sys.exit(1)
                 #
                 #
