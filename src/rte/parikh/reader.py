@@ -356,11 +356,11 @@ class FEVERReader(DatasetReader):
 
         counter=0
         #h stands for headline and b for body
-        for he, be, hl, bl, hw, bw,instance,indiv_label in\
+        for he, be, hl, bl, hw, bw,indiv_label in\
                 tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                     bodies_lemmas,
                                                       heads_words,
-                                                      bodies_words,ds.data,all_labels),
+                                                      bodies_words,all_labels),
                    total=len(all_labels),desc="reading annotated data"):
 
             counter=counter+1
