@@ -117,8 +117,14 @@ def eval_model_fnc(db: FeverDocDB, args) -> Model:
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
     do_annotation_live = False
-    data = reader.read_annotated_fnc(args.in_file,"dev",do_annotation_live).instances
-    joblib.dump(data, "fever_dev_dataset_format.pkl")
+    # data = reader.read_annotated_fnc(args.in_file,"dev",do_annotation_live).instances
+    # joblib.dump(data, "fever_dev_dataset_format.pkl")
+    #
+    ###################end of running model and saving
+
+
+
+    data=joblib.load("fever_dev_dataset_format")
 
     actual = []
 
@@ -150,9 +156,9 @@ def eval_model_fnc(db: FeverDocDB, args) -> Model:
                 f.write(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
             else:
                 f.write(json.dumps({"predicted":cls})+"\n")
-    # print(f'if_ctr = {if_ctr}')
-    # print(f'else_ctr = {else_ctr}')
-    # print(f'pred_dict = {pred_dict}')
+    print(f'if_ctr = {if_ctr}')
+    print(f'else_ctr = {else_ctr}')
+    print(f'pred_dict = {pred_dict}')
 
 
     if args.log is not None:
