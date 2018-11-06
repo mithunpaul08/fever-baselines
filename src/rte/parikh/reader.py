@@ -387,7 +387,7 @@ class FEVERReader(DatasetReader):
 
             label = indiv_label
 
-            if (label=="agree"):
+            if (label=="disagree"):
                 print(f"hypothesis_before_annotation: {hw}")
                 print(f"premise_before_annotation: {bw}")
                 print(f"hypothesis_ann: {hypothesis_ann}")
