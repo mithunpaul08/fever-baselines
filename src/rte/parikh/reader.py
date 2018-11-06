@@ -361,7 +361,7 @@ class FEVERReader(DatasetReader):
                                                     bodies_lemmas,
                                                       heads_words,
                                                       bodies_words,ds.data,all_labels),
-                   total=len(ds.data),desc="reading annotated data"):
+                   total=len(all_labels),desc="reading annotated data"):
 
             counter=counter+1
             label = indiv_label
