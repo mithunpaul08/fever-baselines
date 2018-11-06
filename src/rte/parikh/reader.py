@@ -364,50 +364,63 @@ class FEVERReader(DatasetReader):
                    total=len(ds.data),desc="reading annotated data"):
 
             counter=counter+1
-
-            print(f"***********starting new sentence\n\n")
-
-
-            he_split=  he.split(" ")
-            be_split = be.split(" ")
-            hl_split = hl.split(" ")
-            bl_split = bl.split(" ")
-            hw_split = hw.split(" ")
-            bw_split = bw.split(" ")
-
-            # hypothesis == = claim = headline
-            # premise == = evidence = body
-
-
-            premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-            #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
-
-
-
-
             label = indiv_label
 
-            if (label=="disagree"):
-                print(f"hypothesis_before_annotation: {hw}")
-                print(f"premise_before_annotation: {bw}")
-                print(f"hypothesis_ann: {hypothesis_ann}")
-                print(f"premise_ann: {premise_ann}")
-                print(f"label: {label}")
-                sys.exit(1)
+
+
+            if not (label == "unrelated"):
+
+
+                if (label == 'discuss'):
+                    new_label = "NOT ENOUGH INFO"
+                if (label == 'agree'):
+                    new_label = "SUPPORTS"
+                if (label == 'disagree'):
+                    new_label = "REFUTES"
+
+
+                he_split=  he.split(" ")
+                be_split = be.split(" ")
+                hl_split = hl.split(" ")
+                bl_split = bl.split(" ")
+                hw_split = hw.split(" ")
+                bw_split = bw.split(" ")
+
+                # hypothesis == = claim = headline
+                # premise == = evidence = body
+
+
+                premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
 
 
-            # if(label=="NOT ENOUGH INFO"):
-            # print(f"premise_ann: {premise_ann}")
-            # print("\n")
-            # print(f"hypothesis_ann: {hypothesis_ann}")
-            # print("\n")
-            # print(f"label: {label}")
-            #
-            # if(counter==20):
-            #         sys.exit(1)
-            #
-            #
+
+
+                #
+                # if (label=="disagree"):
+                #     print(f"***********starting new sentence\n\n")
+                #     print(f"hypothesis_before_annotation: {hw}")
+                #     print(f"premise_before_annotation: {bw}")
+                #     print(f"hypothesis_ann: {hypothesis_ann}")
+                #     print(f"premise_ann: {premise_ann}")
+                #     print(f"label: {label}")
+                #
+                #     sys.exit(1)
+
+
+
+                # if(label=="NOT ENOUGH INFO"):
+                # print(f"premise_ann: {premise_ann}")
+                # print("\n")
+                # print(f"hypothesis_ann: {hypothesis_ann}")
+                # print("\n")
+                # print(f"label: {label}")
+                #
+                # if(counter==20):
+                #         sys.exit(1)
+                #
+                #
 
 
 
@@ -416,10 +429,11 @@ class FEVERReader(DatasetReader):
 
 
 
-            instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
+                instances.append(self.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
 
         print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
+        sys.exit(1)
 
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
