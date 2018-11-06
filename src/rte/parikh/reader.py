@@ -394,9 +394,9 @@ class FEVERReader(DatasetReader):
                 # premise_ann=bw
                 # hypothesis_ann=hw
 
-                print(f"hypothesis_before_annotation: {hw}")
-                print(f"premise_before_annotation: {bw}")
-                sys.exit(1)
+                # print(f"hypothesis_before_annotation: {hw}")
+                # print(f"premise_before_annotation: {bw}")
+
 
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
