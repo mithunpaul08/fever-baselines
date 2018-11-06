@@ -286,184 +286,124 @@ class FEVERReader(DatasetReader):
 
         ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
         ds.read()
-        counter=0
 
-        objUOFADataReader = UOFADataReader()
 
-        if (run_name == "train"):
-            print("run_name == train")
-            head_file = objUOFADataReader.ann_head_tr
-            body_file = objUOFADataReader.ann_body_tr
+
+
+        print("(do_annotation=false):going to load annotated data from the disk.")
+
+
+        objUofaTrainTest = UofaTrainTest()
+
+        if (run_name == "dev"):
+            print("run_name == dev")
+            data_folder = objUofaTrainTest.data_folder_dev
         else:
-            if (run_name == "dev"):
-                print("run_name == dev")
-                head_file = objUOFADataReader.ann_head_dev
-                body_file = objUOFADataReader.ann_body_dev
-
-        # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etc.
-        # This takes along time. so almost always we do it only once, and load it from disk
-        if(do_annotation_on_the_fly):
-            #print("do_annotation_on_the_fly == true")
-          # DELETE THE annotated file IF IT EXISTS every time before the loop
-            self.delete_if_exists(head_file)
-            self.delete_if_exists(body_file)
-
-            for instance in tqdm.tqdm(ds.data):
-                counter=counter+1
-
-                if instance is None:
-                    continue
-
-                if not self._sentence_level:
-                    pages = set(ev[0] for ev in instance["evidence"])
-                    premise = " ".join([self.db.get_doc_text(p) for p in pages])
-                else:
-                    lines = set([self.get_doc_line(d[0],d[1]) for d in instance['evidence']])
-                    premise = " ".join(lines)
-
-                if len(premise.strip()) == 0:
-                    premise = ""
-
-                hypothesis = instance["claim"]
-                label = instance["label_text"]
-
-                # if (label == "NOT ENOUGH INFO"):
-                #
-                # if (counter > 50):
-
-               # print("hypothesis:" + hypothesis)
-               # print("premise:" + premise)
-
-                premise_ann,hypothesis_ann =self.uofa_annotate(hypothesis, premise, counter,objUOFADataReader,head_file,body_file)
-
-                #print("hypothesis:" + hypothesis_ann)
-                #print("premise:" + premise_ann)
-
-
-
-
-
-                instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
-
-        # replacing hypothesis with the annotated one-either load pre-annotated data
-        # from disk
-        else:
-
-            print("(do_annotation=false):going to load annotated data from the disk.")
-
-
-            objUofaTrainTest = UofaTrainTest()
-
-            if (run_name == "dev"):
-                print("run_name == dev")
-                data_folder = objUofaTrainTest.data_folder_dev
+            if (run_name == "train"):
+                print("run_name == train")
+                data_folder = objUofaTrainTest.data_folder_train
             else:
-                if (run_name == "train"):
-                    print("run_name == train")
-                    data_folder = objUofaTrainTest.data_folder_train
+                if (run_name == "small"):
+                    print("run_name == small")
+                    data_folder = objUofaTrainTest.data_folder_train_small
                 else:
-                    if (run_name == "small"):
-                        print("run_name == small")
-                        data_folder = objUofaTrainTest.data_folder_train_small
-                    else:
-                        if (run_name == "test"):
-                            print("run_name == test")
-                            data_folder = objUofaTrainTest.data_folder_test
+                    if (run_name == "test"):
+                        print("run_name == test")
+                        data_folder = objUofaTrainTest.data_folder_test
 
 
-            #load the labels from the disk
-            lbl_file= objUofaTrainTest.label_folder+objUofaTrainTest.label_dev_file
-            all_labels= objUofaTrainTest.read_csv_list(lbl_file)
+        #load the labels from the disk
+        lbl_file= objUofaTrainTest.label_folder+objUofaTrainTest.label_dev_file
+        all_labels= objUofaTrainTest.read_csv_list(lbl_file)
 
 
 
-            bf = data_folder + objUofaTrainTest.annotated_body_split_folder
-            bfl = bf + objUofaTrainTest.annotated_only_lemmas
+        bf = data_folder + objUofaTrainTest.annotated_body_split_folder
+        bfl = bf + objUofaTrainTest.annotated_only_lemmas
 
-            bf = data_folder + objUofaTrainTest.annotated_body_split_folder
-            bfl = bf + objUofaTrainTest.annotated_only_lemmas
-            bfw = bf + objUofaTrainTest.annotated_words
-            bfe = bf + objUofaTrainTest.annotated_only_entities
+        bf = data_folder + objUofaTrainTest.annotated_body_split_folder
+        bfl = bf + objUofaTrainTest.annotated_only_lemmas
+        bfw = bf + objUofaTrainTest.annotated_words
+        bfe = bf + objUofaTrainTest.annotated_only_entities
 
-            hf = data_folder + objUofaTrainTest.annotated_head_split_folder
-            hfl = hf + objUofaTrainTest.annotated_only_lemmas
-            hfw = hf + objUofaTrainTest.annotated_words
-            hfe = hf + objUofaTrainTest.annotated_only_entities
+        hf = data_folder + objUofaTrainTest.annotated_head_split_folder
+        hfl = hf + objUofaTrainTest.annotated_only_lemmas
+        hfw = hf + objUofaTrainTest.annotated_words
+        hfe = hf + objUofaTrainTest.annotated_only_entities
 
 
 
 
-            #print(f"hfl:{hfl}")
-            #print(f"bfl:{bfl}")
-            #print("going to read annotated data from disk:")
+        #print(f"hfl:{hfl}")
+        #print(f"bfl:{bfl}")
+        #print("going to read annotated data from disk:")
 
 
 
-            heads_lemmas = objUofaTrainTest.read_json(hfl)
-            bodies_lemmas = objUofaTrainTest.read_json(bfl)
-            heads_entities = objUofaTrainTest.read_json(hfe)
-            bodies_entities = objUofaTrainTest.read_json(bfe)
-            heads_words = objUofaTrainTest.read_json(hfw)
-            bodies_words = objUofaTrainTest.read_json(bfw)
+        heads_lemmas = objUofaTrainTest.read_json(hfl)
+        bodies_lemmas = objUofaTrainTest.read_json(bfl)
+        heads_entities = objUofaTrainTest.read_json(hfe)
+        bodies_entities = objUofaTrainTest.read_json(bfe)
+        heads_words = objUofaTrainTest.read_json(hfw)
+        bodies_words = objUofaTrainTest.read_json(bfw)
 
-            print(f"length of headline_words:{len(heads_words)}")
-            print(f"length of bodies_words:{len(bodies_words)}")
-            print(f"length of all_labels:{len(all_labels)}")
+        print(f"length of headline_words:{len(heads_words)}")
+        print(f"length of bodies_words:{len(bodies_words)}")
+        print(f"length of all_labels:{len(all_labels)}")
 
+
+
+
+        counter=0
+        #h stands for headline and b for body
+        for he, be, hl, bl, hw, bw,instance,indiv_label in\
+                tq(zip(heads_entities, bodies_entities, heads_lemmas,
+                                                    bodies_lemmas,
+                                                      heads_words,
+                                                      bodies_words,ds.data,all_labels),
+                   total=len(ds.data),desc="reading annotated data"):
+
+            counter=counter+1
+
+            print(f"***********starting new sentence\n\n")
+
+
+            he_split=  he.split(" ")
+            be_split = be.split(" ")
+            hl_split = hl.split(" ")
+            bl_split = bl.split(" ")
+            hw_split = hw.split(" ")
+            bw_split = bw.split(" ")
+
+            # hypothesis == = claim = headline
+            # premise == = evidence = body
+
+            print(f"hypothesis before annotation: {hw}")
+            print(f"premise before annotation: {bw}")
+
+            premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+            #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
+
+
+            print(f"hypothesis_ann: {hypothesis_ann}")
+            print(f"premise_ann: {premise_ann}")
+
+            label = indiv_label
+            print(f"label: {label}")
             sys.exit(1)
 
 
-            counter=0
-            #h stands for headline and b for body
-            for he, be, hl, bl, hw, bw,instance,indiv_label in\
-                    tq(zip(heads_entities, bodies_entities, heads_lemmas,
-                                                        bodies_lemmas,
-                                                          heads_words,
-                                                          bodies_words,ds.data,all_labels),
-                       total=len(ds.data),desc="reading annotated data"):
-
-                counter=counter+1
-
-                print(f"***********starting new sentence\n\n")
-
-
-                he_split=  he.split(" ")
-                be_split = be.split(" ")
-                hl_split = hl.split(" ")
-                bl_split = bl.split(" ")
-                hw_split = hw.split(" ")
-                bw_split = bw.split(" ")
-
-                # hypothesis == = claim = headline
-                # premise == = evidence = body
-
-                print(f"hypothesis before annotation: {hw}")
-                print(f"premise before annotation: {bw}")
-
-                premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
-
-                print(f"headline words: {hw}")
-                print(f"body words: {bw}")
-                print(f"hypothesis_ann: {hypothesis_ann}")
-                print(f"premise_ann: {premise_ann}")
-
-                label = instance["label_text"]
-                print(f"label: {label}")
-                sys.exit(1)
-
-
-                # if(label=="NOT ENOUGH INFO"):
-                # print(f"premise_ann: {premise_ann}")
-                # print("\n")
-                # print(f"hypothesis_ann: {hypothesis_ann}")
-                # print("\n")
-                # print(f"label: {label}")
-                #
-                if(counter==10):
-                        sys.exit(1)
-                #
-                #
+            # if(label=="NOT ENOUGH INFO"):
+            # print(f"premise_ann: {premise_ann}")
+            # print("\n")
+            # print(f"hypothesis_ann: {hypothesis_ann}")
+            # print("\n")
+            # print(f"label: {label}")
+            #
+            if(counter==10):
+                    sys.exit(1)
+            #
+            #
 
 
 
@@ -472,7 +412,7 @@ class FEVERReader(DatasetReader):
 
 
 
-                instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
+            instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
 
 
         print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
@@ -484,6 +424,7 @@ class FEVERReader(DatasetReader):
 
 
 
+    #THIS WAS USED EARLIER WHEN WE were directly reading from fake news data, not like annotating it with pyprocessors
     def read_fnc(self, d):
         instances = []
 
