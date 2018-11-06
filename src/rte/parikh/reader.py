@@ -385,12 +385,15 @@ class FEVERReader(DatasetReader):
             #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
 
-            print(f"hypothesis_ann: {hypothesis_ann}")
-            print(f"premise_ann: {premise_ann}")
+
 
             label = indiv_label
-            print(f"label: {label}")
-            sys.exit(1)
+
+            if not (label=="unrelated"):
+                print(f"hypothesis_ann: {hypothesis_ann}")
+                print(f"premise_ann: {premise_ann}")
+                print(f"label: {label}")
+                sys.exit(1)
 
 
             # if(label=="NOT ENOUGH INFO"):
