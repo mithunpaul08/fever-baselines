@@ -122,9 +122,9 @@ def eval_model_fnc(db: FeverDocDB, args) -> Model:
     #
     ###################end of running model and saving
 
+    path=os.getcwd()
 
-
-    data=joblib.load("fever_dev_dataset_format")
+    data=joblib.load(path+"fever_dev_dataset_format")
 
     actual = []
 
