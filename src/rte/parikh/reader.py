@@ -393,7 +393,7 @@ class FEVERReader(DatasetReader):
                 print(f"hypothesis_ann: {hypothesis_ann}")
                 print(f"premise_ann: {premise_ann}")
                 print(f"label: {label}")
-                sys.exit(1)
+
 
 
             # if(label=="NOT ENOUGH INFO"):
@@ -403,7 +403,7 @@ class FEVERReader(DatasetReader):
             # print("\n")
             # print(f"label: {label}")
             #
-            if(counter==10):
+            if(counter==20):
                     sys.exit(1)
             #
             #
