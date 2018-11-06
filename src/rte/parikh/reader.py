@@ -378,8 +378,6 @@ class FEVERReader(DatasetReader):
             # hypothesis == = claim = headline
             # premise == = evidence = body
 
-            print(f"hypothesis before annotation: {hw}")
-            print(f"premise before annotation: {bw}")
 
             premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
             #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
@@ -389,10 +387,13 @@ class FEVERReader(DatasetReader):
 
             label = indiv_label
 
-            if not (label=="unrelated"):
+            if not (label=="agree"):
+                print(f"hypothesis_before_annotation: {hw}")
+                print(f"premise_before_annotation: {bw}")
                 print(f"hypothesis_ann: {hypothesis_ann}")
                 print(f"premise_ann: {premise_ann}")
                 print(f"label: {label}")
+                sys.exit(1)
 
 
 
@@ -403,8 +404,8 @@ class FEVERReader(DatasetReader):
             # print("\n")
             # print(f"label: {label}")
             #
-            if(counter==20):
-                    sys.exit(1)
+            # if(counter==20):
+            #         sys.exit(1)
             #
             #
 
