@@ -276,7 +276,7 @@ class FEVERReader(DatasetReader):
         return Dataset(instances)
 
 
-    def read_annotated_fnc(self, file_path: str, run_name, do_annotation_on_the_fly):
+    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly):
         #logger.info("got inside read")
         #logging.info("got inside read")
 
@@ -386,11 +386,19 @@ class FEVERReader(DatasetReader):
                 hw_split = hw.split(" ")
                 bw_split = bw.split(" ")
 
+                # note that these words are equivalent
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
 
 
-                premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+                # premise_ann=bw
+                # hypothesis_ann=hw
+
+                print(f"hypothesis_before_annotation: {hw}")
+                print(f"premise_before_annotation: {bw}")
+                sys.exit(1)
+
+                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
 
@@ -429,7 +437,10 @@ class FEVERReader(DatasetReader):
 
 
 
-                instances.append(self.text_to_instance(premise_ann, hypothesis_ann, new_label))
+                #instances.append(self.text_to_instance(premise_ann, hypothesis_ann, new_label))
+
+                # this is for testing without any SMART  NER stuff- just plain text
+                instances.append(self.text_to_instance(bw, hw, new_label))
 
 
         print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
