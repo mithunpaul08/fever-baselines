@@ -353,7 +353,6 @@ class FEVERReader(DatasetReader):
 
 
 
-
         counter=0
         #h stands for headline and b for body
         for he, be, hl, bl, hw, bw,indiv_label in\
@@ -390,6 +389,9 @@ class FEVERReader(DatasetReader):
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
 
+                print(f"hypothesis_before_annotation: {hw}")
+                print(f"premise_before_annotation: {bw}")
+                continue;
 
                 # premise_ann=bw
                 # hypothesis_ann=hw
@@ -425,8 +427,8 @@ class FEVERReader(DatasetReader):
                 # print("\n")
                 # print(f"label: {label}")
                 #
-                # if(counter==20):
-                #         sys.exit(1)
+                if(counter==20):
+                        sys.exit(1)
                 #
                 #
 
@@ -444,6 +446,7 @@ class FEVERReader(DatasetReader):
 
 
         print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
+        sys.exit(1)
 
 
         if not instances:
