@@ -211,6 +211,10 @@ class FEVERReader(DatasetReader):
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
 
+                # print("value of the first premise and hypothesis BEFORE smart ner replacement is")
+                print(f"hypothesis: {hw}")
+                print(f"premise:{bw}")
+
                 premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
                 #print("value of the first premise and hypothesis after smart ner replacement is")
@@ -229,12 +233,8 @@ class FEVERReader(DatasetReader):
                 #
                 #
 
-
-
-
-
-
-
+                if (counter == 20):
+                    sys.exit(1)
 
                 instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
 
