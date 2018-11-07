@@ -121,8 +121,8 @@ class UOFADataReader():
                                 logger.debug(lineno)
                                 sent=method.get_sentences_given_claim(page,logger,lineno)
                                 ev_claim.append(sent)
-                            all_evidences=' '.join(ev_claim)
-                            logger.debug("all_evidences  is:" + str((all_evidences)))
+                        all_evidences=' '.join(ev_claim)
+                        logger.debug("all_evidences  is:" + str((all_evidences)))
 
 
                 #uncomment this is to annotate using pyprocessors
