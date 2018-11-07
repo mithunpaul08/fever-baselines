@@ -82,48 +82,47 @@ class UOFADataReader():
                 ev_claim=[]
                 pl_list=[]
                 if not (label == "NOT ENOUGH INFO"):
+                    # if len(evidences) is more, take that, else take evidences[0]- this is because they do chaining only if the evidences collectively support the claim.
+                    if (len(evidences) >1):
+                        for inside_ev in evidences:
+                                evidence=inside_ev[0]
+                                logger.debug(evidence)
+                                page= evidence[2]
+                                lineno= evidence[3]
+                                tup=(page,lineno)
+                                pl_list.append(tup)
+                                logger.debug(page)
+                                logger.debug(lineno)
+                                sent=method.get_sentences_given_claim(page,logger,lineno)
+                                ev_claim.append(sent)
+                                logger.debug("tuple now is:"+str(pl_list))
+                        logger.debug("tuple after all evidences is:"+str(pl_list))
+                        logger.debug("unique tuple after all evidences is:"+str(set(pl_list)))
+                        logger.debug("ev_claim before :"+str((ev_claim)))
+                        logger.debug("ev_claim after:"+str(set(ev_claim)))
 
-                  #if len(evidences) is more, take that, else take evidences[0]- this is because they do chaining only if the evidences collectively support the claim.
-                  if (len(evidences) >1):
-                    for inside_ev in evidences:
-                        evidence=inside_ev[0]
-                        logger.debug(evidence)
-                        page= evidence[2]
-                        lineno= evidence[3]
-                        tup=(page,lineno)
-                        pl_list.append(tup)
-                        logger.debug(page)
-                        logger.debug(lineno)
-                        sent=method.get_sentences_given_claim(page,logger,lineno)
-                        ev_claim.append(sent)
-                        logger.debug("tuple now is:"+str(pl_list))
-                    logger.debug("tuple after all evidences is:"+str(pl_list))
-                    logger.debug("unique tuple after all evidences is:"+str(set(pl_list)))
-                    logger.debug("ev_claim before :"+str((ev_claim)))
-                    logger.debug("ev_claim after:"+str(set(ev_claim)))
-
-                    #to get only unique sentences. i.e not repeated evidences
-                    all_evidences=' '.join(set(ev_claim))
-
+                        #to get only unique sentences. i.e not repeated evidences
+                        all_evidences=' '.join(set(ev_claim))
 
 
 
-                    logger.debug("all_evidences  is:" + str((all_evidences)))
 
-                    logger.debug("found the len(evidences)>1")
+                        logger.debug("all_evidences  is:" + str((all_evidences)))
+
+                        logger.debug("found the len(evidences)>1")
 
 
 
-            else :
-                    for evidence in evidences[0]:
-                        page=evidence[2]
-                        lineno=evidence[3]
-                        logger.debug(page)
-                        logger.debug(lineno)
-                        sent=method.get_sentences_given_claim(page,logger,lineno)
-                        ev_claim.append(sent)
-                    all_evidences=' '.join(ev_claim)
-                    logger.debug("all_evidences  is:" + str((all_evidences)))
+                    else:
+                        for evidence in evidences[0]:
+                                page=evidence[2]
+                                lineno=evidence[3]
+                                logger.debug(page)
+                                logger.debug(lineno)
+                                sent=method.get_sentences_given_claim(page,logger,lineno)
+                                ev_claim.append(sent)
+                            all_evidences=' '.join(ev_claim)
+                            logger.debug("all_evidences  is:" + str((all_evidences)))
 
 
                 #uncomment this is to annotate using pyprocessors
