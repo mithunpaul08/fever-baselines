@@ -128,7 +128,7 @@ class UOFADataReader():
 
                 #uncomment this is to annotate using pyprocessors
 
-                annotate_and_save_doc(claim, all_evidences, index, API, ann_head_tr, ann_body_tr, logger)
+                self.annotate_and_save_doc(claim, all_evidences, index, API, ann_head_tr, ann_body_tr, logger)
 
                 #this is convert data into a form to feed  into attention model of allen nlp.
                 #write_snli_format(claim, all_evidences,logger,label)
