@@ -222,13 +222,15 @@ class FEVERReader(DatasetReader):
                 #print(hypothesis_ann)
 
                 label = instance["label_text"]
+                print(f"label: {label}")
+
 
                 # if(label=="NOT ENOUGH INFO"):
                 #     print(f"hw: {hw}")
                 #     print(f"bw: {bw}")
                 #     print(f"premise_ann: {premise_ann}")
                 #     print(f"hypothesis_ann: {hypothesis_ann}")
-                #     #print(f"label: {label}")
+
                 #     sys.exit(1)
                 #
                 #
