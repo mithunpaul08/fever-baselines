@@ -173,10 +173,8 @@ class FEVERReader(DatasetReader):
 
             hf = data_folder + objUofaTrainTest.annotated_head_split_folder
             hft = hf + objUofaTrainTest.annotated_only_tags
-
-
-            hf = data_folder + objUofaTrainTest.annotated_head_split_folder
-            hf = hf + objUofaTrainTest.annotated_only_lemmas
+            hfd= hf + objUofaTrainTest.annotated_only_dep
+            hfl = hf + objUofaTrainTest.annotated_only_lemmas
             hfw = hf + objUofaTrainTest.annotated_words
             hfe = hf + objUofaTrainTest.annotated_only_entities
 
@@ -192,6 +190,7 @@ class FEVERReader(DatasetReader):
             heads_words = objUofaTrainTest.read_json(hfw)
             bodies_words = objUofaTrainTest.read_json(bfw)
             heads_tags= objUofaTrainTest.read_json(hft)
+            heads_dependencies=objUofaTrainTest.read_json(hfd)
 
             print(f"length of bodies_words:{len(bodies_words)}")
 
