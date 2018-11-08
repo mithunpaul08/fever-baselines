@@ -220,6 +220,8 @@ class FEVERReader(DatasetReader):
                 # print(f"hypothesis: {hw}")
                 # print(f"premise:{bw}")
 
+                print("\n")
+                print(f"{hw}")
                 print(f"{hd.data}")
 
 
