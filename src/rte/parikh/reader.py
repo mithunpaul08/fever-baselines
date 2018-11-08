@@ -190,16 +190,16 @@ class FEVERReader(DatasetReader):
             heads_words = objUofaTrainTest.read_json(hfw)
             bodies_words = objUofaTrainTest.read_json(bfw)
             heads_tags= objUofaTrainTest.read_json(hft)
-            heads_dependencies=objUofaTrainTest.read_json(hfd)
+            heads_deps = objUofaTrainTest.read_json_deps(hfd)
 
             print(f"length of bodies_words:{len(bodies_words)}")
 
             counter=0
-            for he, be, hl, bl, hw, bw,ht,instance in\
+            for he, be, hl, bl, hw, bw,ht,hd,instance in\
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
                                                           heads_words,
-                                                          bodies_words,heads_tags,ds.data),
+                                                          bodies_words,heads_tags,heads_deps,ds.data),
                        total=len(ds.data),desc="reading annotated data"):
 
                 counter=counter+1
@@ -220,7 +220,7 @@ class FEVERReader(DatasetReader):
                 # print(f"hypothesis: {hw}")
                 # print(f"premise:{bw}")
 
-                print(f"{ht}")
+                print(f"{hd}")
 
 
                 premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
