@@ -215,7 +215,7 @@ class FEVERReader(DatasetReader):
                 # print(f"hypothesis: {hw}")
                 # print(f"premise:{bw}")
 
-                print(f"hypothesis_lemmas: {hl}")
+                print(f"{hl}")
 
 
                 premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
