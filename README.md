@@ -1,9 +1,15 @@
 
 # UOFA- Fact Extraction and VERification
-## Smart NER: replace tokens with NER tags but checking if they exists in the claim 
 
-To run the the training and evaluation using the smartNER either just do `./run_all_train_test.sh`
-or use these commands below
+## to run the entire pipe line with IR (from fever baseline model) + SVM (our model): use ./runner_ir.sh (or the commands within)
+
+
+## To run instead, the decomposable attention model, with Smart NER (replace tokens with NER tags but checking if they exists in the claim) use ./run_oracle_decomp.sh- note that 
+##the IR part is in oracle mode.-i.e there is no Information retrieval being done on the fly. instead we rely on the gold data annotators found for ecah of the training data. However, do note that, the above statement is true only for classes SUPPORTS and REFUTES. For the class NOT ENOUGH INFO, there are two methods of retrieving evidences. via either using nearest neighbor or random. We are using the fever baseline's nearest neighbor methods
+ 
+
+
+or if you want to explicitly run each command, use these commands below
 @server@jenny
 
 `rm -rf logs/`

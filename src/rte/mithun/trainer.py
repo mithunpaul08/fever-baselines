@@ -35,7 +35,7 @@ class UofaTrainTest():
         self.annotated_body_split_folder = "split_body/"
         self.annotated_head_split_folder = "split_head/"
         # pick based on which folder you are running from. if not on home folder:
-        self.data_root = "/work/mithunpaul/fever/my_fork/fever-baselines"
+        self.data_root = os.getcwd()
         self.data_folder_train = self.data_root + "/data/fever-data-ann/train/"
         self.data_folder_train_small = self.data_root + "/data/fever-data-ann/train_small/"
         self.data_folder_dev = self.data_root + "/data/fever-data-ann/dev/"
@@ -276,7 +276,7 @@ class UofaTrainTest():
 
             word_overlap_array, hedge_value_array, refuting_value_head,refuting_value_body, noun_overlap_array, verb_overlap_array, \
             antonym_overlap_array,num_overlap_array,hedge_headline_array,polarity_array,antonym_adj_overlap_array,emb_cosine_sim_array\
-                = add_vectors\
+                = self.add_vectors\
                     (lemmatized_headline, lemmatized_body, tagged_headline, tagged_body,head_deps, body_deps,head_words,body_words,vocab,vec)
 
             logging.debug("inside create_feature_vec. just received verb_overlap_array is =" + repr(verb_overlap_array))
@@ -1269,15 +1269,11 @@ class UofaTrainTest():
 
             ev_claim = "c"
 
+            ''' #replace both headline/claims with NER tags. note that collapsing means, 
+            # taking an entity like JRR Tolkein, and creating a single NER tag out of it, instead of 3 different NER tags, which the NER tagger usually does'''
             neutered_headline, dict_tokenner_newner_claims, dict_newner_token = self.collapse_both(claims_words_list,
                                                                                                     claims_ner_list,
                                                                                                     ev_claim)
-            # print("new_sent_after_collapse="+str(new_sent))
-            # print("dict_newner_token is:" + str(dict_newner_token))
-
-            #print(claims_words_list)
-            # print("new_sent_after_collapse")
-            # print(new_sent_after_collapse)
 
             ev_claim = "e"
             new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev = self.collapse_both(
@@ -1294,8 +1290,10 @@ class UofaTrainTest():
 
             premise = " ".join(neutered_body)
             hypothesis = " ".join(neutered_headline)
-            # print(premise)
             # print(hypothesis)
+            # print(premise)
+            #
+            # sys.exit(1)
 
 
             return (premise, hypothesis)
@@ -1359,12 +1357,14 @@ class UofaTrainTest():
                 old_index=unique_new_ners[prev_ner_tag]
                 new_index=old_index+1
                 unique_new_ners[prev_ner_tag]=new_index
-                new_nertag_i=prev_ner_tag+"-"+ev_claim + str(new_index)
+                #to try PERSON SPACE C1 instead of PERSON-C1
+                new_nertag_i=prev_ner_tag+" "+ev_claim + str(new_index)
+                #new_nertag_i = prev_ner_tag + "-" + ev_claim + str(new_index)
                 unique_new_tokens[full_name_c] = new_nertag_i
 
             else:
                 unique_new_ners[prev_ner_tag] = 1
-                new_nertag_i = prev_ner_tag + "-" + ev_claim + "1"
+                new_nertag_i = prev_ner_tag + " " + ev_claim + "1"
                 unique_new_tokens[full_name_c] = new_nertag_i
 
 
@@ -1424,17 +1424,11 @@ class UofaTrainTest():
                         for k, v in dict_tokenner_newner_evidence.items():
 
                             if (ev_new_ner_value == v):
-
-                                # print(new_ner_value)
-                                # print(k, v)
                                 actual_ner_tag=k[1]
-                                #print("the value of actual_ner_tag is:"+str(actual_ner_tag))
-
                                 break
 
                         #now check if this NER tag in evidence also matches with that in claims
                         if(actual_ner_tag==ner_cl):
-
                             val_claim = dict_tokenner_newner_claims[tup]
                             combined_sent.append(val_claim)
                             found_intersection=True
@@ -1474,17 +1468,18 @@ class UofaTrainTest():
 
 
         full_name = []
-        prev_counter = 0
+
 
         for index, (curr_ner, curr_word) in enumerate(zip(claims_ner_list, claims_words_list)):
-            #print("unique_new_ners is:" + str(unique_new_ners))
+
             if (curr_ner == "O"):
 
                 if (len(prev) == 0):
                     new_sent.append(curr_word)
                 else:
 
-                    prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,unique_new_tokens,dict_newner_token = self.get_new_name(prev, unique_new_ners, curr_ner,
+                    prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,unique_new_tokens,dict_newner_token \
+                        = self.get_new_name(prev, unique_new_ners, curr_ner,
                                                                                    dict_tokenner_newner, curr_word,
                                                                                    new_sent, ev_claim, full_name,unique_new_tokens,dict_newner_token)
                     new_sent.append(curr_word)
@@ -1497,10 +1492,10 @@ class UofaTrainTest():
                         prev.append(curr_ner)
                         full_name.append(curr_word)
                     else:
-                        prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,unique_new_tokens,dict_newner_token = self.get_new_name(
-                            prev, unique_new_ners, curr_ner,
-                                                                                       dict_tokenner_newner, curr_word,
-                                                                               new_sent, ev_claim, full_name,unique_new_tokens,dict_newner_token)
+                        prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,\
+                        unique_new_tokens,dict_newner_token = \
+                            self.get_new_name(prev, unique_new_ners, curr_ner,dict_tokenner_newner, curr_word, new_sent,
+                                              ev_claim, full_name,unique_new_tokens,dict_newner_token)
 
         return new_sent, dict_tokenner_newner,dict_newner_token
 
