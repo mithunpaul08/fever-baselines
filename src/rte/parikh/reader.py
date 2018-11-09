@@ -216,9 +216,9 @@ class FEVERReader(DatasetReader):
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
 
-                print("value of the first premise and hypothesis BEFORE smart ner replacement is")
-                print(f"hypothesis: {hw}")
-                print(f"premise:{bw}")
+                # print("value of the first premise and hypothesis BEFORE smart ner replacement is")
+                # print(f"hypothesis: {hw}")
+                # print(f"premise:{bw}")
 
 
 
@@ -243,8 +243,7 @@ class FEVERReader(DatasetReader):
                 #
                 #
 
-                if (counter == 20):
-                    sys.exit(1)
+                #
 
                 instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
 
