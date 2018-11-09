@@ -27,7 +27,7 @@ annotated_words="ann_words.json"
 annotated_body_split_folder="split_body/"
 annotated_head_split_folder="split_head/"
 #pick based on which folder you are running from. if not on home folder:
-data_root="/work/mithunpaul/fever/my_fork/fever-baselines/"
+data_root=os.getcwd()
 data_folder_train=data_root+"/data/fever-data-ann/train/"
 data_folder_train_small=data_root+"/data/fever-data-ann/train_small/"
 data_folder_dev=data_root+"/data/fever-data-ann/dev/"
