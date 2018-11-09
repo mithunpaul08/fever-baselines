@@ -170,8 +170,9 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
-    eval_model_fnc_data(db,args)
-   
 
-    #eval_model(db,args)
+    #this line below is to test for cross domain transfer-uncomment only when you want to evaluate on a different domain
+    #eval_model_fnc_data(db,args)
+
+    eval_model(db,args)
 
