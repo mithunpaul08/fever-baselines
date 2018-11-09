@@ -12,7 +12,7 @@ import json
 from nltk.corpus import wordnet
 import itertools
 from .proc_data import PyProcDoc
-#import torchwordemb
+import torchwordemb
 from rte.mithun.log import setup_custom_logger
 
 
