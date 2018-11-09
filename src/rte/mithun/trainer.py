@@ -43,13 +43,14 @@ combined_vector_pkl= "combined_vector.pkl"
 
 def read_json_create_feat_vec(load_ann_corpus_tr,args):
 
-    #just load feature vector alone. No dynamically adding new features
+    # load feature vector from disk.
     if (args.load_feat_vec==True):
         logging.info("going to load combined vector from disk")
         combined_vector = joblib.load(combined_vector_pkl)
 
 
-
+    #not loading from disk. but instead going to features live. Note that below if args.dynamic_cv==True,
+    # we will be loading already existing features from disk and dynamically adding one new feature only.
     else:
         logging.debug("load_feat_vec is falsse. going to generate features")
         logging.debug("value of load_ann_corpus_tph2:" + str(load_ann_corpus_tr))
@@ -113,6 +114,8 @@ def read_json_create_feat_vec(load_ann_corpus_tr,args):
         logging.info("going to load glove vectors...")
         vocab, vec = torchwordemb.load_glove_text(path_glove_server)
 
+        #logging.info("going to load mrksic vectors...")
+
         #if we are doing dynamic cv addition.make sure load cv is true and load that cv
         if (args.dynamic_cv==True):
                 logging.info("going to load combined vector from disk")
@@ -122,6 +125,7 @@ def read_json_create_feat_vec(load_ann_corpus_tr,args):
                 combined_vector = create_feature_vec_one_feature(heads_lemmas, bodies_lemmas, heads_tags,
                                              bodies_tags,heads_deps,bodies_deps,heads_words, bodies_words,combined_vector_old,vocab,vec)
 
+        #this is the basic feature creation. i.e bare bones. Not loading it from the disk and attaching one new feature alone. This one creates all the 93 features by hand.
         else:
             combined_vector = create_feature_vec(heads_lemmas, bodies_lemmas, heads_tags,
                                              bodies_tags,heads_deps,bodies_deps,heads_words, bodies_words,vocab,vec,args)
@@ -268,8 +272,11 @@ def create_feature_vec (heads_lemmas_obj_list, bodies_lemmas_obj_list,
             in tqdm(zip(heads_lemmas_obj_list, bodies_lemmas_obj_list, heads_tags_obj_list, bodies_tags_obj_list, heads_deps_obj_list,
                         bodies_deps_obj_list,heads_words_list, bodies_words_list),total=len(bodies_tags_obj_list),desc="feat_gen:"):
 
-        word_overlap_array, hedge_value_array, refuting_value_head,refuting_value_body, noun_overlap_array, verb_overlap_array, \
-        antonym_overlap_array,num_overlap_array,hedge_headline_array,polarity_array,antonym_adj_overlap_array,emb_cosine_sim_array  = \
+
+        ''' this function add_vectors is where most of the main feature vector creation is happening. All we are doing in
+        this for loop is feeding this function each of the data point at a time, and its corresponding lemmas, POS tags
+        etc.'''
+        word_overlap_array, hedge_value_array, refuting_value_head,refuting_value_body, noun_overlap_array, verb_overlap_array,antonym_overlap_array,num_overlap_array,hedge_headline_array,polarity_array,antonym_adj_overlap_array,emb_cosine_sim_array  = \
             add_vectors\
                 (lemmatized_headline, lemmatized_body, tagged_headline, tagged_body,head_deps, body_deps,head_words,body_words,vocab,vec)
 
