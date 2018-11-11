@@ -9,7 +9,7 @@ import os,sys
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from rte.parikh.reader import FEVERReader
 from scorer.src.fever.scorer import fever_score
-import json
+import json,sys
 from sklearn.externals import joblib
 from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
 
@@ -57,14 +57,15 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     data= dataset_reader.read(validation_data_path)
 
     for item in tqdm(data):
-
         claim = item.fields["hypothesis"]
         evidences = item.fields["premise"]
         label = item.fields["label"]
-
         logger.debug(label)
         logger.debug("just claim alone is:")
         logger.debug(claim)
+        annotate_and_save_doc(claim, evidences, index, API, ann_head_tr, ann_body_tr, logger)
+         
+
         sys.exit(1)
 
         #
@@ -93,22 +94,6 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
 
 
         #for index,claim_full in tqdm(enumerate(all_claims),total=len(all_claims),desc="annotation:"):
-
-
-            claim=item.fields["hypothesis"]
-            #x = indiv_headline_body()
-            evidences=item.fields["premise"]
-            label=item.fields["label"]
-
-            logger.debug(label)
-            logger.debug("entire claim_full is:")
-            logger.debug(claim_full)
-            logger.debug("just claim alone is:")
-            logger.debug(claim)
-
-
-            annotate_and_save_doc(claim, evidences, index, API, ann_head_tr, ann_body_tr, logger)
-
 
 
             #if not (label=="NOT ENOUGH INFO"):
