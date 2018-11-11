@@ -54,7 +54,7 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
 
     validation_data_path = params.pop('validation_data_path')
     logger.info("Reading  data from %s", validation_data_path)
-    train_data = dataset_reader.read(train_data_path)
+    train_data = dataset_reader.read(validation_data_path)
 
 
     with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
