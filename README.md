@@ -24,23 +24,20 @@ Second time onwards use: `docker start procserv`
 2. With handcrafted features + SVM
 
 
+To run the decomposable attention model, with Smart NER (replace tokens with NER tags but checking if they exists in the claim) use `./run_oracle_decomp.sh`
 
 
-
-## To run the decomposable attention model, with Smart NER (replace tokens with NER tags but checking if they exists in the claim) use ./run_oracle_decomp.sh
-
-
-## To run the With handcrafted features + SVM pipe line (from fever baseline model) + SVM (our model): use ./runner_ir.sh (or the commands within)
+To run the With handcrafted features + SVM pipe line (from fever baseline model) + SVM (our model): use `./runner_ir.sh`
 
 note that: these shell scripts will run the whole training and testing on dev pipeline. If you want just pieces, comment out accordingly
     
 note that :the IR part is in oracle mode.-i.e there is no Information retrieval being done on the fly. instead we rely on the gold data annotators found for ecah of the training data. However, do note that, the above statement is true only for classes SUPPORTS and REFUTES. For the class NOT ENOUGH INFO, there are two methods of retrieving evidences. via either using nearest neighbor or random. We are using the fever baseline's nearest neighbor methods
 
 
-# These are the various versions in the fact verification code development cycle (and what they do) at University of Arizona
-# note, there must be only one version of this document and preferably exists in the master branch
+# Versions
+These are the various versions in the fact verification code development cycle (and what they do) at University of Arizona. Note, there must be only one version of this document and preferably exists in the master branch
 
 | Date of modification | name of the branch| git SHA| change made | New F1 score | New average Accuracy | New average Precision| Notes |
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | 
+| | Nov 8th 2018  | Content Cell  | 9f20b8b8e3e79c6b3410b51c3905f58042d42d28  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | 
 | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
