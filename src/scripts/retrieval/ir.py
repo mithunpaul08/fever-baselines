@@ -62,6 +62,7 @@ if __name__ == "__main__":
                         type=str,
                         default="",
                         help='a HOCON structure used to override the experiment configuration')
+    parser.add_argument("--filtering", type=str, default=None)
 
     args = parser.parse_args()
 
