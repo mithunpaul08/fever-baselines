@@ -7,6 +7,11 @@ from rte.mithun.trainer import read_json_create_feat_vec,do_training,do_testing,
 import numpy as np
 import os,sys
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from rte.parikh.reader import FEVERReader
+from scorer.src.fever.scorer import fever_score
+import json
+from sklearn.externals import joblib
+
 
 ann_head_tr = "ann_head_tr.json"
 ann_body_tr = "ann_body_tr.json"
@@ -14,9 +19,6 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 # logger=None
 load_ann_corpus=True
 #load_combined_vector=True
-from scorer.src.fever.scorer import fever_score
-import json
-from sklearn.externals import joblib
 
 predicted_results="predicted_results.pkl"
 snli_filename='snli_fever.json'
