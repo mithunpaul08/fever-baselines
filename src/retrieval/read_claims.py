@@ -11,6 +11,7 @@ from rte.parikh.reader import FEVERReader
 from scorer.src.fever.scorer import fever_score
 import json
 from sklearn.externals import joblib
+from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
 
 
 ann_head_tr = "ann_head_tr.json"
