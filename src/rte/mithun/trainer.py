@@ -1141,6 +1141,7 @@ def get_sum_vector_embedding(vocab,vec, sent):
                 logging.debug(sum)
                 very_first_time=False
             else:
+                logging.debug(f"given word {x} not in vocab/doesn't have embeddings")
                 logging.debug(q)
                 sum = sum + q
                 logging.info(sum.shape)
