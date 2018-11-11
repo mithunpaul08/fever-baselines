@@ -69,7 +69,7 @@ if __name__ == "__main__":
     db = FeverDocDB(args.db)
 
 
-    params = Params.from_file(args.param_path, args.overrides)
+    #params = Params.from_file(args.param_path, args.overrides)
 
     #db = FeverDocDB(args.db)
     jlr = JSONLineReader()
@@ -81,10 +81,10 @@ if __name__ == "__main__":
     processed = dict()
 
     if(args.mode=="train" or args.mode=="small"):
-        uofa_training(args,jlr,params,db)
+        uofa_training(args,jlr,method,db)
     else:
         if(args.mode=="dev"):
-            uofa_dev(args,jlr,params,db)
+            uofa_dev(args,jlr,method,db)
             logger.info("Done, testing ")
 
         else:
