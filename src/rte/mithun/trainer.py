@@ -1131,7 +1131,7 @@ def get_sum_vector_embedding(vocab,vec, sent):
     for index, x in (enumerate(sent)):
         if (x in vocab):
             logging.info("index:"+str(index))
-            logging.info("x:" + str(x))
+            logging.info("word:" + str(x))
             emb = vec[vocab[x]]
             logging.info(emb.shape)
             q = emb.numpy()
@@ -1141,11 +1141,12 @@ def get_sum_vector_embedding(vocab,vec, sent):
                 logging.debug(sum)
                 very_first_time=False
             else:
-                logging.debug(f"given word {x} not in vocab/doesn't have embeddings")
-                logging.debug(q)
+                logging.debug(f"embedding vector is:{q}")
                 sum = sum + q
                 logging.info(sum.shape)
                 logging.debug(sum)
+        else:
+            logging.debug(f"given word {x} not in vocab/doesn't have embeddings")
 
     return sum
 
