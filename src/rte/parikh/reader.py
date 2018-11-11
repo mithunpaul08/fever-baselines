@@ -1,5 +1,5 @@
 from typing import Dict
-import json
+import json,sys
 import logging
 
 from overrides import overrides
@@ -93,7 +93,7 @@ class FEVERReader(DatasetReader):
             print(f"premise:{premise}")
             print(f"label:{label}")
 
-            if(label=="SUPPORTS"):
+            if(label=="REFUTES"):
                 sys.exit(1)
             instances.append(self.text_to_instance(premise, hypothesis, label))
         if not instances:

@@ -25,12 +25,13 @@ predicted_results="predicted_results.pkl"
 snli_filename='snli_fever.json'
 
 def read_claims_annotate(args,jlr,logger,method,db,params):
+    logger.error("Going to delete annotations output file if it exists")
     try:
         os.remove(ann_head_tr)
         os.remove(ann_body_tr)
 
     except OSError:
-        logger.error("not able to find file")
+        logger.error("annotations output file  doesnt exist")
 
     logger.debug("inside read_claims_annotate")
 
