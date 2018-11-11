@@ -34,10 +34,4 @@ note that: these shell scripts will run the whole training and testing on dev pi
 note that :the IR part is in oracle mode.-i.e there is no Information retrieval being done on the fly. instead we rely on the gold data annotators found for ecah of the training data. However, do note that, the above statement is true only for classes SUPPORTS and REFUTES. For the class NOT ENOUGH INFO, there are two methods of retrieving evidences. via either using nearest neighbor or random. We are using the fever baseline's nearest neighbor methods
 
 
-# Versions
-These are the various versions in the fact verification code development cycle (and what they do) at University of Arizona. Note, there must be only one version of this document and preferably exists in the master branch
-
-| Date of modification | name of the branch| git SHA| change made | New F1 score | New overall accuracy | New average Precision| Notes |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
-| Nov 8th 2018|   person_space_c1 | 9f20b8b8e3e79c6b3410b51c3905f58042d42d28  | Replaced PERSON_C1 with PERSON C1 in the NER replacement code   | 0.46  | 0.5062006200620062  | email dated:Fri, Nov 9, 3:26 PM  | 
-| Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  | Content Cell  |
+## version tracker is kept [here](https://github.com/mithunpaul08/fever-baselines/blob/master/versions.md)
