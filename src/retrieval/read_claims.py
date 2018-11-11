@@ -359,7 +359,7 @@ def get_gold_labels(validation_data_path,jlr):
                 if (label == "REFUTES"):
                     labels = np.append(labels, 1)
                 # else:
-                #     if (label=="NOT ENOUGH INFO"):
+                #     if (label=="NOT ENOUGH INFO"):README.md
                 #         labels = np.append(labels, 2)
 
     return labels
