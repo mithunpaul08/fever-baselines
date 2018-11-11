@@ -21,7 +21,7 @@ from sklearn.externals import joblib
 predicted_results="predicted_results.pkl"
 snli_filename='snli_fever.json'
 
-def read_claims_annotate(args,jlr,logger,method,db):
+def read_claims_annotate(args,jlr,logger,method,db,params):
     try:
         os.remove(ann_head_tr)
         os.remove(ann_body_tr)
@@ -33,25 +33,25 @@ def read_claims_annotate(args,jlr,logger,method,db):
 
 
     # #Looks like our code wasn't retreiving the nearest neighbor for NEI. So using the fever baseline code to do it
-    # os.makedirs(args.serialization_dir, exist_ok=True)
-    # serialization_params = deepcopy(params).as_dict(quiet=True)
-    #
-    #
-    # with open(os.path.join(args.serialization_dir, "model_params.json"), "w") as param_file:
-    #     json.dump(serialization_params, param_file, indent=4)
-    #
-    #     # Now we begin assembling the required parts for the Trainer.
-    # ds_params = params.pop('dataset_reader', {})
-    # dataset_reader = FEVERReader(db,
-    #                              sentence_level=ds_params.pop("sentence_level", False),
-    #                              wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
-    #                              claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
-    #                              token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})),
-    #                              filtering=filtering)
-    #
-    # train_data_path = params.pop('train_data_path')
-    # logger.info("Reading training data from %s", train_data_path)
-    # train_data = dataset_reader.read(train_data_path)
+    os.makedirs(args.serialization_dir, exist_ok=True)
+    serialization_params = deepcopy(params).as_dict(quiet=True)
+
+
+    with open(os.path.join(args.serialization_dir, "model_params.json"), "w") as param_file:
+        json.dump(serialization_params, param_file, indent=4)
+
+        # Now we begin assembling the required parts for the Trainer.
+    ds_params = params.pop('dataset_reader', {})
+    dataset_reader = FEVERReader(db,
+                                 sentence_level=ds_params.pop("sentence_level", False),
+                                 wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
+                                 claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
+                                 token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})),
+                                 filtering=filtering)
+
+    train_data_path = params.pop('train_data_path')
+    logger.info("Reading training data from %s", train_data_path)
+    train_data = dataset_reader.read(train_data_path)
 
 
     with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
@@ -80,6 +80,7 @@ def read_claims_annotate(args,jlr,logger,method,db):
             x = indiv_headline_body()
             evidences=claim_full["evidence"]
             label=claim_full["label"]
+            logger.debug(label)
 
 
 
@@ -414,14 +415,14 @@ def get_gold_labels_small(args,jlr):
     return labels
 
 
-def uofa_dev(args, jlr,method,db):
+def uofa_dev(args, jlr,method,db,params):
 
 
     gold_labels = get_gold_labels(args, jlr)
     logging.warning("got inside uofa_dev")
 
     #for annotation: you will probably run this only once in your lifetime.
-    tr_data = read_claims_annotate(args, jlr, logger, method,db)
+    tr_data = read_claims_annotate(args, jlr, logger, method,db,params)
     logger.info(
         "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
     sys.exit(1)
