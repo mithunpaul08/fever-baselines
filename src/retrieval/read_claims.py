@@ -10,7 +10,8 @@ from sklearn.metrics import accuracy_score, classification_report, confusion_mat
 
 ann_head_tr = "ann_head_tr.json"
 ann_body_tr = "ann_body_tr.json"
-logger=None
+logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
+# logger=None
 load_ann_corpus=True
 #load_combined_vector=True
 from scorer.src.fever.scorer import fever_score
