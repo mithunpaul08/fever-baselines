@@ -148,6 +148,7 @@ def read_claims_annotate(args,jlr,logger,method,params,db):
             #uncomment this is to annotate using pyprocessors
 
             annotate_and_save_doc(claim, all_evidences,index, API, ann_head_tr, ann_body_tr, logger)
+            sys.exit(1)
 
                 #this is to feed data into attention model of allen nlp.
                 #write_snli_format(claim, all_evidences,logger,label)
@@ -419,7 +420,7 @@ def uofa_dev(args, jlr,method,db):
     logging.warning("got inside uofa_dev")
 
     #for annotation: you will probably run this only once in your lifetime.
-    tr_data = read_claims_annotate(args, jlr, logger, method,params,db)
+    tr_data = read_claims_annotate(args, jlr, logger, method,db)
     logger.info(
         "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
     sys.exit(1)
