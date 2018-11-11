@@ -1,3 +1,4 @@
+from copy import deepcopy
 from common.util.log_helper import LogHelper
 from rte.mithun.ds import indiv_headline_body
 from tqdm import tqdm
@@ -19,7 +20,7 @@ from sklearn.externals import joblib
 predicted_results="predicted_results.pkl"
 snli_filename='snli_fever.json'
 
-def read_claims_annotate(args,jlr,logger,method):
+def read_claims_annotate(args,jlr,logger,method,params,db):
     try:
         os.remove(ann_head_tr)
         os.remove(ann_body_tr)
@@ -28,6 +29,30 @@ def read_claims_annotate(args,jlr,logger,method):
         logger.error("not able to find file")
 
     logger.debug("inside read_claims_annotate")
+
+
+    # #Looks like our code wasn't retreiving the nearest neighbor for NEI. So using the fever baseline code to do it
+    # os.makedirs(args.serialization_dir, exist_ok=True)
+    # serialization_params = deepcopy(params).as_dict(quiet=True)
+    #
+    #
+    # with open(os.path.join(args.serialization_dir, "model_params.json"), "w") as param_file:
+    #     json.dump(serialization_params, param_file, indent=4)
+    #
+    #     # Now we begin assembling the required parts for the Trainer.
+    # ds_params = params.pop('dataset_reader', {})
+    # dataset_reader = FEVERReader(db,
+    #                              sentence_level=ds_params.pop("sentence_level", False),
+    #                              wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
+    #                              claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
+    #                              token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})),
+    #                              filtering=filtering)
+    #
+    # train_data_path = params.pop('train_data_path')
+    # logger.info("Reading training data from %s", train_data_path)
+    # train_data = dataset_reader.read(train_data_path)
+
+
     with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
         all_claims = jlr.process(f)
         obj_all_heads_bodies=[]
@@ -58,70 +83,71 @@ def read_claims_annotate(args,jlr,logger,method):
 
 
 
-            if not (label=="NOT ENOUGH INFO"):
+            #if not (label=="NOT ENOUGH INFO"):
 
-                if label not in ['SUPPORTS', 'REFUTES']:
-                    print(f'BAD label: {label}')
-                    sys.exit()
+            if label not in ['SUPPORTS', 'REFUTES','NOT ENOUGH INFO']:
+                print(f'BAD label: {label}')
+                sys.exit()
 
-                ver_count=ver_count+1
-                logger.debug("len(evidences)for this claim_full  is:" + str(len(evidences)))
-                logger.debug("len(evidences[0])) for this claim_full  is:" + str(len(evidences[0])))
-                ev_claim=[]
-                pl_list=[]
-                #if len(evidences) is more, take that, else take evidences[0]- this is because they do chaining only if the evidences collectively support the claim.
-                if (len(evidences) >1):
-                    for inside_ev in evidences:
-                        evidence=inside_ev[0]
-                        logger.debug(evidence)
-                        page= evidence[2]
-                        lineno= evidence[3]
+            ver_count=ver_count+1
+            logger.debug("len(evidences)for this claim_full  is:" + str(len(evidences)))
+            logger.debug("len(evidences[0])) for this claim_full  is:" + str(len(evidences[0])))
+            ev_claim=[]
+            pl_list=[]
+            #if len(evidences) is more, take that, else take evidences[0]-
+            # this is because they do chaining only if the evidences collectively support the claim.
+            if (len(evidences) >1):
+                for inside_ev in evidences:
+                    evidence=inside_ev[0]
+                    logger.debug(evidence)
+                    page= evidence[2]
+                    lineno= evidence[3]
 
-                        tup=(page,lineno)
-                        pl_list.append(tup)
-
-
-
-
-
-                        logger.debug(page)
-                        logger.debug(lineno)
-                        sent=method.get_sentences_given_claim(page,logger,lineno)
-                        ev_claim.append(sent)
-                        logger.debug("tuple now is:"+str(pl_list))
-
-
-
-                    logger.debug("tuple after all evidences is:"+str(pl_list))
-                    logger.debug("unique tuple after all evidences is:"+str(set(pl_list)))
-                    logger.debug("ev_claim before :"+str((ev_claim)))
-                    logger.debug("ev_claim after:"+str(set(ev_claim)))
-
-                    #to get only unique sentences. i.e not repeated evidences
-                    all_evidences=' '.join(set(ev_claim))
+                    tup=(page,lineno)
+                    pl_list.append(tup)
 
 
 
 
-                    logger.debug("all_evidences  is:" + str((all_evidences)))
 
-                    logger.debug("found the len(evidences)>1")
+                    logger.debug(page)
+                    logger.debug(lineno)
+                    sent=method.get_sentences_given_claim(page,logger,lineno)
+                    ev_claim.append(sent)
+                    logger.debug("tuple now is:"+str(pl_list))
 
 
-                else :
-                    for evidence in evidences[0]:
-                        page=evidence[2]
-                        lineno=evidence[3]
-                        logger.debug(page)
-                        logger.debug(lineno)
-                        sent=method.get_sentences_given_claim(page,logger,lineno)
-                        ev_claim.append(sent)
-                    all_evidences=' '.join(ev_claim)
-                    logger.debug("all_evidences  is:" + str((all_evidences)))
 
-                #uncomment this is to annotate using pyprocessors
+                logger.debug("tuple after all evidences is:"+str(pl_list))
+                logger.debug("unique tuple after all evidences is:"+str(set(pl_list)))
+                logger.debug("ev_claim before :"+str((ev_claim)))
+                logger.debug("ev_claim after:"+str(set(ev_claim)))
 
-                annotate_and_save_doc(claim, all_evidences,index, API, ann_head_tr, ann_body_tr, logger)
+                #to get only unique sentences. i.e not repeated evidences
+                all_evidences=' '.join(set(ev_claim))
+
+
+
+
+                logger.debug("all_evidences  is:" + str((all_evidences)))
+
+                logger.debug("found the len(evidences)>1")
+
+
+            else :
+                for evidence in evidences[0]:
+                    page=evidence[2]
+                    lineno=evidence[3]
+                    logger.debug(page)
+                    logger.debug(lineno)
+                    sent=method.get_sentences_given_claim(page,logger,lineno)
+                    ev_claim.append(sent)
+                all_evidences=' '.join(ev_claim)
+                logger.debug("all_evidences  is:" + str((all_evidences)))
+
+            #uncomment this is to annotate using pyprocessors
+
+            annotate_and_save_doc(claim, all_evidences,index, API, ann_head_tr, ann_body_tr, logger)
 
                 #this is to feed data into attention model of allen nlp.
                 #write_snli_format(claim, all_evidences,logger,label)
@@ -140,16 +166,16 @@ def print_cv(combined_vector,gold_labels_tr):
     sys.exit(1)
 
 
-def uofa_training(args,jlr):
+def uofa_training(args,jlr,params):
     #logger.warning("got inside uofatraining")
 
     #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-    # tr_data=read_claims_annotate(args,jlr,logger,method)
-    # logger.info(
-    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
-    # sys.exit(1)
-    # logger.info(
-    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+    tr_data=read_claims_annotate(args,jlr,logger,method,params)
+    logger.info(
+        "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+    sys.exit(1)
+    logger.info(
+        "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
 
     gold_labels_tr =None
     if(args.mode =="small"):
@@ -386,17 +412,17 @@ def get_gold_labels_small(args,jlr):
     return labels
 
 
-def uofa_dev(args, jlr):
+def uofa_dev(args, jlr,params,db):
 
 
     gold_labels = get_gold_labels(args, jlr)
     logging.warning("got inside uofa_dev")
 
     #for annotation: you will probably run this only once in your lifetime.
-    # tr_data = read_claims_annotate(args, jlr, logger, method)
-    # logger.info(
-    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
-    # sys.exit(1)
+    tr_data = read_claims_annotate(args, jlr, logger, method,,params,db)
+    logger.info(
+        "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+    sys.exit(1)
     combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
     #print_cv(combined_vector, gold_labels)
     logging.info("done with generating feature vectors. Model loading and predicting next")

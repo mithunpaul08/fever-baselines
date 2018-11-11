@@ -1,3 +1,5 @@
+from rte.parikh.reader import FEVERReader
+from allennlp.common import Params
 import argparse
 import json
 from multiprocessing.pool import ThreadPool
@@ -6,7 +8,6 @@ import os,sys
 import logging
 from common.util.log_helper import LogHelper
 from tqdm import tqdm
-
 from retrieval.top_n import TopNDocsTopNSents
 from retrieval.fever_doc_db import FeverDocDB
 from common.dataset.reader import JSONLineReader
@@ -55,28 +56,35 @@ if __name__ == "__main__":
     parser.add_argument('--pred_file', type=str, help='path to save predictions',default="predictions.jsonl")
     parser.add_argument('--dynamic_cv',type=str2bool,default=False)
     parser.add_argument('--lmode', type=str,default="DEBUG")
+    parser.add_argument('--serialization_dir', type=str, default="logs/da_nn_sent")
+    parser.add_argument('--param_path', type=str, default="config/fever_nn_ora_sent.json")
+
+
+
 
 
     args = parser.parse_args()
 
     logger = setup_custom_logger('root', args)
+    db = FeverDocDB(args.db)
 
 
+    params = Params.from_file(args.param_path, args.overrides)
 
     #db = FeverDocDB(args.db)
     jlr = JSONLineReader()
     formatter = FEVERGoldFormatter(set(), FEVERLabelSchema())
 
-    #method = TopNDocsTopNSents(db, args.max_page, args.max_sent, args.model)
+    method = TopNDocsTopNSents(db, args.max_page, args.max_sent, args.model)
 
 
     processed = dict()
 
     if(args.mode=="train" or args.mode=="small"):
-        uofa_training(args,jlr)
+        uofa_training(args,jlr,params,db)
     else:
         if(args.mode=="dev"):
-            uofa_dev(args,jlr)
+            uofa_dev(args,jlr,params,db)
             logger.info("Done, testing ")
 
         else:
