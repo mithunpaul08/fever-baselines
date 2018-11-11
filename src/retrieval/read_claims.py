@@ -64,7 +64,7 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
         logger.debug("just claim alone is:")
         logger.debug(claim)
         annotate_and_save_doc(claim, evidences, index, API, ann_head_tr, ann_body_tr, logger)
-         
+
 
         sys.exit(1)
 
@@ -98,10 +98,10 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
 
             #if not (label=="NOT ENOUGH INFO"):
 
-            if label not in ['SUPPORTS', 'REFUTES','NOT ENOUGH INFO']:
-                print(f'BAD label: {label}')
-                sys.exit()
-            #
+            # if label not in ['SUPPORTS', 'REFUTES','NOT ENOUGH INFO']:
+            #     print(f'BAD label: {label}')
+            #     sys.exit()
+            # #
             # ver_count=ver_count+1
             # logger.debug("len(evidences)for this claim_full  is:" + str(len(evidences)))
             # logger.debug("len(evidences[0])) for this claim_full  is:" + str(len(evidences[0])))
