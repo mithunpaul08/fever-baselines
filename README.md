@@ -1,50 +1,36 @@
 
 # UOFA- Fact Extraction and VERification
 
+This code is built on top of sheffield's fever baseline. So we assume you have installed all the required documents they mention in their [readme file](https://github.com/sheffieldnlp/fever-baselines)
+
+
+Apart from that you will need PyProcessors over Docker. After you have installed [Docker](https://www.docker.com/), do:
+
+
+- `Docker pull myedibleenso/processors-server:latest`
+
+- `docker run -d -e _JAVA_OPTIONS="-Xmx3G" -p 127.0.0.1:8886:8888 --name procserv myedibleenso/processors-server`
+
+note: the docker run command is for the very first time you create this container. 
+
+Second time onwards use: `docker start procserv`
+
+
+
+
+## In our project we are experimenting with fact verification but unlexicalized.
+## As of Nov 2018 there are two main lines of develpment
+1. With decomposable attention + hand crafted features of NER replacement
+2. With handcrafted features + SVM
+
+
 ## to run the entire pipe line with IR (from fever baseline model) + SVM (our model): use ./runner_ir.sh (or the commands within)
 
 
 ## To run instead, the decomposable attention model, with Smart NER (replace tokens with NER tags but checking if they exists in the claim) use ./run_oracle_decomp.sh- note that 
 ##the IR part is in oracle mode.-i.e there is no Information retrieval being done on the fly. instead we rely on the gold data annotators found for ecah of the training data. However, do note that, the above statement is true only for classes SUPPORTS and REFUTES. For the class NOT ENOUGH INFO, there are two methods of retrieving evidences. via either using nearest neighbor or random. We are using the fever baseline's nearest neighbor methods
  
-
-
-or if you want to explicitly run each command, use these commands below
-@server@jenny
-
-`rm -rf logs/`
-
-`PYTHONPATH=src python src/scripts/rte/da/train_da.py data/fever/fever.db config/fever_nn_ora_sent.json logs/da_nn_sent --cuda-device $CUDA_DEVICE`
-
-`mkdir -p data/models`
-
-`cp logs/da_nn_sent/model.tar.gz data/models/decomposable_attention.tar.gz`
-
-`PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db data/models/decomposable_attention.tar.gz data/fever/dev.ns.pages.p1.jsonl`
-
-This assumes that you are on the same folder. If your data folder is somewhere else, use this 
-
-for training:
-`PYTHONPATH=src python src/scripts/rte/da/train_da.py /net/kate/storage/work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db config/fever_nn_ora_sent.json logs/da_nn_sent --cuda-device $CUDA_DEVICE`
-for dev:
-`PYTHONPATH=src python src/scripts/rte/da/eval_da.py /net/kate/storage/work/mithunpaul/fever/my_fork/fever-baselines/data/fever/fever.db data/models/decomposable_attention.tar.gz /net/kate/storage/work/mithunpaul/fever/my_fork/fever-baselines/data/fever/dev.ns.pages.p1.jsonl`
-
-
-
-
-
-
-`source activate fever`
-`PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db data/models/decomposable_attention.tar.gz data/fever/dev.ns.pages.p1.jsonl`
     
-# Fact Extraction and VERification
-
-
-- To annotate data once you have Docker you need to pull pyprocessors using :docker pull myedibleenso/processors-server:latest
-
-- Then run this image using: docker run -d -e _JAVA_OPTIONS="-Xmx3G" -p 127.0.0.1:8886:8888 --name procserv myedibleenso/processors-server
-
-note: the docker run command is for the very first time you create this container. Second time onwards use: docker start procserv
 
 - source activate fever
 
