@@ -58,10 +58,10 @@ if __name__ == "__main__":
     parser.add_argument('--lmode', type=str,default="DEBUG")
     parser.add_argument('--serialization_dir', type=str, default="logs/da_nn_sent")
     parser.add_argument('--param_path', type=str, default="config/fever_nn_ora_sent.json")
-
-
-
-
+    parser.add_argument('-o', '--overrides',
+                        type=str,
+                        default="",
+                        help='a HOCON structure used to override the experiment configuration')
 
     args = parser.parse_args()
 
