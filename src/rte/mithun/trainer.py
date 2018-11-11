@@ -1154,10 +1154,10 @@ def embed_cosine_sim_features(lemmatized_headline_split_sw, lemmatized_body_spli
     logging.info(" got inside embed_cosine_sim_features  ")
     features=[0]
 
-    logging.debug(" lemmatized_headline_split_sw vector ")
-    logging.debug(str((lemmatized_headline_split_sw)))
-    logging.debug(" lemmatized_body_split_sw vector ")
-    logging.debug(str((lemmatized_body_split_sw)))
+    logging.info(" lemmatized_headline_split_sw vector ")
+    logging.info(str((lemmatized_headline_split_sw)))
+    logging.info(" lemmatized_body_split_sw vector ")
+    logging.info(str((lemmatized_body_split_sw)))
 
     #get the sum of embeddings of headline and body
     sum_h = get_sum_vector_embedding(vocab,vec,lemmatized_headline_split_sw)
