@@ -20,7 +20,7 @@ from sklearn.externals import joblib
 predicted_results="predicted_results.pkl"
 snli_filename='snli_fever.json'
 
-def read_claims_annotate(args,jlr,logger,method,params,db):
+def read_claims_annotate(args,jlr,logger,method,db):
     try:
         os.remove(ann_head_tr)
         os.remove(ann_body_tr)
