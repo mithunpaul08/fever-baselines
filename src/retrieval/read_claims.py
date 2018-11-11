@@ -419,7 +419,7 @@ def uofa_dev(args, jlr,params,db):
     logging.warning("got inside uofa_dev")
 
     #for annotation: you will probably run this only once in your lifetime.
-    tr_data = read_claims_annotate(args, jlr, logger, method,,params,db)
+    tr_data = read_claims_annotate(args, jlr, logger, method,params,db)
     logger.info(
         "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
     sys.exit(1)
