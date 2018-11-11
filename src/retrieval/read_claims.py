@@ -52,7 +52,7 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})),
                                  filtering=args.filtering)
 
-    train_data_path = params.pop('validation_data_path')
+    validation_data_path = params.pop('validation_data_path')
     logger.info("Reading  data from %s", validation_data_path)
     train_data = dataset_reader.read(train_data_path)
 
@@ -346,10 +346,10 @@ def write_snli_format(headline,body,logger,label):
 
     return
 
-def get_gold_labels(args,jlr):
+def get_gold_labels(validation_data_path,jlr):
     labels = np.array([[]])
 
-    with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
+    with open(validation_data_path,"r") as f, open(args.out_file, "w+") as out_file:
         all_claims = jlr.process(f)
         for index,claim_full in tqdm(enumerate(all_claims),total=len(all_claims),desc="get_gold_labels:"):
             label=claim_full["label"]
@@ -421,7 +421,7 @@ def get_gold_labels_small(args,jlr):
 def uofa_dev(args, jlr,method,db,params):
 
 
-    gold_labels = get_gold_labels(args, jlr)
+
     logging.warning("got inside uofa_dev")
 
     #for annotation: you will probably run this only once in your lifetime.
@@ -446,6 +446,11 @@ def uofa_dev(args, jlr,method,db,params):
     acc=accuracy_score(gold_labels, pred)*100
     logging.warning(str(acc)+"%")
     logging.info(classification_report(gold_labels, pred))
+
+    validation_data_path = params.pop('validation_data_path')
+    logger.info("Reading  data from %s", validation_data_path)
+
+    gold_labels = get_gold_labels(validation_data_path, jlr)
     logging.info(confusion_matrix(gold_labels, pred))
 
 
