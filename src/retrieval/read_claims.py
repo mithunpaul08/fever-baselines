@@ -52,8 +52,8 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})),
                                  filtering=args.filtering)
 
-    train_data_path = params.pop('train_data_path')
-    logger.info("Reading training data from %s", train_data_path)
+    train_data_path = params.pop('validation_data_path')
+    logger.info("Reading  data from %s", validation_data_path)
     train_data = dataset_reader.read(train_data_path)
 
 
