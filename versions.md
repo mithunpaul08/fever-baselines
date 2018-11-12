@@ -11,3 +11,9 @@ These are the various versions in the fact verification code development cycle (
 | Nov 11th 2018|   mrksic | 09fc4c1fa3280f229105c91846944842b9173ad2  | Does IR retrieval using their FEVERReader instead of our custom function.. We are in the middle of adding mrksic vectors in this branch, so no results. But  This should be added to master main for hand crafted development channel|  |   | | No | SVM | | 
 
 
+| First Header  | Second Header |
+| ------------- | ------------- |
+| Content Cell  | Content Cell  |
+| Content Cell  | Content Cell  |
+
+
