@@ -58,15 +58,16 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     logger.info("Reading  data from %s", validation_data_path)
     data= dataset_reader.read(validation_data_path)
 
-    for index,item in enumerate(tqdm(data)):
+    counter=0
+    for item in (tqdm(data)):
         claim = item.fields["hypothesis"]
         evidences = item.fields["premise"]
         label = item.fields["label"]
         logger.debug(label)
         logger.debug("just claim alone is:")
         logger.debug(claim)
-        annotate_and_save_doc(claim, evidences, index, API, ann_head_tr, ann_body_tr, logger)
-
+        annotate_and_save_doc(claim, evidences, counter, API, ann_head_tr, ann_body_tr, logger)
+        counter=counter+1
 
         sys.exit(1)
 
