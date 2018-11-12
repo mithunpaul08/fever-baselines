@@ -1,3 +1,6 @@
+import os
+from shutil import copyfile
+from git import Repo
 from copy import deepcopy
 from common.util.log_helper import LogHelper
 from rte.mithun.ds import indiv_headline_body
@@ -69,6 +72,11 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
         logger.debug(f"evidence:{evidence}")
         logger.debug(f"label:{label}")
         annotate_and_save_doc(claim, evidence, label, API, ann_head_tr, ann_body_tr, logger)
+
+    archive_root= params.pop('validation_data_path')
+    cwd=os.getcwd()
+    head_file=cwd+"/"+ann_head_tr
+    copy_file_to_archive(archive_root,args.mode,head_file)
 
     return data
 
@@ -368,4 +376,41 @@ def uofa_dev(args, jlr,method,db,params):
     #logging.debug(trained_model.n_support_)
     logging.info("done with testing. going to exit")
     sys.exit(1)
+
+
+
+
+
+
+
+def copy_file_to_archive(rootpath, mode, src):
+    repo =Repo(os.getcwd())
+    branch=repo.active_branch.name
+    sha=repo.head.object.hexsha
+    print(branch)
+
+    full_path_sha=rootpath+"/"+branch+"/"+sha
+    full_path_sha_mode = full_path_sha + "/"+mode
+
+
+
+    #create folder if it doesn't exist
+    dest = full_path_sha_mode + "/"+"pusher.sh"
+
+    if os.path.isdir(full_path_sha ):
+
+        if os.path.isdir(full_path_sha_mode):
+            copyfile(src,dest)
+        else:
+            os.mkdir(full_path_sha_mode)
+            copyfile(src, dest)
+    else:
+        os.mkdir(full_path_sha )
+        if os.path.isdir(full_path_sha_mode):
+            copyfile(src,dest)
+        else:
+            os.mkdir(full_path_sha_mode)
+            copyfile(src, dest)
+
+
 
