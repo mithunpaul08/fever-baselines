@@ -397,7 +397,7 @@ def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
     src=src_path+"/"+src_file_name
 
     #create folder if it doesn't exist
-    dest = full_path_sha_mode + "/"+"src_file_name"
+    dest = full_path_sha_mode + "/"+src_file_name
     print(branch)
     print(full_path_sha)
     print(full_path_sha_mode)
@@ -408,7 +408,7 @@ def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
     os.mkdir(full_path_sha)
     os.mkdir(full_path_sha_mode)
     copyfile(src, dest)
-    
+
     # if os.path.isdir(full_path_sha):
     #     if os.path.isdir(full_path_sha ):
     #         if os.path.isdir(full_path_sha_mode):
@@ -425,5 +425,19 @@ def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
     #             copyfile(src, dest)
     # else:
 
+def dir_create(parent, child):
+    #if parent exists, create child, else create parent, then create child
+    if os.path.isdir(parent):
+        os.mkdir(child)
+    else:
+        os.mkdir(parent)
+        os.mkdir(child)
 
 
+def if_dir_create_file(parent, child_src, child_dest):
+    #if parent dir, create child file, else create parent, then create child file
+    if os.path.isdir(parent):
+        copyfile(child_src, child_dest)
+    else:
+        os.mkdir(parent)
+        copyfile(child_src, child_dest)
