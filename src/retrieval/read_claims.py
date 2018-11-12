@@ -63,14 +63,14 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     counter=0
     for item in (tqdm(data)):
         claim = item["claim"]
-        evidences = item["evidence"]
+        evidence = item["evidence"]
         label = item["label"]
         logger.debug(f"claim:{claim}")
         logger.debug(f"evidence:{evidence}")
         logger.debug(f"label:{label}")
         sys.exit(1)
 
-        annotate_and_save_doc(claim, evidences, counter, API, ann_head_tr, ann_body_tr, logger)
+        annotate_and_save_doc(claim, evidence, counter, API, ann_head_tr, ann_body_tr, logger)
         counter=counter+1
 
 
