@@ -389,8 +389,8 @@ def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
     branch=repo.active_branch.name
     sha=repo.head.object.hexsha
 
-
-    full_path_sha=rootpath+"/"+branch+"/"+sha
+    full_path_branch = rootpath + "/" + branch
+    full_path_sha=full_path_branch+"/"+sha
     full_path_sha_mode = full_path_sha + "/"+mode
 
 
@@ -404,20 +404,26 @@ def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
     print(src)
     print(dest)
 
-    if os.path.isdir(full_path_sha ):
-
-        if os.path.isdir(full_path_sha_mode):
-            copyfile(src,dest)
-        else:
-            os.mkdir(full_path_sha_mode)
-            copyfile(src, dest)
-    else:
-        os.mkdir(full_path_sha )
-        if os.path.isdir(full_path_sha_mode):
-            copyfile(src,dest)
-        else:
-            os.mkdir(full_path_sha_mode)
-            copyfile(src, dest)
+    os.mkdir(full_path_branch)
+    os.mkdir(full_path_sha)
+    os.mkdir(full_path_sha_mode)
+    copyfile(src, dest)
+    
+    # if os.path.isdir(full_path_sha):
+    #     if os.path.isdir(full_path_sha ):
+    #         if os.path.isdir(full_path_sha_mode):
+    #             copyfile(src,dest)
+    #         else:
+    #             os.mkdir(full_path_sha_mode)
+    #             copyfile(src, dest)
+    #     else:
+    #         os.mkdir(full_path_sha )
+    #         if os.path.isdir(full_path_sha_mode):
+    #             copyfile(src,dest)
+    #         else:
+    #             os.mkdir(full_path_sha_mode)
+    #             copyfile(src, dest)
+    # else:
 
 
 
