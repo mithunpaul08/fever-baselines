@@ -34,8 +34,8 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     logger.info(f"archive_root:{archive_root}")
     cwd=os.getcwd()
     src_file_home_dir=cwd
-    copy_file_to_archive(archive_root,args.mode,src_file_home_dir,ann_head_tr,logger)
-    copy_file_to_archive(archive_root, args.mode, src_file_home_dir, ann_body_tr, logger)
+    copy_file_to_archive(archive_root,args.mode,src_file_home_dir,ann_head_tr,ann_body_tr,logger)
+
     sys.exit(1)
 
 
@@ -287,9 +287,9 @@ def get_gold_labels(validation_data_path,jlr):
             else:
                 if (label == "REFUTES"):
                     labels = np.append(labels, 1)
-                # else:
-                #     if (label=="NOT ENOUGH INFO"):README.md
-                #         labels = np.append(labels, 2)
+                else:
+                    if (label=="NOT ENOUGH INFO"):
+                        labels = np.append(labels, 2)
 
     return labels
 
@@ -354,32 +354,37 @@ def uofa_dev(args, jlr,method,db,params):
     logging.warning("got inside uofa_dev")
 
     #for annotation: you will probably run this only once in your lifetime.
-    data = read_claims_annotate(args, jlr, logger, method,db,params)
-    logger.info(
-        "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
-    sys.exit(1)
+    # data = read_claims_annotate(args, jlr, logger, method,db,params)
+    # logger.info(
+    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+    # sys.exit(1)
+
     combined_vector= read_json_create_feat_vec(load_ann_corpus,args)
     #print_cv(combined_vector, gold_labels)
     logging.info("done with generating feature vectors. Model loading and predicting next")
     logging.info("shape of cv:"+str(combined_vector.shape))
-    logging.info("number of rows in label list is is:" + str(len(gold_labels)))
+
     logging.info("above two must match")
     trained_model=load_model()
     logging.debug("weights:")
     #logging.debug(trained_model.coef_ )
     pred=do_testing(combined_vector,trained_model)
     logging.debug(str(pred))
-    logging.debug("and golden labels are:")
-    logging.debug(str(gold_labels))
-    logging.warning("done testing. and the accuracy is:")
-    acc=accuracy_score(gold_labels, pred)*100
+
+
     logging.warning(str(acc)+"%")
-    logging.info(classification_report(gold_labels, pred))
+
 
     validation_data_path = params.pop('validation_data_path')
     logger.info("Reading  data from %s", validation_data_path)
-
     gold_labels = get_gold_labels(validation_data_path, jlr)
+    logging.info("number of rows in label list is is:" + str(len(gold_labels)))
+    logging.debug("and golden labels are:")
+    logging.debug(str(gold_labels))
+    logging.info(classification_report(gold_labels, pred))
+    logging.warning("done testing. and the accuracy is:")
+    acc = accuracy_score(gold_labels, pred) * 100
+
     logging.info(confusion_matrix(gold_labels, pred))
 
 
@@ -395,7 +400,7 @@ def uofa_dev(args, jlr,method,db,params):
 
 
 
-def copy_file_to_archive(rootpath, mode, src_path,src_file_name,logger):
+def copy_file_to_archive(rootpath, mode, src_path, src_file_name1,src_file_name2, logger):
     repo =Repo(os.getcwd())
     branch=repo.active_branch.name
     sha=repo.head.object.hexsha
@@ -405,25 +410,29 @@ def copy_file_to_archive(rootpath, mode, src_path,src_file_name,logger):
     full_path_branch_sha_mode = full_path_branch_sha + "/"+mode
 
 
-    src=src_path+"/"+src_file_name
+    src1= src_path +"/" + src_file_name1
+    src2 = src_path + "/" + src_file_name2
 
     #create folder if it doesn't exist
-    dest = full_path_branch_sha_mode + "/"+src_file_name
+    dest = full_path_branch_sha_mode + "/" + src_file_name1
     logger.debug(branch)
     logger.debug(full_path_branch_sha)
     logger.debug(full_path_branch_sha_mode)
-    logger.debug(src)
+    logger.debug(src1)
     logger.debug(dest)
 
-    dir_create(full_path_branch,full_path_branch_sha)
-    dir_create(full_path_branch_sha, full_path_branch_sha_mode)
-    if_dir_create_file(full_path_branch_sha_mode,src,dest)
+    dir_create(full_path_branch,full_path_branch_sha,full_path_branch_sha_mode)
+    #dir_create(full_path_branch_sha, full_path_branch_sha_mode)
+    if_dir_create_file(full_path_branch_sha_mode,src1,dest)
+    if_dir_create_file(full_path_branch_sha_mode, src2, dest)
 
 
 def dir_create(parent, child):
     #if parent exists, create child, else create parent, then create child
     if os.path.isdir(parent):
         os.mkdir(child)
+
+
     else:
         os.mkdir(parent)
         os.mkdir(child)
