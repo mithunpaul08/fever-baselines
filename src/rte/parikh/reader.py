@@ -76,8 +76,8 @@ class FEVERReader(DatasetReader):
         #logger.info("got inside read")
         #logging.info("got inside read")
 
-
-
+        nei_overlap_counter = 0
+        nei_counter = 0
         instances = []
 
         ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
@@ -198,6 +198,8 @@ class FEVERReader(DatasetReader):
             print(f"length of bodies_words:{len(bodies_words)}")
 
             counter=0
+
+
             for he, be, hl, bl, hw, bw,ht,hd,instance in\
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
@@ -231,18 +233,18 @@ class FEVERReader(DatasetReader):
                 label = instance["label_text"]
                 #print(f"label: {label}")
 
-                #randomly print a few not enough info entries
-                if(label=="NOT ENOUGH INFO") and (found_intersection):
-                    print("\n")
-                    print(f"hw: {hw}")
-                    print(f"bw: {bw}")
-                    print(f"premise_ann: {premise_ann}")
-                    print(f"hypothesis_ann: {hypothesis_ann}")
-                    sys.exit(1)
-                #
-                #
 
-                #
+                #randomly print a few not enough info entries
+                if(label=="NOT ENOUGH INFO"):
+                    nei_counter=nei_counter+1
+                    if(found_intersection):
+                        # print("\n")
+                        # print(f"hw: {hw}")
+                        # print(f"bw: {bw}")
+                        # print(f"premise_ann: {premise_ann}")
+                        # print(f"hypothesis_ann: {hypothesis_ann}")
+                        nei_overlap_counter=nei_overlap_counter+1
+
 
                 instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
 
@@ -252,6 +254,10 @@ class FEVERReader(DatasetReader):
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
                                      "Is the path correct?".format(file_path))
+        print(f"nei_overlap_counter: {nei_counter}")
+        print(f"nei_overlap_counter: {nei_overlap_counter}")
+        sys.exit(1)
+
         return Dataset(instances)
 
 
