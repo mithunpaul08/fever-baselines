@@ -146,7 +146,7 @@ class FEVERReader(DatasetReader):
 
 
             instances.append(dict_claim_ev_label)
-            return (instances)
+
 
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "

@@ -29,6 +29,16 @@ snli_filename='snli_fever.json'
 API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
 def read_claims_annotate(args,jlr,logger,method,db,params):
+
+    archive_root= params.pop('archive_root')
+    logger.info(f"archive_root:{archive_root}")
+    cwd=os.getcwd()
+    head_file_path=cwd
+    copy_file_to_archive(archive_root,args.mode,head_file_path,ann_head_tr,logger)
+    sys.exit(1)
+
+
+
     logger.error("Going to delete annotations output file if it exists")
     try:
         os.remove(ann_head_tr)
