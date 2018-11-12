@@ -78,6 +78,11 @@ class FEVERReader(DatasetReader):
 
         nei_overlap_counter = 0
         nei_counter = 0
+        supports_overlap_counter = 0
+        supports_counter = 0
+        refutes_overlap_counter = 0
+        refutes_counter = 0
+
         instances = []
 
         ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
@@ -238,17 +243,28 @@ class FEVERReader(DatasetReader):
                 if(label=="NOT ENOUGH INFO"):
                     nei_counter=nei_counter+1
                     if(found_intersection):
-                        print("\n")
-                        print(f"hw: {hw}")
-                        print(f"bw: {bw}")
-                        print(f"premise_ann: {premise_ann}")
-                        print(f"hypothesis_ann: {hypothesis_ann}")
-                        print(f"label: {label}")
+
+                        # print("\n")
+                        # print(f"hw: {hw}")
+                        # print(f"bw: {bw}")
+                        # print(f"hypothesis_ann: {hypothesis_ann}")
+                        # print(f"premise_ann: {premise_ann}")
+                        #
+                        # print(f"label: {label}")
 
                         nei_overlap_counter=nei_overlap_counter+1
 
-                if(counter>100):
-                    sys.exit(1)
+                if (label == "SUPPORTS"):
+                    supports_counter = supports_counter + 1
+                    if (found_intersection):
+                        supports_overlap_counter=supports_overlap_counter+1
+
+                if (label == "REFUTES"):
+                    refutes_counter = refutes_counter + 1
+                    if (found_intersection):
+                        refutes_overlap_counter = refutes_overlap_counter + 1
+
+
 
                 instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
 
@@ -260,6 +276,10 @@ class FEVERReader(DatasetReader):
                                      "Is the path correct?".format(file_path))
         print(f"nei_overlap_counter: {nei_counter}")
         print(f"nei_overlap_counter: {nei_overlap_counter}")
+        print(f"supports_counter: {supports_counter}")
+        print(f"supports_overlap_counter: {supports_overlap_counter}")
+        print(f"refutes_counter: {refutes_counter}")
+        print(f"refutes_overlap_counter: {refutes_overlap_counter}")
         sys.exit(1)
 
         return Dataset(instances)
