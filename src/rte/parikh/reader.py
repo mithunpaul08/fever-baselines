@@ -219,10 +219,6 @@ class FEVERReader(DatasetReader):
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
 
-                # print("value of the first premise and hypothesis BEFORE smart ner replacement is")
-                # print(f"hypothesis: {hw}")
-                # print(f"premise:{bw}")
-
 
 
 

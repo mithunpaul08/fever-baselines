@@ -1393,6 +1393,9 @@ class UofaTrainTest():
         #here new evidence sentence means that the sentence which was creatd when we took just the evidence and collapsed
         #i.e JRR Tolkein, was collapsed to one PERSON E-1
 
+        # check if the token of this NER tag over laps with claim also somewhere
+        found_intersection = False
+        
         for ev_new_ner_value in new_ev_sent_after_collapse:
 
             if ev_new_ner_value in dict_newner_token_ev.keys():
@@ -1402,8 +1405,7 @@ class UofaTrainTest():
 
                 token_split=set(token.split(" "))
 
-                #check if the token of this NER tag over laps with claim also somewhere
-                found_intersection=False
+
                 for tup in dict_tokenner_newner_claims.keys():
                     name_cl = tup[0]
                     ner_cl=tup[1]
