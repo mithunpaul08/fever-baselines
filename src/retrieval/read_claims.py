@@ -56,7 +56,9 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
 
     validation_data_path = params.pop('validation_data_path')
     logger.info("Reading  data from %s", validation_data_path)
-    data= dataset_reader.read(validation_data_path).instances
+    data= dataset_reader.read_uofa(validation_data_path).instances
+
+    logger.info("fdata is of type{type(data)}")
 
     counter=0
     for item in (tqdm(data)):
