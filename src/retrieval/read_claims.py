@@ -58,20 +58,22 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     logger.info("Reading  data from %s", validation_data_path)
     data= dataset_reader.read_uofa(validation_data_path)
 
-    logger.info("fdata is of type{type(data)}")
+    logger.info(f"data is of type{type(data)}")
 
     counter=0
     for item in (tqdm(data)):
-        claim = item.fields["hypothesis"]
-        evidences = item.fields["premise"]
-        label = item.fields["label"]
-        logger.debug(label)
-        logger.debug("just claim alone is:")
-        logger.debug(claim)
+        claim = item["claim"]
+        evidences = item["evidence"]
+        label = item["label"]
+        logger.debug(f"claim:{claim}")
+        logger.debug(f"evidence:{evidence}")
+        logger.debug(f"label:{label}")
+        sys.exit(1)
+
         annotate_and_save_doc(claim, evidences, counter, API, ann_head_tr, ann_body_tr, logger)
         counter=counter+1
 
-        sys.exit(1)
+
 
         #
         # if item.fields["premise"] is None or item.fields["premise"].sequence_length() == 0:

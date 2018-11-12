@@ -109,10 +109,15 @@ class FEVERReader(DatasetReader):
 
         instances = []
 
+
+
         ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
         ds.read()
 
         for index,instance in enumerate(tqdm.tqdm(ds.data)):
+
+            dict_claim_ev_label = {}
+
             if instance is None:
                 continue
 
@@ -129,13 +134,18 @@ class FEVERReader(DatasetReader):
             hypothesis = instance["claim"]
             label = instance["label_text"]
 
+            dict_claim_ev_label['claim'] = hypothesis
+            dict_claim_ev_label['evidence'] = premise
+            dict_claim_ev_label['label'] = label
+
+
             # print(f"hypothesis:{hypothesis}")
             # print(f"premise:{premise}")
             # print(f"label:{label}")
 
 
 
-            instances.append(self.text_to_instance(premise, hypothesis, label))
+            instances.append(dict_claim_ev_label)
             if(index==20):
                 return (instances)
         if not instances:
