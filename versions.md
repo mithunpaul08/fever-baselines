@@ -2,6 +2,10 @@
 # Versions
 These are the various versions in the fact verification code development cycle (and what they do) at University of Arizona. Note, there must be only one version of this document and preferably exists in the master branch
 
+| Date of modification |name of the branch |git SHA | change made | New F1 score | New overall accuracy | New average Precision|  Merged with master? |Type of Classifier SVM or Decomp Attn | Notes |
+| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| Nov 8th 2018|
+
 | Date of modification | name of the branch | git SHA | change made | New F1 score | New overall accuracy | New average Precision| Merged with master? | Type of Classifier SVM or Decomp Attn | Notes |
 
 | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
