@@ -319,7 +319,7 @@ def annotate_and_save_doc(headline,body, label, API, json_file_tr_annotated_head
 
     doc2 = API.fastnlp.annotate(body)
     logger.debug(doc2)
-    doc2.id = index
+    doc2.id = label
 
     with open(json_file_tr_annotated_body, "a") as out:
           out.write(doc2.to_JSON())
