@@ -77,7 +77,7 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     logger.info(f"archive_root:{archive_root}")
     cwd=os.getcwd()
     head_file_path=cwd
-    copy_file_to_archive(archive_root,args.mode,head_file_path,ann_head_tr)
+    copy_file_to_archive(archive_root,args.mode,head_file_path,ann_head_tr,logger)
 
     return data
 
@@ -384,7 +384,7 @@ def uofa_dev(args, jlr,method,db,params):
 
 
 
-def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
+def copy_file_to_archive(rootpath, mode, src_path,src_file_name,logger):
     repo =Repo(os.getcwd())
     branch=repo.active_branch.name
     sha=repo.head.object.hexsha
@@ -398,11 +398,11 @@ def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
 
     #create folder if it doesn't exist
     dest = full_path_branch_sha_mode + "/"+src_file_name
-    print(branch)
-    print(full_path_branch_sha)
-    print(full_path_branch_sha_mode)
-    print(src)
-    print(dest)
+    logger.debug(branch)
+    logger.debug(full_path_branch_sha)
+    logger.debug(full_path_branch_sha_mode)
+    logger.debug(src)
+    logger.debug(dest)
 
     dir_create(full_path_branch,full_path_branch_sha)
     dir_create(full_path_branch_sha, full_path_branch_sha_mode)
