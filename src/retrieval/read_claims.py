@@ -304,9 +304,9 @@ def write_pred_str_disk(args,jlr,pred):
 
 def annotate_and_save_doc(headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
                           logger):
-    logger.debug("got inside annotate_and_save_doc")
-    logger.debug("headline:"+headline)
-    logger.debug("body:" + body)
+    logger.debug(f"got inside annotate_and_save_doc")
+    logger.debug(f"headline:{headline}")
+    logger.debug(f"body:{body}")
     doc1 = API.fastnlp.annotate(headline)
     doc1.id=index
     with open(json_file_tr_annotated_headline, "a") as out:
