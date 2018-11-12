@@ -12,7 +12,7 @@ from scorer.src.fever.scorer import fever_score
 import json,sys
 from sklearn.externals import joblib
 from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
-
+from processors import ProcessorsBaseAPI
 
 ann_head_tr = "ann_head_tr.json"
 ann_body_tr = "ann_body_tr.json"
@@ -23,6 +23,7 @@ load_ann_corpus=True
 
 predicted_results="predicted_results.pkl"
 snli_filename='snli_fever.json'
+API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
 def read_claims_annotate(args,jlr,logger,method,db,params):
     logger.error("Going to delete annotations output file if it exists")
@@ -57,7 +58,7 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     logger.info("Reading  data from %s", validation_data_path)
     data= dataset_reader.read(validation_data_path)
 
-    for item in tqdm(data):
+    for index,item in enumerate(tqdm(data)):
         claim = item.fields["hypothesis"]
         evidences = item.fields["premise"]
         label = item.fields["label"]

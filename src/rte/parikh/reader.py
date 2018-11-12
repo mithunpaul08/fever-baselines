@@ -94,7 +94,9 @@ class FEVERReader(DatasetReader):
             # print(f"label:{label}")
 
 
+
             instances.append(self.text_to_instance(premise, hypothesis, label))
+            return Dataset(instances)
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
                                      "Is the path correct?".format(file_path))
