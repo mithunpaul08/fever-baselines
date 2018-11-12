@@ -68,10 +68,9 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
         logger.debug(f"claim:{claim}")
         logger.debug(f"evidence:{evidence}")
         logger.debug(f"label:{label}")
-        sys.exit(1)
-
         annotate_and_save_doc(claim, evidence, counter, API, ann_head_tr, ann_body_tr, logger)
         counter=counter+1
+        sys.exit(1)
 
 
 
