@@ -238,13 +238,17 @@ class FEVERReader(DatasetReader):
                 if(label=="NOT ENOUGH INFO"):
                     nei_counter=nei_counter+1
                     if(found_intersection):
-                        # print("\n")
-                        # print(f"hw: {hw}")
-                        # print(f"bw: {bw}")
-                        # print(f"premise_ann: {premise_ann}")
-                        # print(f"hypothesis_ann: {hypothesis_ann}")
+                        print("\n")
+                        print(f"hw: {hw}")
+                        print(f"bw: {bw}")
+                        print(f"premise_ann: {premise_ann}")
+                        print(f"hypothesis_ann: {hypothesis_ann}")
+                        print(f"label: {label}")
+
                         nei_overlap_counter=nei_overlap_counter+1
 
+                if(counter>100):
+                    sys.exit(1)
 
                 instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
 
