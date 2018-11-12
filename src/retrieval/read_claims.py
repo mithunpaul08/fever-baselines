@@ -68,7 +68,7 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
         logger.debug(f"claim:{claim}")
         logger.debug(f"evidence:{evidence}")
         logger.debug(f"label:{label}")
-        annotate_and_save_doc(claim, evidence, counter, API, ann_head_tr, ann_body_tr, logger)
+        annotate_and_save_doc(claim, evidence, label, API, ann_head_tr, ann_body_tr, logger)
         counter=counter+1
         sys.exit(1)
 
@@ -305,13 +305,13 @@ def write_pred_str_disk(args,jlr,pred):
     return final_predictions
 
 
-def annotate_and_save_doc(headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
+def annotate_and_save_doc(headline,body, label, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
                           logger):
     logger.debug(f"got inside annotate_and_save_doc")
     logger.debug(f"headline:{headline}")
     logger.debug(f"body:{body}")
     doc1 = API.fastnlp.annotate(headline)
-    doc1.id=index
+    doc1.id=label
     with open(json_file_tr_annotated_headline, "a") as out:
       out.write(doc1.to_JSON())
       out.write("\n")
