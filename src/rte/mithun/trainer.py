@@ -1278,22 +1278,18 @@ class UofaTrainTest():
             ev_claim = "e"
             new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev = self.collapse_both(
                 evidence_words_list, evidence_ner_list, ev_claim)
-            # print("dict_newner_token is:" + str(dict_newner_token))
 
-            # print("new_sent_after_collapse")
-            # print(new_sent_after_collapse)
-            #print(evidence_words_list)
-            neutered_body= self.check_exists_in_claim(new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev,
+            neutered_body,found_intersection= self.check_exists_in_claim(new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev,
                                   dict_tokenner_newner_claims)
 
-            #print("done")
 
             premise = " ".join(neutered_body)
             hypothesis = " ".join(neutered_headline)
-            # print(hypothesis)
-            # print(premise)
-            #
-            # sys.exit(1)
+
+            if (found_intersection):
+                print(hypothesis)
+                print(premise)
+                sys.exit(1)
 
 
             return (premise, hypothesis)
@@ -1393,28 +1389,28 @@ class UofaTrainTest():
 
         combined_sent=[]
 
+        # while parsig through the new evidence sentence you might encounter a new NER tag (eg: PER-E1).
+        #here new evidence sentence means that the sentence which was creatd when we took just the evidence and collapsed
+        #i.e JRR Tolkein, was collapsed to one PERSON E-1
 
         for ev_new_ner_value in new_ev_sent_after_collapse:
-            #while parsig through the new evidence sentence you might encounter a new NER tag (eg: PER-E1). find its corresponding string value Eg: "tolkein"
+
             if ev_new_ner_value in dict_newner_token_ev.keys():
 
-                #find its corresponding string value Eg: "tolkein"
+                #if thats true find its corresponding string value Eg: "tolkein"
                 token=dict_newner_token_ev[ev_new_ner_value]
 
                 token_split=set(token.split(" "))
-                #print(token_split)
 
+                #check if the token of this NER tag over laps with claim also somewhere
                 found_intersection=False
                 for tup in dict_tokenner_newner_claims.keys():
                     name_cl = tup[0]
                     ner_cl=tup[1]
                     name_cl_split = set(name_cl.split(" "))
-                    # print("first value in tuples is")
-                    # print(type(token_split))
-                    # print(type(name_cl_split))
                     #
 
-                    # if (token_split.intersection(name_cl_split)):
+
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
                         #print("name exists")
 
@@ -1433,6 +1429,7 @@ class UofaTrainTest():
                             combined_sent.append(val_claim)
                             found_intersection=True
 
+                #if there is no intersection/common NER entities between headline and body
                 if not (found_intersection):
                     combined_sent.append(ev_new_ner_value)
                     new_ner=""
@@ -1450,7 +1447,7 @@ class UofaTrainTest():
                 combined_sent.append(ev_new_ner_value)
 
 
-        return combined_sent
+        return combined_sent,found_intersection
 
 
 
