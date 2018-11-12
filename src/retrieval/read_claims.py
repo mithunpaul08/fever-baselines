@@ -33,8 +33,9 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     archive_root= params.pop('archive_root')
     logger.info(f"archive_root:{archive_root}")
     cwd=os.getcwd()
-    head_file_path=cwd
-    copy_file_to_archive(archive_root,args.mode,head_file_path,ann_head_tr,logger)
+    src_file_home_dir=cwd
+    copy_file_to_archive(archive_root,args.mode,src_file_home_dir,ann_head_tr,logger)
+    copy_file_to_archive(archive_root, args.mode, src_file_home_dir, ann_body_tr, logger)
     sys.exit(1)
 
 
@@ -86,8 +87,8 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
     archive_root= params.pop('archive_root')
     logger.info(f"archive_root:{archive_root}")
     cwd=os.getcwd()
-    head_file_path=cwd
-    copy_file_to_archive(archive_root,args.mode,head_file_path,ann_head_tr,logger)
+    src_file_home_dir=cwd
+    copy_file_to_archive(archive_root,args.mode,src_file_home_dir,ann_head_tr,logger)
 
     return data
 
