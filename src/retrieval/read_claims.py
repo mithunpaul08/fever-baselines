@@ -73,10 +73,11 @@ def read_claims_annotate(args,jlr,logger,method,db,params):
         logger.debug(f"label:{label}")
         annotate_and_save_doc(claim, evidence, label, API, ann_head_tr, ann_body_tr, logger)
 
-    archive_root= params.pop('validation_data_path')
+    archive_root= params.pop('archive_root')
+    logger.info(f"archive_root:{archive_root}")
     cwd=os.getcwd()
-    head_file=cwd+"/"+ann_head_tr
-    copy_file_to_archive(archive_root,args.mode,head_file)
+    head_file_path=cwd
+    copy_file_to_archive(archive_root,args.mode,head_file_path,ann_head_tr)
 
     return data
 
@@ -383,19 +384,25 @@ def uofa_dev(args, jlr,method,db,params):
 
 
 
-def copy_file_to_archive(rootpath, mode, src):
+def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
     repo =Repo(os.getcwd())
     branch=repo.active_branch.name
     sha=repo.head.object.hexsha
-    print(branch)
+
 
     full_path_sha=rootpath+"/"+branch+"/"+sha
     full_path_sha_mode = full_path_sha + "/"+mode
 
 
+    src=src_path+"/"+src_file_name
 
     #create folder if it doesn't exist
-    dest = full_path_sha_mode + "/"+"pusher.sh"
+    dest = full_path_sha_mode + "/"+"src_file_name"
+    print(branch)
+    print(full_path_sha)
+    print(full_path_sha_mode)
+    print(src)
+    print(dest)
 
     if os.path.isdir(full_path_sha ):
 
