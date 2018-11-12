@@ -150,7 +150,7 @@ class FEVERReader(DatasetReader):
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
                                      "Is the path correct?".format(file_path))
-        return Dataset(instances)
+        return (instances)
 
     @overrides
     def text_to_instance(self,  # type: ignore
