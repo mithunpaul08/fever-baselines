@@ -72,7 +72,7 @@ class FEVERReader(DatasetReader):
         ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
         ds.read()
 
-        for instance in tqdm.tqdm(ds.data):
+        for index,instance in enumerate(tqdm.tqdm(ds.data)):
             if instance is None:
                 continue
 
@@ -93,7 +93,7 @@ class FEVERReader(DatasetReader):
             print(f"premise:{premise}")
             print(f"label:{label}")
 
-            if(label=="REFUTES"):
+            if(index==20):
                 sys.exit(1)
             instances.append(self.text_to_instance(premise, hypothesis, label))
         if not instances:
