@@ -389,41 +389,25 @@ def copy_file_to_archive(rootpath, mode, src_path,src_file_name):
     branch=repo.active_branch.name
     sha=repo.head.object.hexsha
 
-    full_path_branch = rootpath + "/" + branch
-    full_path_sha=full_path_branch+"/"+sha
-    full_path_sha_mode = full_path_sha + "/"+mode
+    full_path_branch = rootpath + branch
+    full_path_branch_sha=full_path_branch+"/"+sha
+    full_path_branch_sha_mode = full_path_branch_sha + "/"+mode
 
 
     src=src_path+"/"+src_file_name
 
     #create folder if it doesn't exist
-    dest = full_path_sha_mode + "/"+src_file_name
+    dest = full_path_branch_sha_mode + "/"+src_file_name
     print(branch)
-    print(full_path_sha)
-    print(full_path_sha_mode)
+    print(full_path_branch_sha)
+    print(full_path_branch_sha_mode)
     print(src)
     print(dest)
 
-    os.mkdir(full_path_branch)
-    os.mkdir(full_path_sha)
-    os.mkdir(full_path_sha_mode)
-    copyfile(src, dest)
+    dir_create(full_path_branch,full_path_branch_sha)
+    dir_create(full_path_branch_sha, full_path_branch_sha_mode)
+    if_dir_create_file(full_path_branch_sha_mode,src,dest)
 
-    # if os.path.isdir(full_path_sha):
-    #     if os.path.isdir(full_path_sha ):
-    #         if os.path.isdir(full_path_sha_mode):
-    #             copyfile(src,dest)
-    #         else:
-    #             os.mkdir(full_path_sha_mode)
-    #             copyfile(src, dest)
-    #     else:
-    #         os.mkdir(full_path_sha )
-    #         if os.path.isdir(full_path_sha_mode):
-    #             copyfile(src,dest)
-    #         else:
-    #             os.mkdir(full_path_sha_mode)
-    #             copyfile(src, dest)
-    # else:
 
 def dir_create(parent, child):
     #if parent exists, create child, else create parent, then create child
