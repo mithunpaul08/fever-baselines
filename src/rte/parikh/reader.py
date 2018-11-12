@@ -222,7 +222,7 @@ class FEVERReader(DatasetReader):
 
 
 
-                premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+                premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
                 #print("value of the first premise and hypothesis after smart ner replacement is")
                 #print(premise_ann)
@@ -232,13 +232,12 @@ class FEVERReader(DatasetReader):
                 #print(f"label: {label}")
 
                 #randomly print a few not enough info entries
-                if(label=="NOT ENOUGH INFO") and (counter>100) and (counter<200):
+                if(label=="NOT ENOUGH INFO") and (found_intersection):
+                    print("\n")
                     print(f"hw: {hw}")
                     print(f"bw: {bw}")
-                    #print(f"premise_ann: {premise_ann}")
-                    #print(f"hypothesis_ann: {hypothesis_ann}")
-
-                if(counter>200):
+                    print(f"premise_ann: {premise_ann}")
+                    print(f"hypothesis_ann: {hypothesis_ann}")
                     sys.exit(1)
                 #
                 #

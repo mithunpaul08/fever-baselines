@@ -1286,13 +1286,9 @@ class UofaTrainTest():
             premise = " ".join(neutered_body)
             hypothesis = " ".join(neutered_headline)
 
-            if (found_intersection):
-                print(hypothesis)
-                print(premise)
-                sys.exit(1)
 
 
-            return (premise, hypothesis)
+            return (premise, hypothesis,found_intersection)
 
 
     def convert_NER_form_per_sent_plain_NER(self,he, be, hl, bl, hw, bw):
@@ -1395,7 +1391,7 @@ class UofaTrainTest():
 
         # check if the token of this NER tag over laps with claim also somewhere
         found_intersection = False
-        
+
         for ev_new_ner_value in new_ev_sent_after_collapse:
 
             if ev_new_ner_value in dict_newner_token_ev.keys():
