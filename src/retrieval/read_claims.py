@@ -421,21 +421,28 @@ def copy_file_to_archive(rootpath, mode, src_path, src_file_name1,src_file_name2
     logger.debug(src1)
     logger.debug(dest)
 
-    dir_create(full_path_branch,full_path_branch_sha,full_path_branch_sha_mode)
+    dir_check_create(full_path_branch,full_path_branch_sha,full_path_branch_sha_mode)
     #dir_create(full_path_branch_sha, full_path_branch_sha_mode)
     if_dir_create_file(full_path_branch_sha_mode,src1,dest)
     if_dir_create_file(full_path_branch_sha_mode, src2, dest)
 
 
-def dir_create(parent, child):
+def dir_check_create(parent,children):
     #if parent exists, create child, else create parent, then create child
+    my_len=len(children)
+    if(my_len==0):
+        return;
+
     if os.path.isdir(parent):
-        os.mkdir(child)
-
-
+        first_child=children[0]
+        children=children[1:(my_len-1)]
+        dir_check_create(first_child,children)
     else:
         os.mkdir(parent)
-        os.mkdir(child)
+        first_child = children[0]
+        children = children[1:(my_len - 1)]
+        dir_check_create(first_child, children)
+
 
 
 def if_dir_create_file(parent, child_src, child_dest):
@@ -445,3 +452,33 @@ def if_dir_create_file(parent, child_src, child_dest):
     else:
         os.mkdir(parent)
         copyfile(child_src, child_dest)
+
+
+
+def create_dirs_recursively(parent, children):
+    #if parent exists, create child, else create parent, then create child
+    my_len=len(children)
+    print(f"my_len:{my_len}")
+    print(f"parent:{parent}")
+
+    if os.path.isdir(parent):
+        print("inside if")
+
+        if (my_len == 0):
+            return;
+        else:
+            first_child = children[0]
+            print(f"first_child:{first_child}")
+            children = children[1:(my_len)]
+            create_dirs_recursively(first_child, children)
+    else:
+        print("inside else. directory doesnt exist")
+        os.mkdir(parent)
+        if (my_len == 0):
+            return;
+        else:
+            first_child = children[0]
+            print(f"first_child:{first_child}")
+            children = children[1:(my_len)]
+            create_dirs_recursively(first_child, children)
+
