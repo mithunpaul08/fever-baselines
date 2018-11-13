@@ -1,23 +1,23 @@
 import logging
 
-def setup_custom_logger(name, args):
+def setup_custom_logger(name, lmode):
     log_mode=logging.DEBUG
 
-    if(args.lmode=="DEBUG"):
+    if(lmode=="DEBUG"):
         log_mode = logging.DEBUG
     else:
 
-        if (args.lmode == "WARNING"):
+        if (lmode == "WARNING"):
             log_mode = logging.WARNING
 
         else:
 
-            if (args.lmode == "INFO"):
+            if (lmode == "INFO"):
                 log_mode = logging.INFO
 
             else:
 
-                if (args.lmode == "ERROR"):
+                if (lmode == "ERROR"):
                     log_mode = logging.ERROR
 
     logging.basicConfig(level=log_mode,

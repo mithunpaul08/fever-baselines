@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    logger = setup_custom_logger('root', args)
+    logger = setup_custom_logger('root', args.lmode)
 
 
 

@@ -12,7 +12,7 @@ import json
 from nltk.corpus import wordnet
 import itertools
 from .proc_data import PyProcDoc
-
+from rte.mithun.log import setup_custom_logger
 import torchwordemb
 
 
@@ -1257,10 +1257,12 @@ class UofaTrainTest():
 #EXPECTS ALL THESE TO BE AN ARRAY. SPLIT ON SPACE IF YOU HAVENT he, be, hl, bl, hw, bw
     def convert_SMARTNER_form_per_sent(self, claims_ner_list, evidence_ner_list, hl, bl, claims_words_list, evidence_words_list):
 
+            logger = setup_custom_logger('root', "DEBUG")
 
             neutered_headline = []
             neutered_body = []
-            # print(f"he:{claims_ner_list}")
+            logger.debug(f"he:{claims_ner_list}")
+            sys.exit(1)
             # print(f"be:{evidence_ner_list}")
             # print(f"hl:{hl}")
             # print(f"bl:{bl}")
@@ -1382,6 +1384,7 @@ class UofaTrainTest():
         return prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,unique_new_tokens,dict_newner_token
 
     def check_exists_in_claim(self,new_ev_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev, dict_tokenner_newner_claims):
+
 
         combined_sent=[]
 
