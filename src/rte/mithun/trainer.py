@@ -1261,7 +1261,7 @@ class UofaTrainTest():
 
             neutered_headline = []
             neutered_body = []
-            logger.debug(f"he:{claims_ner_list}")
+            print(f"he:{claims_ner_list}")
             sys.exit(1)
             # print(f"be:{evidence_ner_list}")
             # print(f"hl:{hl}")
@@ -1413,7 +1413,7 @@ class UofaTrainTest():
 
 
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
-                        #print("name exists")
+                        print("name exists")
 
 
                         # also confirm that NER value also matches. This is to avoid john amsterdam PER overlapping with AMSTERDAM LOC
@@ -1422,6 +1422,8 @@ class UofaTrainTest():
 
                             if (ev_new_ner_value == v):
                                 actual_ner_tag=k[1]
+                                print(actual_ner_tag)
+                                sys.exit(1)
                                 break
 
                         #now check if this NER tag in evidence also matches with that in claims
