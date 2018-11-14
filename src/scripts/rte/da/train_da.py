@@ -135,7 +135,7 @@ if __name__ == "__main__":
                            type=str,
                            help='path to parameter file describing the model to be trained')
 
-    #parser.add_argument("logdir",type=str)
+    parser.add_argument("logdir",type=str)
 
     parser.add_argument("--filtering", type=str, default=None)
     parser.add_argument("--cuda-device", type=int, default=None, help='id of GPU to use (if any)')
