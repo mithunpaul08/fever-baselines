@@ -237,7 +237,7 @@ class FEVERReader(DatasetReader):
                 #print(hypothesis_ann)
 
                 label = instance["label_text"]
-                our_label=hfc.id
+                our_label=hfc
 
                 print(f"{our_label}:{label}")
 
