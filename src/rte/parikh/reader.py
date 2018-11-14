@@ -199,6 +199,7 @@ class FEVERReader(DatasetReader):
             bodies_words = objUofaTrainTest.read_json(bfw)
             heads_tags= objUofaTrainTest.read_json(hft)
             heads_deps = objUofaTrainTest.read_json_deps(hfd)
+            heads_complete_annotation=objUofaTrainTest.read_json(hfcomplete)
 
             print(f"length of bodies_words:{len(bodies_words)}")
 
@@ -209,7 +210,7 @@ class FEVERReader(DatasetReader):
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
                                                           heads_words,
-                                                          bodies_words,heads_tags,heads_deps,ds.data,hfcomplete),
+                                                          bodies_words,heads_tags,heads_deps,ds.data,heads_complete_annotation),
                        total=len(hfcomplete),desc="reading annotated data"):
 
                 counter=counter+1
