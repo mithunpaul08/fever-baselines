@@ -1349,6 +1349,7 @@ class UofaTrainTest():
 
 
     def get_new_name(self,prev, unique_new_ners, curr_ner, dict_tokenner_newner, curr_word, new_sent, ev_claim, full_name, unique_new_tokens,dict_newner_token):
+        separator="-"
         prev_ner_tag=prev[0]
         new_nertag_i=""
         full_name_c=" ".join(full_name)
@@ -1365,20 +1366,20 @@ class UofaTrainTest():
             if(prev_ner_tag in unique_new_ners.keys()):
                 old_index=unique_new_ners[prev_ner_tag]
                 new_index=old_index+1
-                unique_new_ners[prev_ner_tag]=new_index
+                unique_new_ners[prev_ner_tag] = new_index
                 #to try PERSON SPACE C1 instead of PERSON-C1
-                new_nertag_i=prev_ner_tag+" "+ev_claim + str(new_index)
-                #new_nertag_i = prev_ner_tag + "-" + ev_claim + str(new_index)
+                new_nertag_i=prev_ner_tag + separator + ev_claim + str(new_index)
+                #new_nertag_i = prev_ner_tag + separator + ev_claim + str(new_index)
                 unique_new_tokens[full_name_c] = new_nertag_i
 
             else:
                 unique_new_ners[prev_ner_tag] = 1
-                new_nertag_i = prev_ner_tag + " " + ev_claim + "1"
+                new_nertag_i = prev_ner_tag + separator + ev_claim + "1"
                 unique_new_tokens[full_name_c] = new_nertag_i
 
 
         if not ((full_name_c ,prev[0]) in dict_tokenner_newner):
-            dict_tokenner_newner[full_name_c ,prev[0]]=new_nertag_i
+            dict_tokenner_newner[full_name_c, prev[0]]=new_nertag_i
         else:
             dict_tokenner_newner[full_name_c, prev[0]] = new_nertag_i
 
@@ -1396,7 +1397,7 @@ class UofaTrainTest():
 
 
 
-        return prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,unique_new_tokens,dict_newner_token
+        return prev, dict_tokenner_newner, new_sent, full_name, unique_new_ners, unique_new_tokens, dict_newner_token
 
     def check_exists_in_claim(self,new_ev_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev, dict_tokenner_newner_claims):
 
@@ -1502,7 +1503,7 @@ class UofaTrainTest():
                     new_sent.append(curr_word)
                 else:
 
-                    prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,unique_new_tokens,dict_newner_token \
+                    prev, dict_tokenner_newner, new_sent, full_name, unique_new_ners,unique_new_tokens,dict_newner_token \
                         = self.get_new_name(prev, unique_new_ners, curr_ner,
                                                                                    dict_tokenner_newner, curr_word,
                                                                                    new_sent, ev_claim, full_name,unique_new_tokens,dict_newner_token)
@@ -1521,5 +1522,5 @@ class UofaTrainTest():
                             self.get_new_name(prev, unique_new_ners, curr_ner,dict_tokenner_newner, curr_word, new_sent,
                                               ev_claim, full_name,unique_new_tokens,dict_newner_token)
 
-        return new_sent, dict_tokenner_newner,dict_newner_token
+        return new_sent, dict_tokenner_newner, dict_newner_token
 
