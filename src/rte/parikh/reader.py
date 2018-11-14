@@ -407,12 +407,13 @@ class FEVERReader(DatasetReader):
 
                 #
 
-                # print(f"***********starting new sentence\n\n")
-                # print(f"hypothesis_before_annotation: {hw}")
-                # print(f"premise_before_annotation: {bw}")
-                # print(f"hypothesis_ann: {hypothesis_ann}")
-                # print(f"premise_ann: {premise_ann}")
-                # print(f"label: {label}")
+                print(f"***********starting new sentence\n\n")
+                print(f"hypothesis_before_annotation: {hw}")
+                print(f"premise_before_annotation: {bw}")
+                print(f"hypothesis_ann: {hypothesis_ann}")
+                print(f"premise_ann: {premise_ann}")
+                print(f"label: {label}")
+                sys.exit(1)
 
 
 
