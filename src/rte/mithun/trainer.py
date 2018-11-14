@@ -1439,7 +1439,7 @@ class UofaTrainTest():
                             val_claim = dict_tokenner_newner_claims[tup]
                             combined_sent.append(val_claim)
                             found_intersection=True
-                            print("found_intersection=True")
+                            #print("found_intersection=True")
 
                 #if there is no intersection/common NER entities between headline and body
                 if not (found_intersection):

@@ -280,7 +280,7 @@ class FEVERReader(DatasetReader):
         print(f"supports_overlap_counter: {supports_overlap_counter}")
         print(f"refutes_counter: {refutes_counter}")
         print(f"refutes_overlap_counter: {refutes_overlap_counter}")
-        sys.exit(1)
+
 
         return Dataset(instances)
 
