@@ -1409,6 +1409,12 @@ class UofaTrainTest():
                     name_cl = tup[0]
                     ner_cl=tup[1]
                     name_cl_split = set(name_cl.split(" "))
+
+                    print(f"tup:{tup}")
+                    print(f"name_cl:{name_cl}")
+                    print(f"name_cl_split:{name_cl_split}")
+
+
                     #
 
 
@@ -1423,6 +1429,8 @@ class UofaTrainTest():
                             if (ev_new_ner_value == v):
                                 actual_ner_tag=k[1]
                                 print(actual_ner_tag)
+                                print(f"actual_ner_tag:{actual_ner_tag}")
+                                print(f"actual_ner_tag:{actual_ner_tag}")
                                 sys.exit(1)
                                 break
 
@@ -1431,6 +1439,7 @@ class UofaTrainTest():
                             val_claim = dict_tokenner_newner_claims[tup]
                             combined_sent.append(val_claim)
                             found_intersection=True
+                            print("found_intersection=True")
 
                 #if there is no intersection/common NER entities between headline and body
                 if not (found_intersection):
