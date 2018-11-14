@@ -44,7 +44,7 @@ def eval_model(db: FeverDocDB, args) -> Model:
                                  claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
-    logger.info("Reading training data from %s", args.in_file)
+    #logger.info("Reading training data from %s", args.in_file)
 
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
@@ -157,7 +157,7 @@ if __name__ == "__main__":
 
     parser.add_argument('db', type=str, help='/path/to/saved/db.db')
     parser.add_argument('archive_file', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('in_file', type=str, help='/path/to/saved/db.db')
+    #parser.add_argument('in_file', type=str, help='/path/to/saved/db.db')
     parser.add_argument('--log', required=False, default=None,  type=str, help='/path/to/saved/db.db')
 
     parser.add_argument("--cuda-device", type=int, default=-1, help='id of GPU to use (if any)')

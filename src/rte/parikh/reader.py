@@ -71,6 +71,51 @@ class FEVERReader(DatasetReader):
             non_empty_lines = [line.split("\t")[1] for line in lines.split("\n") if len(line.split("\t"))>1 and len(line.split("\t")[1].strip())]
             return non_empty_lines[SimpleRandom.get_instance().next_rand(0,len(non_empty_lines)-1)]
 
+    def annotation_on_the_fly(self, file_path, run_name, objUOFADataReader):
+        print("do_annotation_on_the_fly == true")
+
+        # DELETE THE annotated file IF IT EXISTS every time before the loop
+        # self.delete_if_exists(head_file)
+        # self.delete_if_exists(body_file)
+        if (run_name == "train"):
+            print("run_name == train")
+            head_file = objUOFADataReader.ann_head_tr
+            body_file = objUOFADataReader.ann_body_tr
+        else:
+            if (run_name == "dev"):
+                print("run_name == dev")
+                head_file = objUOFADataReader.ann_head_dev
+                body_file = objUOFADataReader.ann_body_dev
+
+        ds = FEVERDataSet(file_path, reader=self.reader, formatter=self.formatter)
+        ds.read()
+        instances = []
+
+
+        for instance in tqdm.tqdm(ds.data):
+            counter = counter + 1
+
+            if instance is None:
+                continue
+
+            if not self._sentence_level:
+                pages = set(ev[0] for ev in instance["evidence"])
+                premise = " ".join([self.db.get_doc_text(p) for p in pages])
+            else:
+                lines = set([self.get_doc_line(d[0], d[1]) for d in instance['evidence']])
+                premise = " ".join(lines)
+
+            if len(premise.strip()) == 0:
+                premise = ""
+
+            hypothesis = instance["claim"]
+            label = instance["label_text"]
+
+            premise_ann, hypothesis_ann = self.uofa_annotate(hypothesis, premise, counter, objUOFADataReader, head_file,
+                                                             body_file)
+            instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
+        return instances
+
     @overrides
     def read(self, file_path: str, run_name, do_annotation_on_the_fly):
         #logger.info("got inside read")
@@ -85,69 +130,14 @@ class FEVERReader(DatasetReader):
 
         instances = []
 
-        ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
-        ds.read()
         counter=0
 
         objUOFADataReader = UOFADataReader()
 
-        if (run_name == "train"):
-            print("run_name == train")
-            head_file = objUOFADataReader.ann_head_tr
-            body_file = objUOFADataReader.ann_body_tr
-        else:
-            if (run_name == "dev"):
-                print("run_name == dev")
-                head_file = objUOFADataReader.ann_head_dev
-                body_file = objUOFADataReader.ann_body_dev
-
         # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etc.
         # This takes along time. so almost always we do it only once, and load it from disk
         if(do_annotation_on_the_fly):
-            #print("do_annotation_on_the_fly == true")
-          # DELETE THE annotated file IF IT EXISTS every time before the loop
-            self.delete_if_exists(head_file)
-            self.delete_if_exists(body_file)
-
-            for instance in tqdm.tqdm(ds.data):
-                counter=counter+1
-
-                if instance is None:
-                    continue
-
-                if not self._sentence_level:
-                    pages = set(ev[0] for ev in instance["evidence"])
-                    premise = " ".join([self.db.get_doc_text(p) for p in pages])
-                else:
-                    lines = set([self.get_doc_line(d[0],d[1]) for d in instance['evidence']])
-                    premise = " ".join(lines)
-
-                if len(premise.strip()) == 0:
-                    premise = ""
-
-                hypothesis = instance["claim"]
-                label = instance["label_text"]
-
-                # if (label == "NOT ENOUGH INFO"):
-                #
-                # if (counter > 50):
-
-                print("hypothesis:" + hypothesis)
-                print("premise:" + premise)
-
-                premise_ann,hypothesis_ann =self.uofa_annotate(hypothesis, premise, counter,objUOFADataReader,head_file,body_file)
-
-                #print("hypothesis:" + hypothesis_ann)
-                #print("premise:" + premise_ann)
-                
-                
-                if(counter==20):
-                    sys.exit(1)
-
-
-
-
-                instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
+            instances = self.annotation_on_the_fly(file_path, run_name, objUOFADataReader)
 
         # replacing hypothesis with the annotated one-either load pre-annotated data
         # from disk
@@ -155,24 +145,15 @@ class FEVERReader(DatasetReader):
 
             print("(do_annotation=false):going to load annotated data from the disk. ")
 
-
+            #
             objUofaTrainTest = UofaTrainTest()
 
-            if (run_name == "dev"):
-                print("run_name == dev")
-                data_folder = objUofaTrainTest.data_folder_dev
-            else:
-                if (run_name == "train"):
-                    print("run_name == train")
-                    data_folder = objUofaTrainTest.data_folder_train
-                else:
-                    if (run_name == "small"):
-                        print("run_name == small")
-                        data_folder = objUofaTrainTest.data_folder_train_small
-                    else:
-                        if (run_name == "test"):
-                            print("run_name == test")
-                            data_folder = objUofaTrainTest.data_folder_test
+            folders = {"dev": objUofaTrainTest.data_folder_dev, "train": objUofaTrainTest.data_folder_train,
+                       "test": objUofaTrainTest.data_folder_test,  "small": objUofaTrainTest.data_folder_train_small}
+
+            data_folder = folders[run_name]
+            print(f"Run name: {run_name}")
+            print(f"data_folder: {data_folder}")
 
             bf = data_folder + objUofaTrainTest.annotated_body_split_folder
             bfl = bf + objUofaTrainTest.annotated_only_lemmas
@@ -206,11 +187,11 @@ class FEVERReader(DatasetReader):
             counter=0
 
 
-            for he, be, hl, bl, hw, bw,ht,hd,instance,hfc in\
+            for he, be, hl, bl, hw, bw,ht,hd,hfc in\
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
                                                           heads_words,
-                                                          bodies_words,heads_tags,heads_deps,ds.data,heads_complete_annotation),
+                                                          bodies_words,heads_tags,heads_deps,heads_complete_annotation),
                        total=len(hfcomplete),desc="reading annotated data"):
 
                 counter=counter+1
@@ -228,23 +209,21 @@ class FEVERReader(DatasetReader):
                 # premise == = evidence = body
 
 
-
-
                 premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
-                print("value of the first premise and hypothesis after smart ner replacement is")
-                print(premise_ann)
-                print(hypothesis_ann)
-                sys.exit(1)
+                # print("value of the first premise and hypothesis after smart ner replacement is")
+                # print(premise_ann)
+                # print(hypothesis_ann)
 
-                #label = instance["label_text"]
+
+
                 label=str(hfc)
 
                 #print(f"{our_label}:{label}")
 
 
-                #randomly print a few not enough info entries
+                # This is for the analysis of the NEI over-predicting
                 if(label=="NOT ENOUGH INFO"):
                     nei_counter=nei_counter+1
                     if(found_intersection):
@@ -337,8 +316,14 @@ class FEVERReader(DatasetReader):
         fields: Dict[str, Field] = {}
         premise_tokens = self._wiki_tokenizer.tokenize(premise) if premise is not None else None
         hypothesis_tokens = self._claim_tokenizer.tokenize(hypothesis)
+        print(f"premise_tokens: {premise_tokens}")
+        print(f"hypothesis_tokens: {hypothesis_tokens}")
+        print(f"label: {label}")
         fields['premise'] = TextField(premise_tokens, self._token_indexers) if premise is not None else None
         fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
+
+        sys.exit(1)
+
         if label is not None:
             fields['label'] = LabelField(label)
         return Instance(fields)
