@@ -1389,7 +1389,7 @@ class UofaTrainTest():
 
             else:
                 unique_new_ners[prev_ner_tag] = 1
-                new_nertag_i = prev_ner_tag + "-" + ev_claim + "1"
+                new_nertag_i = prev_ner_tag + " " + ev_claim + "1"
                 unique_new_tokens[full_name_c] = new_nertag_i
 
 
