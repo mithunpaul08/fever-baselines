@@ -32,6 +32,8 @@ class UofaTrainTest():
         self.annotated_only_tags = "ann_tags.json"
         self.annotated_only_dep = "ann_deps.json"
         self.annotated_words = "ann_words.json"
+        self.annotated_whole_data_head = "ann_head_tr.json.json"
+
         self.annotated_body_split_folder = "split_body/"
         self.annotated_head_split_folder = "split_head/"
         # pick based on which folder you are running from. if not on home folder:

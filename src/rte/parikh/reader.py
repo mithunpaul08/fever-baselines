@@ -185,7 +185,7 @@ class FEVERReader(DatasetReader):
             hfl = hf + objUofaTrainTest.annotated_only_lemmas
             hfw = hf + objUofaTrainTest.annotated_words
             hfe = hf + objUofaTrainTest.annotated_only_entities
-
+            hfcomplete = hf + objUofaTrainTest.annotated_whole_data_head
 
             #print(f"hfl:{hfl}")
             #print(f"bfl:{bfl}")
@@ -205,12 +205,12 @@ class FEVERReader(DatasetReader):
             counter=0
 
 
-            for he, be, hl, bl, hw, bw,ht,hd,instance in\
+            for he, be, hl, bl, hw, bw,ht,hd,instance,hfc in\
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
                                                           heads_words,
-                                                          bodies_words,heads_tags,heads_deps,ds.data),
-                       total=len(ds.data),desc="reading annotated data"):
+                                                          bodies_words,heads_tags,heads_deps,ds.data,hfcomplete),
+                       total=len(hfcomplete),desc="reading annotated data"):
 
                 counter=counter+1
 
@@ -236,7 +236,12 @@ class FEVERReader(DatasetReader):
                 #print(hypothesis_ann)
 
                 label = instance["label_text"]
-                #print(f"label: {label}")
+                our_label=hfc.id
+
+                print(f"{our_label}:{label}")
+
+                if(counter==100):
+                    sys.exit(1)
 
 
                 #randomly print a few not enough info entries
