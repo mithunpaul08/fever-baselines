@@ -199,7 +199,7 @@ class FEVERReader(DatasetReader):
             bodies_words = objUofaTrainTest.read_json(bfw)
             heads_tags= objUofaTrainTest.read_json(hft)
             heads_deps = objUofaTrainTest.read_json_deps(hfd)
-            heads_complete_annotation=objUofaTrainTest.read_json(hfcomplete)
+            heads_complete_annotation=objUofaTrainTest.read_id_field_json(hfcomplete)
 
             print(f"length of bodies_words:{len(bodies_words)}")
 

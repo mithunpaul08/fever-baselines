@@ -1119,6 +1119,18 @@ class UofaTrainTest():
                 counter = counter + 1
         return l
 
+    def read_id_field_json(self, json_file):
+        l = []
+        counter = 0
+        with open(json_file) as f:
+            for eachline in (f):
+                d = json.loads(eachline)
+                a = d["doc_id"]
+                l.append(a)
+                counter = counter + 1
+        return l
+
+
     def get_sum_vector_embedding(vocab,vec, sent):
         sum = None
         very_first_time=True;
