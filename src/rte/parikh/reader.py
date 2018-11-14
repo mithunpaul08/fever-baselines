@@ -153,7 +153,7 @@ class FEVERReader(DatasetReader):
         # from disk
         else:
 
-            print("(do_annotation=false):going to load annotated data from the disk. going to exit")
+            print("(do_annotation=false):going to load annotated data from the disk. ")
 
 
             objUofaTrainTest = UofaTrainTest()
