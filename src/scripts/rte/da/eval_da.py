@@ -170,8 +170,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
-    eval_model_fnc_data(db,args)
-   
-
-    #eval_model(db,args)
+    #eval_model_fnc_data(db,args)
+    eval_model(db,args)
 
