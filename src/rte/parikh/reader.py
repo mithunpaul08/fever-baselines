@@ -236,13 +236,10 @@ class FEVERReader(DatasetReader):
                 #print(premise_ann)
                 #print(hypothesis_ann)
 
-                label = instance["label_text"]
-                our_label=hfc
+                #label = instance["label_text"]
+                label=hfc
 
-                print(f"{our_label}:{label}")
-
-                if(counter==100):
-                    sys.exit(1)
+                #print(f"{our_label}:{label}")
 
 
                 #randomly print a few not enough info entries
