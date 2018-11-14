@@ -1384,7 +1384,7 @@ class UofaTrainTest():
                 old_index=unique_new_ners[prev_ner_tag]
                 new_index=old_index+1
                 unique_new_ners[prev_ner_tag]=new_index
-                new_nertag_i=prev_ner_tag+"-"+ev_claim + str(new_index)
+                new_nertag_i=prev_ner_tag+" "+ev_claim + str(new_index)
                 unique_new_tokens[full_name_c] = new_nertag_i
 
             else:
