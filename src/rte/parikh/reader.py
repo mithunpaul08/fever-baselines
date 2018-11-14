@@ -388,9 +388,9 @@ class FEVERReader(DatasetReader):
                 # note that these words are equivalent
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
-
-                print(f"hypothesis_before_annotation: {hw}")
-                print(f"premise_before_annotation: {bw}")
+                #
+                # print(f"hypothesis_before_annotation: {hw}")
+                # print(f"premise_before_annotation: {bw}")
 
                 # premise_ann=bw
                 # hypothesis_ann=hw
@@ -406,14 +406,14 @@ class FEVERReader(DatasetReader):
 
 
                 #
-
-                print(f"***********starting new sentence\n\n")
-                print(f"hypothesis_before_annotation: {hw}")
-                print(f"premise_before_annotation: {bw}")
-                print(f"hypothesis_ann: {hypothesis_ann}")
-                print(f"premise_ann: {premise_ann}")
-                print(f"label: {label}")
-                sys.exit(1)
+                #
+                # print(f"***********starting new sentence\n\n")
+                # print(f"hypothesis_before_annotation: {hw}")
+                # print(f"premise_before_annotation: {bw}")
+                # print(f"hypothesis_ann: {hypothesis_ann}")
+                # print(f"premise_ann: {premise_ann}")
+                # print(f"label: {label}")
+                # sys.exit(1)
 
 
 
