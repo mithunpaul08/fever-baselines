@@ -128,7 +128,7 @@ class UOFADataReader():
         #uncomment this is to annotate using pyprocessors
 
 
-                self.annotate_and_save_doc(claim, all_evidences, index, API, ann_head_tr, ann_body_tr, logger)
+                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, index, API, ann_head_tr, ann_body_tr, logger)
 
         #this is convert data into a form to feed  into attention model of allen nlp.
         #write_snli_format(claim, all_evidences,logger,label)
@@ -151,7 +151,7 @@ class UOFADataReader():
         logger.warning("got inside uofatraining")
 
         #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-        tr_data=read_claims_annotate(args,jlr,logger,method)
+        tr_data=self.read_claims_annotate(args,jlr,logger,method)
         logger.info(
             "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
         sys.exit(1)
@@ -263,8 +263,28 @@ class UOFADataReader():
                 out_file.write(json.dumps(x)+"\n")
         return final_predictions
 
+    def annotate_and_save_doc_with_label_as_id(headline, body, label, API, json_file_tr_annotated_headline, json_file_tr_annotated_body,
+                              logger):
+        logger.debug(f"got inside annotate_and_save_doc")
+        logger.debug(f"headline:{headline}")
+        logger.debug(f"body:{body}")
+        doc1 = API.fastnlp.annotate(headline)
+        doc1.id = label
+        with open(json_file_tr_annotated_headline, "a") as out:
+            out.write(doc1.to_JSON())
+            out.write("\n")
 
-    def annotate_and_save_doc(self, headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
+        doc2 = API.fastnlp.annotate(body)
+        logger.debug(doc2)
+        doc2.id = label
+
+        with open(json_file_tr_annotated_body, "a") as out:
+            out.write(doc2.to_JSON())
+            out.write("\n")
+
+        return
+
+    def annotate_and_save_doc_with_number_as_id(self, headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
                               logger):
         logger.debug("got inside annotate_and_save_doc")
         logger.debug("headline:"+headline)
@@ -405,10 +425,10 @@ class UOFADataReader():
         logging.warning("got inside uofa_dev")
 
         # #for annotation: you will probably run this only once in your lifetime.
-        # tr_data = read_claims_annotate(args, jlr, logger, method)
-        # logger.info(
-        #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
-        # sys.exit(1)
+        tr_data = read_claims_annotate(args, jlr, logger, method)
+        logger.info(
+            "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+        sys.exit(1)
         combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
         #print_cv(combined_vector, gold_labels)
         logging.info("done with generating feature vectors. Model loading and predicting next")
