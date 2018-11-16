@@ -220,7 +220,7 @@ class FEVERReader(DatasetReader):
 
                 label=str(hfc)
 
-                #print(f"{our_label}:{label}")
+                print(f"label:{label}")
 
 
                 # This is for the analysis of the NEI over-predicting
