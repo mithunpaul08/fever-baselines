@@ -11,7 +11,8 @@ from retrieval.top_n import TopNDocsTopNSents
 from retrieval.fever_doc_db import FeverDocDB
 from common.dataset.reader import JSONLineReader
 from rte.riedel.data import FEVERGoldFormatter, FEVERLabelSchema
-from retrieval.read_claims import uofa_training,uofa_testing,uofa_dev
+from retrieval.read_claims import UOFADataReader
+#from retrieval.read_claims import uofa_training,uofa_testing,uofa_dev
 from rte.mithun.log import setup_custom_logger
 
 
@@ -72,17 +73,18 @@ if __name__ == "__main__":
 
     processed = dict()
 
+    objUOFADataReader = UOFADataReader()
     if(args.mode=="train" or args.mode=="small"):
-        uofa_training(args,jlr)
+        objUOFADataReader.uofa_training(args,jlr)
     else:
         if(args.mode=="dev"):
             logger.info("found that args.mode is dev")
-            uofa_dev(args,jlr,method ,logger)
+            objUOFADataReader.uofa_dev(args,jlr,method ,logger)
             logger.info("Done, testing ")
 
         else:
             if(args.mode=="test" ):
-                uofa_testing(args,jlr)
+                objUOFADataReader.uofa_testing(args,jlr)
                 logger.info("Done, testing ")
 
 
