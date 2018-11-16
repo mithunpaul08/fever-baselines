@@ -316,14 +316,8 @@ class FEVERReader(DatasetReader):
         fields: Dict[str, Field] = {}
         premise_tokens = self._wiki_tokenizer.tokenize(premise) if premise is not None else None
         hypothesis_tokens = self._claim_tokenizer.tokenize(hypothesis)
-        #fixme
-        print(f"premise_tokens: {[x.text for x in premise_tokens]}")
-        print(f"hypothesis_tokens: {[x.text for x in hypothesis_tokens]}")
-        print(f"label: {label}")
         fields['premise'] = TextField(premise_tokens, self._token_indexers) if premise is not None else None
         fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
-
-        sys.exit(1)
 
         if label is not None:
             fields['label'] = LabelField(label)

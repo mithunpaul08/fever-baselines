@@ -4,7 +4,7 @@ from multiprocessing.pool import ThreadPool
 import tqdm
 import os,sys
 import logging
-from common.util.log_helper import LogHelper
+from src.common.util.log_helper import LogHelper
 from tqdm import tqdm
 
 from retrieval.top_n import TopNDocsTopNSents
