@@ -139,7 +139,7 @@ class UOFADataReader():
         return obj_all_heads_bodies
 
 
-    def print_cv(combined_vector,gold_labels_tr):
+    def print_cv(self,combined_vector,gold_labels_tr):
         logging.debug(gold_labels_tr.shape)
         logging.debug(combined_vector.shape)
         x= np.column_stack([gold_labels_tr,combined_vector])
@@ -147,7 +147,7 @@ class UOFADataReader():
         sys.exit(1)
 
 
-    def uofa_training(args,jlr,method,logger):
+    def uofa_training(self,args,jlr,method,logger):
         logger.warning("got inside uofatraining")
 
         #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
@@ -177,7 +177,7 @@ class UOFADataReader():
 
 
 
-    def uofa_testing(args,jlr,method,logger):
+    def uofa_testing(self,args,jlr,method,logger):
 
 
         logger.warning("got inside uofa_testing")
@@ -229,7 +229,7 @@ class UOFADataReader():
 
 
     #load predictions, convert it based on label and write it as string.
-    def write_pred_str_disk(args,jlr,pred):
+    def write_pred_str_disk(self,args,jlr,pred):
         logging.debug("here1"+str(args.out_file))
         final_predictions=[]
         #pred=joblib.load(predicted_results)
@@ -263,7 +263,7 @@ class UOFADataReader():
                 out_file.write(json.dumps(x)+"\n")
         return final_predictions
 
-    def annotate_and_save_doc_with_label_as_id(headline, body, label, API, json_file_tr_annotated_headline, json_file_tr_annotated_body,
+    def annotate_and_save_doc_with_label_as_id(self,headline, body, label, API, json_file_tr_annotated_headline, json_file_tr_annotated_body,
                               logger):
         logger.debug(f"got inside annotate_and_save_doc")
         logger.debug(f"headline:{headline}")
@@ -314,7 +314,7 @@ class UOFADataReader():
         return doc1,doc2
 
 
-    def write_snli_format(headline,body,logger,label):
+    def write_snli_format(self,headline,body,logger,label):
 
         logger.debug("got inside write_snli_format")
         #dictionary to dump to json for allennlp format
@@ -346,7 +346,7 @@ class UOFADataReader():
 
         return
 
-    def get_gold_labels(args,jlr):
+    def get_gold_labels(self,args,jlr):
         labels = np.array([[]])
 
         with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
@@ -364,7 +364,7 @@ class UOFADataReader():
 
         return labels
 
-    def get_gold_labels_evidence(args,jlr):
+    def get_gold_labels_evidence(self,args,jlr):
         evidences=[]
         with open(args.in_file,"r") as f:
             all_claims = jlr.process(f)
@@ -378,7 +378,7 @@ class UOFADataReader():
 
         return evidences
 
-    def get_claim_evidence_sans_NEI(args,jlr):
+    def get_claim_evidence_sans_NEI(self,args,jlr):
         claims=[]
         evidences=[]
 
