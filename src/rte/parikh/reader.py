@@ -149,7 +149,7 @@ class FEVERReader(DatasetReader):
             objUofaTrainTest = UofaTrainTest()
 
             folders = {"dev": objUofaTrainTest.data_folder_dev, "train": objUofaTrainTest.data_folder_train,
-                       "test": objUofaTrainTest.data_folder_test,  "small": objUofaTrainTest.data_folder_train_small}
+                       "test": objUofaTrainTest.data_folder_test,  "small": objUofaTrainTest. data_folder_train_small100}
 
             data_folder = folders[run_name]
             print(f"Run name: {run_name}")

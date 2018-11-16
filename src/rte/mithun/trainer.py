@@ -40,6 +40,7 @@ class UofaTrainTest():
         self.data_root = os.getcwd()
         self.data_folder_train = self.data_root + "/data/fever-data-ann/train/"
         self.data_folder_train_small = self.data_root + "/data/fever-data-ann/train_small/"
+        self.data_folder_train_small100 = self.data_root + "/data/fever-data-ann/train_small100/"
         self.data_folder_dev = self.data_root + "/data/fever-data-ann/dev/"
         self.data_folder_test = self.data_root + "/data/fever-data-ann/test/"
         self.model_trained = "model_trained.pkl"
