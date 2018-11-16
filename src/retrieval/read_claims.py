@@ -395,7 +395,7 @@ class UOFADataReader():
 
         return claims,evidences
 
-    def get_gold_labels_small(args,jlr):
+    def get_gold_labels_small(self, args,jlr):
         labels = np.array([[]])
 
         counter=0
@@ -418,9 +418,7 @@ class UOFADataReader():
         return labels
 
 
-    def uofa_dev(args, jlr, method, logger):
-
-
+    def uofa_dev(self, args, jlr, method, logger):
         gold_labels = get_gold_labels(args, jlr)
         logging.warning("got inside uofa_dev")
 
