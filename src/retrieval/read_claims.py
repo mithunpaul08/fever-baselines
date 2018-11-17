@@ -31,7 +31,7 @@ class UOFADataReader():
 
     def read_claims_annotate(self,args,jlr,logger,method):
         try:
-          my_file = Path(ann_head_tr)
+          my_file = Path(self.ann_head_tr)
           #check if the file exists. if yes remove
           if my_file.is_file():
             os.remove(ann_head_tr)
