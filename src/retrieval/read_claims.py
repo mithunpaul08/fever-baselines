@@ -34,8 +34,8 @@ class UOFADataReader():
           my_file = Path(self.ann_head_tr)
           #check if the file exists. if yes remove
           if my_file.is_file():
-            os.remove(ann_head_tr)
-            os.remove(ann_body_tr)
+            os.remove(self.ann_head_tr)
+            os.remove(self.ann_body_tr)
 
         except OSError:
             logger.error("not able to find file")
@@ -128,7 +128,7 @@ class UOFADataReader():
         #uncomment this is to annotate using pyprocessors
 
 
-                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, index, API, ann_head_tr, ann_body_tr, logger)
+                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, index, API, self.ann_head_tr, self.ann_body_tr, logger)
 
         #this is convert data into a form to feed  into attention model of allen nlp.
         #write_snli_format(claim, all_evidences,logger,label)
@@ -153,7 +153,7 @@ class UOFADataReader():
         #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
         tr_data=self.read_claims_annotate(args,jlr,logger,method)
         logger.info(
-            "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+            "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
         sys.exit(1)
 
         gold_labels_tr =None
@@ -222,7 +222,7 @@ class UOFADataReader():
     def annotate_save_quit(self,test_data,logger):
 
         for i, d in tqdm(enumerate(test_data), total=len(test_data),desc="annotate_json:"):
-            annotate_and_save_doc(d, i, API, ann_head_tr, ann_body_tr,logger)
+            annotate_and_save_doc(d, i, API, self.ann_head_tr, self.ann_body_tr,logger)
 
 
         sys.exit(1)
@@ -425,7 +425,7 @@ class UOFADataReader():
         # #for annotation: you will probably run this only once in your lifetime.
         tr_data = read_claims_annotate(args, jlr, logger, method)
         logger.info(
-            "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
+            "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
         sys.exit(1)
         combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
         #print_cv(combined_vector, gold_labels)
