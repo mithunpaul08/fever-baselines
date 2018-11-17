@@ -31,11 +31,12 @@ class UOFADataReader():
 
     def read_claims_annotate(self,args,jlr,logger,method):
         try:
-          my_file = Path(self.ann_head_tr)
-          #check if the file exists. if yes remove
-          if my_file.is_file():
-            os.remove(self.ann_head_tr)
-            os.remove(self.ann_body_tr)
+            my_file = Path(self.ann_head_tr)
+
+            # check if the file exists. if yes remove
+            if my_file.is_file():
+                os.remove(self.ann_head_tr)
+                os.remove(self.ann_body_tr)
 
         except OSError:
             logger.error("not able to find file")
@@ -52,7 +53,7 @@ class UOFADataReader():
             #DELETE THE FILE IF IT EXISTS every time before the loop
             if os.path.exists(snli_filename):
                 append_write = 'w' # make a new file if not
-                with open(snli_filename, append_write) as outfile:
+                with open(self.snli_filename, append_write) as outfile:
                     outfile.write("")
 
 
@@ -68,10 +69,6 @@ class UOFADataReader():
                 label=claim_full["label"]
 
 
-
-
-                #if not (label=="NOT ENOUGH INFO"):
-
                 if label not in ['SUPPORTS', 'REFUTES','NOT ENOUGH INFO']:
                     print(f'BAD label: {label}')
                     sys.exit()
@@ -82,7 +79,8 @@ class UOFADataReader():
                 ev_claim=[]
                 pl_list=[]
                 if not (label == "NOT ENOUGH INFO"):
-                    # if len(evidences) is more, take that, else take evidences[0]- this is because they do chaining only if the evidences collectively support the claim.
+                    # if len(evidences) is more, take that, else take evidences[0]-
+                    # this is because they do chaining only if the evidences collectively support the claim.
                     if (len(evidences) >1):
                         for inside_ev in evidences:
                                 evidence=inside_ev[0]
@@ -104,14 +102,8 @@ class UOFADataReader():
                         #to get only unique sentences. i.e not repeated evidences
                         all_evidences=' '.join(set(ev_claim))
 
-
-
-
                         logger.debug("all_evidences  is:" + str((all_evidences)))
-
                         logger.debug("found the len(evidences)>1")
-
-
 
                     else:
                         for evidence in evidences[0]:
@@ -125,14 +117,11 @@ class UOFADataReader():
                         logger.debug("all_evidences  is:" + str((all_evidences)))
 
 
-        #uncomment this is to annotate using pyprocessors
+                #to annotate using pyprocessors
+                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, index, self.API, self.ann_head_tr, self.ann_body_tr, logger)
 
-
-                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, index, API, self.ann_head_tr, self.ann_body_tr, logger)
-
-        #this is convert data into a form to feed  into attention model of allen nlp.
+        #this is convert data into a form to feed  into BIDAF attention model of allen nlp.
         #write_snli_format(claim, all_evidences,logger,label)
-
 
 
 
@@ -163,7 +152,7 @@ class UOFADataReader():
             gold_labels_tr = get_gold_labels(args, jlr)
 
         logging.info("number of rows in label list is is:" + str(len(gold_labels_tr)))
-        combined_vector = self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
+        combined_vector = self.obj_UofaTrainTest.read_json_create_feat_vec(self.load_ann_corpus,args)
 
         logging.warning("done with generating feature vectors. Model training next")
         logging.info("gold_labels_tr is:" + str(len(gold_labels_tr)))
@@ -187,7 +176,7 @@ class UOFADataReader():
 
 
 
-        combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
+        combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(self.load_ann_corpus,args)
         #print_cv(combined_vector, gold_labels)
         logging.info("done with generating feature vectors. Model loading and predicting next")
         logging.info("shape of cv:"+str(combined_vector.shape))
@@ -222,7 +211,7 @@ class UOFADataReader():
     def annotate_save_quit(self,test_data,logger):
 
         for i, d in tqdm(enumerate(test_data), total=len(test_data),desc="annotate_json:"):
-            annotate_and_save_doc(d, i, API, self.ann_head_tr, self.ann_body_tr,logger)
+            self.annotate_and_save_doc(d, i, self.API, self.ann_head_tr, self.ann_body_tr,logger)
 
 
         sys.exit(1)
@@ -232,7 +221,7 @@ class UOFADataReader():
     def write_pred_str_disk(self,args,jlr,pred):
         logging.debug("here1"+str(args.out_file))
         final_predictions=[]
-        #pred=joblib.load(predicted_results)
+        #pred=joblib.load(self.predicted_results)
         with open(args.in_file,"r") as f:
             ir = jlr.process(f)
             logging.debug("here2"+str(len(ir)))
@@ -263,8 +252,7 @@ class UOFADataReader():
                 out_file.write(json.dumps(x)+"\n")
         return final_predictions
 
-    def annotate_and_save_doc_with_label_as_id(self,headline, body, label, API, json_file_tr_annotated_headline, json_file_tr_annotated_body,
-                              logger):
+    def annotate_and_save_doc_with_label_as_id(self,headline, body, label, API , json_file_tr_annotated_headline, json_file_tr_annotated_body,logger):
         logger.debug(f"got inside annotate_and_save_doc")
         logger.debug(f"headline:{headline}")
         logger.debug(f"body:{body}")
@@ -333,13 +321,13 @@ class UOFADataReader():
         logger.debug("headline:"+headline)
         logger.debug("body:" + body)
 
-        if os.path.exists(snli_filename):
+        if os.path.exists(self.snli_filename):
             append_write = 'a' # append if already exists
         else:
             append_write = 'w' # make a new file if not
 
 
-        with open(snli_filename, append_write) as outfile:
+        with open(self.snli_filename, append_write) as outfile:
             json.dump(snli, outfile)
             outfile.write("\n")
 
