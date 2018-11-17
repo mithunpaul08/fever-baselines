@@ -118,7 +118,7 @@ class UOFADataReader():
 
 
                 #to annotate using pyprocessors
-                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, index, self.API, self.ann_head_tr, self.ann_body_tr, logger)
+                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, label, self.API, self.ann_head_tr, self.ann_body_tr, logger)
 
         #this is convert data into a form to feed  into BIDAF attention model of allen nlp.
         #write_snli_format(claim, all_evidences,logger,label)
