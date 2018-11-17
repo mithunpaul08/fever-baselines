@@ -51,7 +51,7 @@ class UOFADataReader():
 
 
             #DELETE THE FILE IF IT EXISTS every time before the loop
-            if os.path.exists(snli_filename):
+            if os.path.exists(self.snli_filename):
                 append_write = 'w' # make a new file if not
                 with open(self.snli_filename, append_write) as outfile:
                     outfile.write("")
