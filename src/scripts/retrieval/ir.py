@@ -75,7 +75,7 @@ if __name__ == "__main__":
 
     objUOFADataReader = UOFADataReader()
     if(args.mode=="train" or args.mode=="small"):
-        objUOFADataReader.uofa_training(args,jlr)
+        objUOFADataReader.uofa_training(args,jlr,method ,logger)
     else:
         if(args.mode=="dev"):
             logger.info("found that args.mode is dev")
