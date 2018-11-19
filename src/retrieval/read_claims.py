@@ -155,9 +155,9 @@ class UOFADataReader():
 
         gold_labels_tr =None
         if(args.mode =="small"):
-            gold_labels_tr =get_gold_labels_small(args, jlr)
+            gold_labels_tr =self.get_gold_labels_small(args, jlr)
         else:
-            gold_labels_tr = get_gold_labels(args, jlr)
+            gold_labels_tr = self.get_gold_labels(args, jlr)
 
         logging.info("number of rows in label list is is:" + str(len(gold_labels_tr)))
         combined_vector = self.obj_UofaTrainTest.read_json_create_feat_vec(self.load_ann_corpus,args)
