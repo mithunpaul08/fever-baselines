@@ -23,13 +23,13 @@ class SimpleRandom():
         return SimpleRandom.instance
 
     @staticmethod
-    def get_seed():
-        return int(os.getenv("RANDOM_SEED", 12459))
+    def get_seed(seed_from_config_file):
+        return int(os.getenv("RANDOM_SEED", seed_from_config_file))
 
     @staticmethod
-    def set_seeds():
+    def set_seeds(seed_from_config_file):
 
-        torch.manual_seed(SimpleRandom.get_seed())
+        torch.manual_seed(SimpleRandom.get_seed(seed_from_config_file))
         if gpu():
             torch.cuda.manual_seed_all(SimpleRandom.get_seed())
         np.random.seed(SimpleRandom.get_seed())

@@ -42,12 +42,11 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
         The directory in which to save results and logs.
     """
 
-    SimpleRandom.set_seeds()
-
     uofa_params = params.pop('uofa_params', {})
-    my_seed=uofa_params.pop('random_seed', {})
-    print(my_seed)
-    sys.exit(1)
+    my_seed = uofa_params.pop('random_seed', {})
+
+    SimpleRandom.set_seeds(my_seed)
+
 
 
     os.makedirs(serialization_dir, exist_ok=True)
