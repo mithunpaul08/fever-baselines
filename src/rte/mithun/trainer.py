@@ -1126,11 +1126,7 @@ class UofaTrainTest():
         with open(json_file) as f:
             for eachline in (f):
                 d = json.loads(eachline)
-
                 a = d["id"]
-                print(a)
-                sys.exit(1)
-
                 l.append(a)
                 counter = counter + 1
         return l
