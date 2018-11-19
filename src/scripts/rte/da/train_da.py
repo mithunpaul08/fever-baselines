@@ -45,7 +45,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     uofa_params = params.pop('uofa_params', {})
     my_seed = uofa_params.pop('random_seed', {})
 
-    SimpleRandom.set_seeds(my_seed)
+    SimpleRandom.set_seeds_from_config_file(my_seed)
 
 
 
