@@ -1,7 +1,7 @@
 {
   "uofa_params": {
     "type": "fever",
-    "random_seed":12345,
+    "random_seed":98467,
     "token_indexers": {
       "tokens": {
         "type": "single_id",

@@ -24,7 +24,7 @@ class SimpleRandom():
 
     @staticmethod
     def get_seed():
-        return int(os.getenv("RANDOM_SEED", ))
+        return int(os.getenv("RANDOM_SEED", 12459))
 
     @staticmethod
     def get_seed_from_config_file(seed_from_config_file):
