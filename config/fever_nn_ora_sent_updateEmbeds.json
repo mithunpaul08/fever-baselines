@@ -1,4 +1,28 @@
 {
+  "uofa_params": {
+    "type": "fever",
+    "random_seed":12345,
+    "token_indexers": {
+      "tokens": {
+        "type": "single_id",
+        "lowercase_tokens": true
+      }
+    },
+    "wiki_tokenizer": {
+      "type":"word",
+      "word_splitter": {
+        "type": "just_spaces"
+      },
+      "end_tokens":["@@END@@"]
+    },
+    "claim_tokenizer": {
+      "type":"word",
+      "word_splitter": {
+        "type": "simple"
+      },
+      "end_tokens":["@@END@@"]
+    }
+  },
   "dataset_reader": {
     "type": "fever",
     "sentence_level":true,

@@ -44,6 +44,11 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
     SimpleRandom.set_seeds()
 
+    uofa_params = params.pop('uofa_params', {})
+    my_seed=uofa_params.pop('random_seed', {})
+    print(my_seed)
+    sys.exit(1)
+
 
     os.makedirs(serialization_dir, exist_ok=True)
     sys.stdout = TeeLogger(os.path.join(serialization_dir, "stdout.log"), sys.stdout)  # type: ignore
@@ -58,7 +63,9 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
         json.dump(serialization_params, param_file, indent=4)
 
     # Now we begin assembling    the required parts for the Trainer.
+
     ds_params = params.pop('dataset_reader', {})
+
     dataset_reader = FEVERReader(db,
                                  sentence_level=ds_params.pop("sentence_level",False),
                                  wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
