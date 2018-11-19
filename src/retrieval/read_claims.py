@@ -1,9 +1,17 @@
 from common.util.log_helper import LogHelper
 from rte.mithun.ds import indiv_headline_body
 from pathlib import Path
-from processors import ProcessorsBaseAPI
+
+import processors
+# print the recommended processors-server version
+from processors import *
+#from processors import Document
+#from processors import Document
+
+
+#print(import processors.__ps_rec__)
+#from processors import ProcessorsBaseAPI
 from tqdm import tqdm
-from processors import Document
 import logging
 from rte.mithun.trainer import UofaTrainTest
 import numpy as np
@@ -140,10 +148,10 @@ class UOFADataReader():
         logger.warning("got inside uofatraining")
 
         #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-        tr_data=self.read_claims_annotate(args,jlr,logger,method)
-        logger.info(
-            "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
-        sys.exit(1)
+        # tr_data=self.read_claims_annotate(args,jlr,logger,method)
+        # logger.info(
+        #     "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
+        # sys.exit(1)
 
         gold_labels_tr =None
         if(args.mode =="small"):

@@ -6,7 +6,6 @@ import os,sys
 import logging
 from common.util.log_helper import LogHelper
 from tqdm import tqdm
-
 from retrieval.top_n import TopNDocsTopNSents
 from retrieval.fever_doc_db import FeverDocDB
 from common.dataset.reader import JSONLineReader
