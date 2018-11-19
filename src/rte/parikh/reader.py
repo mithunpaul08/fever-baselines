@@ -220,8 +220,6 @@ class FEVERReader(DatasetReader):
 
                 label=str(hfc)
 
-                print(f"label:{label}")
-
 
                 # This is for the analysis of the NEI over-predicting
                 if(label=="NOT ENOUGH INFO"):
