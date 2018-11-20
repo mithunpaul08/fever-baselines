@@ -100,6 +100,9 @@ def eval_model(db: FeverDocDB, args) -> Model:
 
 
 def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
+
+    print("got inside eval_model_fnc_data")
+    sys.exit(1)
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
