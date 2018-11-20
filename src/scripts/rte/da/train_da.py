@@ -85,7 +85,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
 
 
-    train_data = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly).instances
+    train_data_instances = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly).instances
     #joblib.dump(train_data, "fever_tr_dataset_format.pkl")
 
     #if you want to train on a smaller slice
@@ -93,18 +93,19 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     training_slice_percent = uofa_params.pop('training_slice_percent', {})
 
 
-    total_training_data = len(train_data)
+    total_training_data = len(train_data_instances)
 
     print(total_training_data)
 
     training_slice_count= int(total_training_data * training_slice_percent/100)
     print(training_slice_count)
 
-    train_data_slice=Dataset(train_data[0:training_slice_count])
+    train_data_slice=Dataset(train_data_instances[0:training_slice_count])
+    train_data=train_data_slice
 
 
 
-    all_datasets = [train_data_slice]
+    all_datasets = [train_data]
     datasets_in_vocab = ["train"]
 
     validation_data_path = params.pop('validation_data_path', None)
