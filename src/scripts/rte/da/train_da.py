@@ -191,7 +191,7 @@ if __name__ == "__main__":
     params = Params.from_file(args.param_path,args.overrides)
 
     #todo fix me. get this from command line or atleast a params config file
-    log_file_name="training_feverlog.txt"+args.slice+"_"+args.randomseed
+    log_file_name="training_feverlog.txt"+str(args.slice)+"_"+str(args.randomseed)
     logger = setup_custom_logger('root', "INFO",log_file_name)
 
     logger.info(f"Going to train on  {args.slice} percentage of training data.")

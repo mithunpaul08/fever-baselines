@@ -193,8 +193,7 @@ if __name__ == "__main__":
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
 
-    log_file_name = "dev_feverlog.txt" + args.slice + "_" + args.randomseed
-
+    log_file_name = "dev_feverlog.txt" + str(args.slice) + "_" + str(args.randomseed)
     logger = setup_custom_logger('root', args.lmode,log_file_name)
 
 
