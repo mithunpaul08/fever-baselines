@@ -46,7 +46,7 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
     logger.info("Reading training data from %s", args.in_file)
-    sys.exit(1)
+
 
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
@@ -97,6 +97,10 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
         print(accuracy_score(actual, predicted))
         print(classification_report(actual, predicted))
         print(confusion_matrix(actual, predicted))
+
+        logger.info(accuracy_score(actual, predicted))
+        logger.info(classification_report(actual, predicted))
+        logger.info(confusion_matrix(actual, predicted))
 
 
 
