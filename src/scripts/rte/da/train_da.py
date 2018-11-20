@@ -42,6 +42,11 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
         The directory in which to save results and logs.
     """
 
+
+
+
+
+
     #uofa_params = params.pop('uofa_params', {})
     #my_seed = uofa_params.pop('random_seed', {})
 
@@ -76,11 +81,28 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     logger.info("Reading training data from %s", train_data_path)
     run_name=args.mode
     do_annotation_on_the_fly=False
+
+
+
+
     train_data = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly)
     #joblib.dump(train_data, "fever_tr_dataset_format.pkl")
 
+    #if you want to train on a smaller slice
+    uofa_params = params.pop('uofa_params', {})
+    training_slice_percent = uofa_params.pop('training_slice_percent', {})
+    total_training_data=len(train_data)
 
-    all_datasets = [train_data]
+    training_slice_count=total_training_data * training_slice_percent/100
+    train_data_slice=train_data[0:training_slice_count]
+    print(total_training_data)
+    print(training_slice_count)
+    print(len(train_data_slice))
+    sys.exit(1)
+
+
+
+    all_datasets = [train_data_slice]
     datasets_in_vocab = ["train"]
 
     validation_data_path = params.pop('validation_data_path', None)

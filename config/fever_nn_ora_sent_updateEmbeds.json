@@ -2,6 +2,7 @@
   "uofa_params": {
     "data": "fnc",
     "random_seed":98467,
+    "training_slice_percent":10,
     "token_indexers": {
       "tokens": {
         "type": "single_id",
