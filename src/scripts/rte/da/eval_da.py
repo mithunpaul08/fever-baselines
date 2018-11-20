@@ -170,6 +170,14 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
-    #eval_model_fnc_data(db,args)
-    eval_model(db,args)
+
+    uofa_params = params.pop('uofa_params', {})
+    dataset_to_test = uofa_params.pop('data', {})
+
+    dataset_switcher={
+        "fnc": eval_model_fnc_data(db,args),
+        "fever": eval_model(db,args)
+    }
+
+    dataset_switcher[dataset_to_test]
 

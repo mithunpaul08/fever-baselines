@@ -1,6 +1,6 @@
 {
   "uofa_params": {
-    "data": "fever",
+    "data": "fnc",
     "random_seed":98467,
     "token_indexers": {
       "tokens": {
