@@ -189,7 +189,7 @@ if __name__ == "__main__":
     db = FeverDocDB(args.db)
 
     params = Params.from_file(args.param_path,args.overrides)
-    logger = setup_custom_logger('root', args.lmode)
+    logger = setup_custom_logger('root', "INFO")
 
     logger.info(f"Going to train on  {args.slice} percentage of training data.")
 
