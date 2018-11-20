@@ -100,10 +100,8 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     training_slice_count= int(total_training_data * training_slice_percent/100)
     print(training_slice_count)
 
-    train_data_slice=train_data[0:training_slice_count]
-
+    train_data_slice=Dataset(train_data[0:training_slice_count])
     print(len(train_data_slice))
-    sys.exit(1)
 
 
 
@@ -146,7 +144,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
                                   train_data,
                                   validation_data,
                                   trainer_params)
-
+    print("going to start training")
     trainer.train()
 
     # Now tar up results
