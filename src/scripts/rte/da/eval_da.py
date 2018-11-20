@@ -168,12 +168,15 @@ if __name__ == "__main__":
                            type=str,
                            default="",
                            help='a HOCON structure used to override the experiment configuration')
-
+    parser.add_argument('--param_path',
+                        type=str,
+                        help='path to parameter file describing the model to be trained')
 
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
 
+    params = Params.from_file(args.param_path, args.overrides)
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
 

@@ -39,7 +39,7 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 #MODELFILE_RANDOMSEED=${MODELFILE}_${RANDOMSEED}
 #cp logs/${LOGDIR}/model.tar.gz data/models/${MODELFILE_RANDOMSEED}.tar.gz
 #echo "Copied model file to data/models/${MODELFILE_RANDOMSEED}.tar.gz"
-PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db data/models/${MODELFILE}.tar.gz data/fever/dev.ns.pages.p1.jsonl
+PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db data/models/${MODELFILE}.tar.gz data/fever/dev.ns.pages.p1.jsonl --param_path ${CONFIG}
 
 
 
