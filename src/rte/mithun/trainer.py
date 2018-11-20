@@ -1272,7 +1272,7 @@ class UofaTrainTest():
 #EXPECTS ALL THESE TO BE AN ARRAY. SPLIT ON SPACE IF YOU HAVENT he, be, hl, bl, hw, bw
     def convert_SMARTNER_form_per_sent(self, claims_ner_list, evidence_ner_list, hl, bl, claims_words_list, evidence_words_list):
 
-            logger = setup_custom_logger('root', "DEBUG")
+            
 
             neutered_headline = []
             neutered_body = []
