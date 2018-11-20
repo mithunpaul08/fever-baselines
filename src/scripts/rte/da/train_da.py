@@ -101,7 +101,6 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     print(training_slice_count)
 
     train_data_slice=Dataset(train_data[0:training_slice_count])
-    print(len(train_data_slice))
 
 
 
