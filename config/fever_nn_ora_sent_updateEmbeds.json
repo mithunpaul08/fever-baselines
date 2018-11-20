@@ -1,6 +1,6 @@
 {
   "uofa_params": {
-    "data": "fnc",
+    "data": "fever",
     "random_seed":98467,
     "training_slice_percent":10,
     "token_indexers": {

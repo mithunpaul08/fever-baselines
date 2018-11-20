@@ -23,7 +23,7 @@ import json
 logger = logging.getLogger(__name__)  # pylint:    disable=invalid-name
 
 def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_device:int,
-                serialization_dir: str, filtering: str, randomseed:int) -> Model:
+                serialization_dir: str, filtering: str, randomseed:int, slice:int) -> Model:
     """
     This function can be used as an entry point to running models in AllenNLP
     directly from a JSON specification using a :class:`Driver`. Note that if
@@ -89,8 +89,10 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     #joblib.dump(train_data, "fever_tr_dataset_format.pkl")
 
     #if you want to train on a smaller slice
-    uofa_params = params.pop('uofa_params', {})
-    training_slice_percent = uofa_params.pop('training_slice_percent', {})
+    #uofa_params = params.pop('uofa_params', {})
+    #training_slice_percent = uofa_params.pop('training_slice_percent', {})
+
+    training_slice_percent=slice
 
 
     total_training_data = len(train_data_instances)
@@ -178,7 +180,8 @@ if __name__ == "__main__":
 
     parser.add_argument("--mode", type=str, default=None, help='train,test,dev,small)')
     parser.add_argument("--randomseed", type=str, default=None, help='random number that will be used as seed for lstm initial weight generation)')
-
+    parser.add_argument("--slice", type=int, default=None,
+                        help='what slice of training data is this going to be trained on)')
 
     args = parser.parse_args()
 
@@ -186,4 +189,4 @@ if __name__ == "__main__":
 
     params = Params.from_file(args.param_path,args.overrides)
 
-    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed)
+    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice)
