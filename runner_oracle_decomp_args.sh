@@ -38,7 +38,7 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-for SLICE in 1 2
+for SLICE in 10 25 50 75
 do
     rm -rf logs/${LOGDIR}
     PYTHONPATH=src python src/scripts/rte/da/train_da.py data/fever/fever.db ${CONFIG} logs/${LOGDIR} --cuda-device $CUDA_DEVICE --mode ${RUNMODE} --randomseed ${RANDOMSEED} --slice ${SLICE}
