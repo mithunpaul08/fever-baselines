@@ -14,6 +14,7 @@ from common.util.random import SimpleRandom
 from retrieval.fever_doc_db import FeverDocDB
 from rte.parikh.reader import FEVERReader
 from sklearn.externals import joblib
+from rte.mithun.log import setup_custom_logger
 
 import argparse
 import logging
