@@ -102,7 +102,6 @@ def eval_model(db: FeverDocDB, args) -> Model:
 def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
 
     print("got inside eval_model_fnc_data")
-    sys.exit(1)
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
@@ -179,7 +178,7 @@ if __name__ == "__main__":
     params = Params.from_file(args.param_path, args.overrides)
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
-    
+
     if(dataset_to_test=="fnc"):
         eval_model_fnc_data(db,args)
     elif (dataset_to_test=="fever"):
