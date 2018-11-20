@@ -23,7 +23,7 @@ import json
 logger = logging.getLogger(__name__)  # pylint:    disable=invalid-name
 
 def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_device:int,
-                serialization_dir: str, filtering: str) -> Model:
+                serialization_dir: str, filtering: str, randomseed:int) -> Model:
     """
     This function can be used as an entry point to running models in AllenNLP
     directly from a JSON specification using a :class:`Driver`. Note that if
@@ -42,10 +42,10 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
         The directory in which to save results and logs.
     """
 
-    uofa_params = params.pop('uofa_params', {})
-    my_seed = uofa_params.pop('random_seed', {})
+    #uofa_params = params.pop('uofa_params', {})
+    #my_seed = uofa_params.pop('random_seed', {})
 
-    SimpleRandom.set_seeds_from_config_file(my_seed)
+    SimpleRandom.set_seeds_from_config_file(randomseed)
 
 
 
@@ -152,6 +152,8 @@ if __name__ == "__main__":
 
 
     parser.add_argument("--mode", type=str, default=None, help='train,test,dev,small)')
+    parser.add_argument("--randomseed", type=str, default=None, help='random number that will be used as seed for lstm initial weight generation)')
+
 
     args = parser.parse_args()
 
@@ -159,4 +161,4 @@ if __name__ == "__main__":
 
     params = Params.from_file(args.param_path,args.overrides)
 
-    train_model(db,params,args.cuda_device,args.logdir,args.filtering)
+    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed)
