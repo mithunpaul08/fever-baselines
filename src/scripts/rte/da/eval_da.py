@@ -72,7 +72,7 @@ def eval_model(db: FeverDocDB, args) -> Model:
 
 
         if "label" in item.fields:
-            print(item.fields["label"].label)
+            #print(item.fields["label"].label)
             actual.append(item.fields["label"].label)
         predicted.append(cls)
         pred_dict[cls] += 1

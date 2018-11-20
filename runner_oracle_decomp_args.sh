@@ -44,7 +44,7 @@ mkdir -p data/models
 MODELFILE_NAME=${MODELFILE}_${RANDOMSEED}_${SLICE}
 cp logs/${LOGDIR}/model.tar.gz data/models/${MODELFILE_NAME}.tar.gz
 echo "Copied model file to data/models/${MODELFILE_NAME}.tar.gz"
-PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db data/models/${MODELFILE}.tar.gz data/fever/dev.ns.pages.p1.jsonl --param_path ${CONFIG}
+PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db data/models/${MODELFILE_NAME}.tar.gz data/fever/dev.ns.pages.p1.jsonl --param_path ${CONFIG}
 
 
 
