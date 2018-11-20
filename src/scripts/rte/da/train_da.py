@@ -189,4 +189,6 @@ if __name__ == "__main__":
 
     params = Params.from_file(args.param_path,args.overrides)
 
+    print(f"Going to train on  {args.slice} percentage of training data.")
+
     train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice)

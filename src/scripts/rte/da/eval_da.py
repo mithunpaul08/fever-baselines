@@ -16,6 +16,7 @@ from retrieval.fever_doc_db import FeverDocDB
 from rte.parikh.reader import FEVERReader
 
 from rte.mithun.read_fake_news_data import load_fever_DataSet
+from rte.mithun.log import setup_custom_logger
 
 from tqdm import tqdm
 
@@ -29,7 +30,7 @@ from collections import defaultdict
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-def eval_model(db: FeverDocDB, args) -> Model:
+def eval_model(db: FeverDocDB, args,logger) -> Model:
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
 
     config = archive.config
@@ -44,7 +45,8 @@ def eval_model(db: FeverDocDB, args) -> Model:
                                  claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
-    #logger.info("Reading training data from %s", args.in_file)
+    logger.info("Reading training data from %s", args.in_file)
+    sys.exit(1)
 
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
@@ -95,6 +97,8 @@ def eval_model(db: FeverDocDB, args) -> Model:
         print(accuracy_score(actual, predicted))
         print(classification_report(actual, predicted))
         print(confusion_matrix(actual, predicted))
+
+
 
     return model
 
@@ -170,7 +174,9 @@ if __name__ == "__main__":
     parser.add_argument('--param_path',
                         type=str,
                         help='path to parameter file describing the model to be trained')
-
+    parser.add_argument('--lmode',
+                        type=str,
+                        help='log mode. the mode in which logs will be created . DEBUG , INFO, ERROR, WARNING etc')
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
@@ -179,8 +185,11 @@ if __name__ == "__main__":
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
 
+    logger = setup_custom_logger('root', args.lmode)
+
+
     if(dataset_to_test=="fnc"):
         eval_model_fnc_data(db,args)
     elif (dataset_to_test=="fever"):
-        eval_model(db,args)
+        eval_model(db,args,logger)
 
