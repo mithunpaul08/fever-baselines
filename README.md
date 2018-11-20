@@ -24,8 +24,14 @@ Second time onwards use: `docker start procserv`
 2. With handcrafted features + SVM
 
 
-To run the decomposable attention model, with Smart NER (replace tokens with NER tags but checking if they exists in the claim) use `./run_oracle_decomp.sh`
+A sample command to run the training and dev together decomposable attention model, with Smart NER (replace tokens with NER tags but checking if they exists in the claim) looks like:
 
+`time ./runner_oracle_decomp_args.sh -m smartner_tr-fever -l log_smartner_tr-fever -r train  -c config/fever_nn_ora_sent_updateEmbeds.json`
+
+
+Note: To run dev alone, comment out the lines corresponding to training in the shell script. You will have to still provide -m and -c command line inputs
+
+Eg:`./runner_oracle_decomp_args.sh -m smartner_tr-fever-c config/fever_nn_ora_sent_updateEmbeds.json`
 
 To run the With handcrafted features + SVM pipe line (from fever baseline model) + SVM (our model): use `./runner_ir.sh`
 
