@@ -42,7 +42,11 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
         The directory in which to save results and logs.
     """
 
-    SimpleRandom.set_seeds()
+    uofa_params = params.pop('uofa_params', {})
+    my_seed = uofa_params.pop('random_seed', {})
+
+    SimpleRandom.set_seeds_from_config_file(my_seed)
+
 
 
     os.makedirs(serialization_dir, exist_ok=True)
@@ -58,7 +62,9 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
         json.dump(serialization_params, param_file, indent=4)
 
     # Now we begin assembling    the required parts for the Trainer.
+
     ds_params = params.pop('dataset_reader', {})
+
     dataset_reader = FEVERReader(db,
                                  sentence_level=ds_params.pop("sentence_level",False),
                                  wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
@@ -68,7 +74,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
     train_data_path = params.pop('train_data_path')
     logger.info("Reading training data from %s", train_data_path)
-    run_name="train"
+    run_name=args.mode
     do_annotation_on_the_fly=False
     train_data = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly)
     #joblib.dump(train_data, "fever_tr_dataset_format.pkl")
@@ -145,6 +151,7 @@ if __name__ == "__main__":
                            help='a HOCON structure used to override the experiment configuration')
 
 
+    parser.add_argument("--mode", type=str, default=None, help='train,test,dev,small)')
 
     args = parser.parse_args()
 

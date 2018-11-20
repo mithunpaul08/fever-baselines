@@ -1,9 +1,17 @@
 from common.util.log_helper import LogHelper
 from rte.mithun.ds import indiv_headline_body
+from pathlib import Path
 
-from processors import ProcessorsBaseAPI
+import processors
+# print the recommended processors-server version
+from processors import *
+#from processors import Document
+#from processors import Document
+
+
+#print(import processors.__ps_rec__)
+#from processors import ProcessorsBaseAPI
 from tqdm import tqdm
-from processors import Document
 import logging
 from rte.mithun.trainer import UofaTrainTest
 import numpy as np
@@ -31,11 +39,12 @@ class UOFADataReader():
 
     def read_claims_annotate(self,args,jlr,logger,method):
         try:
-          my_file = Path(ann_head_tr)
-          #check if the file exists. if yes remove
-          if my_file.is_file():
-            os.remove(ann_head_tr)
-            os.remove(ann_body_tr)
+            my_file = Path(self.ann_head_tr)
+
+            # check if the file exists. if yes remove
+            if my_file.is_file():
+                os.remove(self.ann_head_tr)
+                os.remove(self.ann_body_tr)
 
         except OSError:
             logger.error("not able to find file")
@@ -50,9 +59,9 @@ class UOFADataReader():
 
 
             #DELETE THE FILE IF IT EXISTS every time before the loop
-            if os.path.exists(snli_filename):
+            if os.path.exists(self.snli_filename):
                 append_write = 'w' # make a new file if not
-                with open(snli_filename, append_write) as outfile:
+                with open(self.snli_filename, append_write) as outfile:
                     outfile.write("")
 
 
@@ -68,10 +77,6 @@ class UOFADataReader():
                 label=claim_full["label"]
 
 
-
-
-                #if not (label=="NOT ENOUGH INFO"):
-
                 if label not in ['SUPPORTS', 'REFUTES','NOT ENOUGH INFO']:
                     print(f'BAD label: {label}')
                     sys.exit()
@@ -82,7 +87,8 @@ class UOFADataReader():
                 ev_claim=[]
                 pl_list=[]
                 if not (label == "NOT ENOUGH INFO"):
-                    # if len(evidences) is more, take that, else take evidences[0]- this is because they do chaining only if the evidences collectively support the claim.
+                    # if len(evidences) is more, take that, else take evidences[0]-
+                    # this is because they do chaining only if the evidences collectively support the claim.
                     if (len(evidences) >1):
                         for inside_ev in evidences:
                                 evidence=inside_ev[0]
@@ -104,14 +110,8 @@ class UOFADataReader():
                         #to get only unique sentences. i.e not repeated evidences
                         all_evidences=' '.join(set(ev_claim))
 
-
-
-
                         logger.debug("all_evidences  is:" + str((all_evidences)))
-
                         logger.debug("found the len(evidences)>1")
-
-
 
                     else:
                         for evidence in evidences[0]:
@@ -125,21 +125,18 @@ class UOFADataReader():
                         logger.debug("all_evidences  is:" + str((all_evidences)))
 
 
-        #uncomment this is to annotate using pyprocessors
+                #to annotate using pyprocessors
+                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, label, self.API, self.ann_head_tr, self.ann_body_tr, logger)
 
-
-                self.annotate_and_save_doc(claim, all_evidences, index, API, ann_head_tr, ann_body_tr, logger)
-
-        #this is convert data into a form to feed  into attention model of allen nlp.
+        #this is convert data into a form to feed  into BIDAF attention model of allen nlp.
         #write_snli_format(claim, all_evidences,logger,label)
-
 
 
 
         return obj_all_heads_bodies
 
 
-    def print_cv(combined_vector,gold_labels_tr):
+    def print_cv(self,combined_vector,gold_labels_tr):
         logging.debug(gold_labels_tr.shape)
         logging.debug(combined_vector.shape)
         x= np.column_stack([gold_labels_tr,combined_vector])
@@ -147,23 +144,23 @@ class UOFADataReader():
         sys.exit(1)
 
 
-    def uofa_training(args,jlr,method,logger):
+    def uofa_training(self,args,jlr,method,logger):
         logger.warning("got inside uofatraining")
 
         #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-        tr_data=read_claims_annotate(args,jlr,logger,method)
-        logger.info(
-            "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
-        sys.exit(1)
+        # tr_data=self.read_claims_annotate(args,jlr,logger,method)
+        # logger.info(
+        #     "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
+        # sys.exit(1)
 
         gold_labels_tr =None
         if(args.mode =="small"):
-            gold_labels_tr =get_gold_labels_small(args, jlr)
+            gold_labels_tr =self.get_gold_labels_small(args, jlr)
         else:
-            gold_labels_tr = get_gold_labels(args, jlr)
+            gold_labels_tr = self.get_gold_labels(args, jlr)
 
         logging.info("number of rows in label list is is:" + str(len(gold_labels_tr)))
-        combined_vector = self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
+        combined_vector = self.obj_UofaTrainTest.read_json_create_feat_vec(self.load_ann_corpus,args)
 
         logging.warning("done with generating feature vectors. Model training next")
         logging.info("gold_labels_tr is:" + str(len(gold_labels_tr)))
@@ -177,7 +174,7 @@ class UOFADataReader():
 
 
 
-    def uofa_testing(args,jlr,method,logger):
+    def uofa_testing(self,args,jlr,method,logger):
 
 
         logger.warning("got inside uofa_testing")
@@ -187,7 +184,7 @@ class UOFADataReader():
 
 
 
-        combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
+        combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(self.load_ann_corpus,args)
         #print_cv(combined_vector, gold_labels)
         logging.info("done with generating feature vectors. Model loading and predicting next")
         logging.info("shape of cv:"+str(combined_vector.shape))
@@ -222,17 +219,17 @@ class UOFADataReader():
     def annotate_save_quit(self,test_data,logger):
 
         for i, d in tqdm(enumerate(test_data), total=len(test_data),desc="annotate_json:"):
-            annotate_and_save_doc(d, i, API, ann_head_tr, ann_body_tr,logger)
+            self.annotate_and_save_doc(d, i, self.API, self.ann_head_tr, self.ann_body_tr,logger)
 
 
         sys.exit(1)
 
 
     #load predictions, convert it based on label and write it as string.
-    def write_pred_str_disk(args,jlr,pred):
+    def write_pred_str_disk(self,args,jlr,pred):
         logging.debug("here1"+str(args.out_file))
         final_predictions=[]
-        #pred=joblib.load(predicted_results)
+        #pred=joblib.load(self.predicted_results)
         with open(args.in_file,"r") as f:
             ir = jlr.process(f)
             logging.debug("here2"+str(len(ir)))
@@ -263,8 +260,27 @@ class UOFADataReader():
                 out_file.write(json.dumps(x)+"\n")
         return final_predictions
 
+    def annotate_and_save_doc_with_label_as_id(self,headline, body, label, API , json_file_tr_annotated_headline, json_file_tr_annotated_body,logger):
+        logger.debug(f"got inside annotate_and_save_doc")
+        logger.debug(f"headline:{headline}")
+        logger.debug(f"body:{body}")
+        doc1 = API.fastnlp.annotate(headline)
+        doc1.id = label
+        with open(json_file_tr_annotated_headline, "a") as out:
+            out.write(doc1.to_JSON())
+            out.write("\n")
 
-    def annotate_and_save_doc(self, headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
+        doc2 = API.fastnlp.annotate(body)
+        logger.debug(doc2)
+        doc2.id = label
+
+        with open(json_file_tr_annotated_body, "a") as out:
+            out.write(doc2.to_JSON())
+            out.write("\n")
+
+        return
+
+    def annotate_and_save_doc_with_number_as_id(self, headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
                               logger):
         logger.debug("got inside annotate_and_save_doc")
         logger.debug("headline:"+headline)
@@ -294,7 +310,7 @@ class UOFADataReader():
         return doc1,doc2
 
 
-    def write_snli_format(headline,body,logger,label):
+    def write_snli_format(self,headline,body,logger,label):
 
         logger.debug("got inside write_snli_format")
         #dictionary to dump to json for allennlp format
@@ -313,20 +329,20 @@ class UOFADataReader():
         logger.debug("headline:"+headline)
         logger.debug("body:" + body)
 
-        if os.path.exists(snli_filename):
+        if os.path.exists(self.snli_filename):
             append_write = 'a' # append if already exists
         else:
             append_write = 'w' # make a new file if not
 
 
-        with open(snli_filename, append_write) as outfile:
+        with open(self.snli_filename, append_write) as outfile:
             json.dump(snli, outfile)
             outfile.write("\n")
 
 
         return
 
-    def get_gold_labels(args,jlr):
+    def get_gold_labels(self,args,jlr):
         labels = np.array([[]])
 
         with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
@@ -344,7 +360,7 @@ class UOFADataReader():
 
         return labels
 
-    def get_gold_labels_evidence(args,jlr):
+    def get_gold_labels_evidence(self,args,jlr):
         evidences=[]
         with open(args.in_file,"r") as f:
             all_claims = jlr.process(f)
@@ -358,7 +374,7 @@ class UOFADataReader():
 
         return evidences
 
-    def get_claim_evidence_sans_NEI(args,jlr):
+    def get_claim_evidence_sans_NEI(self,args,jlr):
         claims=[]
         evidences=[]
 
@@ -375,7 +391,7 @@ class UOFADataReader():
 
         return claims,evidences
 
-    def get_gold_labels_small(args,jlr):
+    def get_gold_labels_small(self, args,jlr):
         labels = np.array([[]])
 
         counter=0
@@ -398,17 +414,15 @@ class UOFADataReader():
         return labels
 
 
-    def uofa_dev(args, jlr, method, logger):
-
-
+    def uofa_dev(self, args, jlr, method, logger):
         gold_labels = get_gold_labels(args, jlr)
         logging.warning("got inside uofa_dev")
 
         # #for annotation: you will probably run this only once in your lifetime.
-        # tr_data = read_claims_annotate(args, jlr, logger, method)
-        # logger.info(
-        #     "Finished writing annotated json to disk . going to quit. names of the files are:" + ann_head_tr + ";" + ann_body_tr)
-        # sys.exit(1)
+        tr_data = read_claims_annotate(args, jlr, logger, method)
+        logger.info(
+            "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
+        sys.exit(1)
         combined_vector= self.obj_UofaTrainTest.read_json_create_feat_vec(load_ann_corpus,args)
         #print_cv(combined_vector, gold_labels)
         logging.info("done with generating feature vectors. Model loading and predicting next")

@@ -12,7 +12,7 @@ import json
 from nltk.corpus import wordnet
 import itertools
 from .proc_data import PyProcDoc
-
+from rte.mithun.log import setup_custom_logger
 import torchwordemb
 
 
@@ -32,12 +32,15 @@ class UofaTrainTest():
         self.annotated_only_tags = "ann_tags.json"
         self.annotated_only_dep = "ann_deps.json"
         self.annotated_words = "ann_words.json"
+        self.annotated_whole_data_head = "ann_head_tr.json"
+
         self.annotated_body_split_folder = "split_body/"
         self.annotated_head_split_folder = "split_head/"
         # pick based on which folder you are running from. if not on home folder:
         self.data_root = os.getcwd()
         self.data_folder_train = self.data_root + "/data/fever-data-ann/train/"
         self.data_folder_train_small = self.data_root + "/data/fever-data-ann/train_small/"
+        self.data_folder_train_small100 = self.data_root + "/data/fever-data-ann/train_small100/"
         self.data_folder_dev = self.data_root + "/data/fever-data-ann/dev/"
         self.data_folder_test = self.data_root + "/data/fever-data-ann/test/"
         self.model_trained = "model_trained.pkl"
@@ -1117,6 +1120,18 @@ class UofaTrainTest():
                 counter = counter + 1
         return l
 
+    def read_id_field_json(self, json_file):
+        l = []
+        counter = 0
+        with open(json_file) as f:
+            for eachline in (f):
+                d = json.loads(eachline)
+                a = d["id"]
+                l.append(a)
+                counter = counter + 1
+        return l
+
+
     def get_sum_vector_embedding(vocab,vec, sent):
         sum = None
         very_first_time=True;
@@ -1257,10 +1272,12 @@ class UofaTrainTest():
 #EXPECTS ALL THESE TO BE AN ARRAY. SPLIT ON SPACE IF YOU HAVENT he, be, hl, bl, hw, bw
     def convert_SMARTNER_form_per_sent(self, claims_ner_list, evidence_ner_list, hl, bl, claims_words_list, evidence_words_list):
 
+            logger = setup_custom_logger('root', "DEBUG")
 
             neutered_headline = []
             neutered_body = []
-            # print(f"he:{claims_ner_list}")
+            #print(f"he:{claims_ner_list}")
+
             # print(f"be:{evidence_ner_list}")
             # print(f"hl:{hl}")
             # print(f"bl:{bl}")
@@ -1278,25 +1295,17 @@ class UofaTrainTest():
             ev_claim = "e"
             new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev = self.collapse_both(
                 evidence_words_list, evidence_ner_list, ev_claim)
-            # print("dict_newner_token is:" + str(dict_newner_token))
 
-            # print("new_sent_after_collapse")
-            # print(new_sent_after_collapse)
-            #print(evidence_words_list)
-            neutered_body= self.check_exists_in_claim(new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev,
+            neutered_body,found_intersection= self.check_exists_in_claim(new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev,
                                   dict_tokenner_newner_claims)
 
-            #print("done")
 
             premise = " ".join(neutered_body)
             hypothesis = " ".join(neutered_headline)
-            # print(hypothesis)
-            # print(premise)
-            #
-            # sys.exit(1)
 
 
-            return (premise, hypothesis)
+
+            return (premise, hypothesis,found_intersection)
 
 
     def convert_NER_form_per_sent_plain_NER(self,he, be, hl, bl, hw, bw):
@@ -1340,6 +1349,7 @@ class UofaTrainTest():
 
 
     def get_new_name(self,prev, unique_new_ners, curr_ner, dict_tokenner_newner, curr_word, new_sent, ev_claim, full_name, unique_new_tokens,dict_newner_token):
+        separator="-"
         prev_ner_tag=prev[0]
         new_nertag_i=""
         full_name_c=" ".join(full_name)
@@ -1356,20 +1366,20 @@ class UofaTrainTest():
             if(prev_ner_tag in unique_new_ners.keys()):
                 old_index=unique_new_ners[prev_ner_tag]
                 new_index=old_index+1
-                unique_new_ners[prev_ner_tag]=new_index
+                unique_new_ners[prev_ner_tag] = new_index
                 #to try PERSON SPACE C1 instead of PERSON-C1
-                new_nertag_i=prev_ner_tag+" "+ev_claim + str(new_index)
-                #new_nertag_i = prev_ner_tag + "-" + ev_claim + str(new_index)
+                new_nertag_i=prev_ner_tag + separator + ev_claim + str(new_index)
+                #new_nertag_i = prev_ner_tag + separator + ev_claim + str(new_index)
                 unique_new_tokens[full_name_c] = new_nertag_i
 
             else:
                 unique_new_ners[prev_ner_tag] = 1
-                new_nertag_i = prev_ner_tag + " " + ev_claim + "1"
+                new_nertag_i = prev_ner_tag + separator + ev_claim + "1"
                 unique_new_tokens[full_name_c] = new_nertag_i
 
 
         if not ((full_name_c ,prev[0]) in dict_tokenner_newner):
-            dict_tokenner_newner[full_name_c ,prev[0]]=new_nertag_i
+            dict_tokenner_newner[full_name_c, prev[0]]=new_nertag_i
         else:
             dict_tokenner_newner[full_name_c, prev[0]] = new_nertag_i
 
@@ -1387,34 +1397,43 @@ class UofaTrainTest():
 
 
 
-        return prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,unique_new_tokens,dict_newner_token
+        return prev, dict_tokenner_newner, new_sent, full_name, unique_new_ners, unique_new_tokens, dict_newner_token
 
     def check_exists_in_claim(self,new_ev_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev, dict_tokenner_newner_claims):
 
+
         combined_sent=[]
 
+        # while parsig through the new evidence sentence you might encounter a new NER tag (eg: PER-E1).
+        #here new evidence sentence means that the sentence which was creatd when we took just the evidence and collapsed
+        #i.e JRR Tolkein, was collapsed to one PERSON E-1
+
+        # check if the token of this NER tag over laps with claim also somewhere
+        found_intersection = False
 
         for ev_new_ner_value in new_ev_sent_after_collapse:
-            #while parsig through the new evidence sentence you might encounter a new NER tag (eg: PER-E1). find its corresponding string value Eg: "tolkein"
+
             if ev_new_ner_value in dict_newner_token_ev.keys():
 
-                #find its corresponding string value Eg: "tolkein"
+                #if thats true find its corresponding string value Eg: "tolkein"
                 token=dict_newner_token_ev[ev_new_ner_value]
 
                 token_split=set(token.split(" "))
-                #print(token_split)
 
-                found_intersection=False
+
                 for tup in dict_tokenner_newner_claims.keys():
                     name_cl = tup[0]
                     ner_cl=tup[1]
                     name_cl_split = set(name_cl.split(" "))
-                    # print("first value in tuples is")
-                    # print(type(token_split))
-                    # print(type(name_cl_split))
+
+                    # print(f"tup:{tup}")
+                    # print(f"name_cl:{name_cl}")
+                    # print(f"name_cl_split:{name_cl_split}")
+
+
                     #
 
-                    # if (token_split.intersection(name_cl_split)):
+
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
                         #print("name exists")
 
@@ -1425,6 +1444,10 @@ class UofaTrainTest():
 
                             if (ev_new_ner_value == v):
                                 actual_ner_tag=k[1]
+                                # print(actual_ner_tag)
+                                # print(f"actual_ner_tag:{actual_ner_tag}")
+                                # print(f"actual_ner_tag:{actual_ner_tag}")
+                                # sys.exit(1)
                                 break
 
                         #now check if this NER tag in evidence also matches with that in claims
@@ -1432,7 +1455,9 @@ class UofaTrainTest():
                             val_claim = dict_tokenner_newner_claims[tup]
                             combined_sent.append(val_claim)
                             found_intersection=True
+                            #print("found_intersection=True")
 
+                #if there is no intersection/common NER entities between headline and body
                 if not (found_intersection):
                     combined_sent.append(ev_new_ner_value)
                     new_ner=""
@@ -1450,7 +1475,7 @@ class UofaTrainTest():
                 combined_sent.append(ev_new_ner_value)
 
 
-        return combined_sent
+        return combined_sent,found_intersection
 
 
 
@@ -1478,7 +1503,7 @@ class UofaTrainTest():
                     new_sent.append(curr_word)
                 else:
 
-                    prev, dict_tokenner_newner, new_sent, full_name,unique_new_ners,unique_new_tokens,dict_newner_token \
+                    prev, dict_tokenner_newner, new_sent, full_name, unique_new_ners,unique_new_tokens,dict_newner_token \
                         = self.get_new_name(prev, unique_new_ners, curr_ner,
                                                                                    dict_tokenner_newner, curr_word,
                                                                                    new_sent, ev_claim, full_name,unique_new_tokens,dict_newner_token)
@@ -1497,5 +1522,5 @@ class UofaTrainTest():
                             self.get_new_name(prev, unique_new_ners, curr_ner,dict_tokenner_newner, curr_word, new_sent,
                                               ev_claim, full_name,unique_new_tokens,dict_newner_token)
 
-        return new_sent, dict_tokenner_newner,dict_newner_token
+        return new_sent, dict_tokenner_newner, dict_newner_token
 

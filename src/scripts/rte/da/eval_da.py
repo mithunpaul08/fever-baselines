@@ -44,7 +44,7 @@ def eval_model(db: FeverDocDB, args) -> Model:
                                  claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
-    logger.info("Reading training data from %s", args.in_file)
+    #logger.info("Reading training data from %s", args.in_file)
 
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
@@ -58,21 +58,21 @@ def eval_model(db: FeverDocDB, args) -> Model:
 
     if args.log is not None:
         f = open(args.log,"w+")
-    if_ctr, else_ctr = 0, 0
     pred_dict = defaultdict(int)
 
     for item in tqdm(data):
         if item.fields["premise"] is None or item.fields["premise"].sequence_length() == 0:
+            # Handles some edge case we presume, never really gets used
             cls = "NOT ENOUGH INFO"
-            if_ctr += 1
         else:
-            else_ctr += 1
-
             prediction = model.forward_on_instance(item, args.cuda_device)
             cls = model.vocab._index_to_token["labels"][np.argmax(prediction["label_probs"])]
+            print(f'np.argmax(prediction[label_probs]) = {np.argmax(prediction["label_probs"])}')
+            print(f"cls: {cls}")
 
 
         if "label" in item.fields:
+            print(item.fields["label"].label)
             actual.append(item.fields["label"].label)
         predicted.append(cls)
         pred_dict[cls] += 1
@@ -170,8 +170,6 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
-    eval_model_fnc_data(db,args)
-   
-
-    #eval_model(db,args)
+    #eval_model_fnc_data(db,args)
+    eval_model(db,args)
 
