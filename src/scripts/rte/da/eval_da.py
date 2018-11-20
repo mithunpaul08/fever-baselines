@@ -179,8 +179,7 @@ if __name__ == "__main__":
     params = Params.from_file(args.param_path, args.overrides)
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
-    print(dataset_to_test)
-    sys.exit(1)
+    
     if(dataset_to_test=="fnc"):
         eval_model_fnc_data(db,args)
     elif (dataset_to_test=="fever"):
