@@ -1422,10 +1422,13 @@ class UofaTrainTest():
         return prev, dict_tokenner_newner, new_sent, full_name, unique_new_ners, unique_new_tokens, dict_newner_token
 
 
-'''     # while parsig through the new evidence sentence you might encounter a new NER tag (eg: PER-E1).
+    ''' # while parsig through the new evidence sentence you might encounter a new NER tag (eg: PER-E1).
         #here new evidence sentence means that the sentence which was creatd when we took just the evidence and collapsed
-        #i.e JRR Tolkein, was collapsed to one PERSON E-1.        # check if the token of this NER tag over laps with claim also somewhere. If it does
-        replace its current NER tag with the one in the claim. Essentially we are pointing out overlaps to the classifier'''
+        #i.e JRR Tolkein, was collapsed to one PERSON E-1.        # check if the token of this NER tag over laps with claim also 
+        somewhere. If it does
+        replace its current NER tag with the one in the claim. Essentially we are pointing out overlaps to the classifier
+        '''
+
     def check_exists_in_claim(self,new_ev_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev, dict_tokenner_newner_claims):
 
 
@@ -1442,7 +1445,6 @@ class UofaTrainTest():
                 token=dict_newner_token_ev[ev_new_ner_value]
 
                 token_split=set(token.split(" "))
-
 
                 for tup in dict_tokenner_newner_claims.keys():
                     name_cl = tup[0]
