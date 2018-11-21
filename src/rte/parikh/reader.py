@@ -191,8 +191,8 @@ class FEVERReader(DatasetReader):
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
                                                           heads_words,
-                                                          bodies_words,heads_tags,heads_deps,heads_complete_annotation),
-                       total=len(hfcomplete),desc="reading annotated data"):
+                                                          bodies_words,ds.data),
+                       total=len(ds.data),desc="reading annotated data"):
 
                 counter=counter+1
 
@@ -210,11 +210,20 @@ class FEVERReader(DatasetReader):
 
 
                 premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+                print(f"hypothesis before annotation: {hw}")
+                print(f"premise before annotation: {bw}")
+
+                premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
                 # print("value of the first premise and hypothesis after smart ner replacement is")
                 # print(premise_ann)
                 # print(hypothesis_ann)
+
+                print(f"headline words: {hw}")
+                print(f"body words: {bw}")
+                print(f"hypothesis_ann: {hypothesis_ann}")
+                print(f"premise_ann: {premise_ann}")
 
 
 
@@ -266,6 +275,182 @@ class FEVERReader(DatasetReader):
 
         return Dataset(instances)
 
+    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly):
+        #logger.info("got inside read")
+        #logging.info("got inside read")
+
+
+
+        instances = []
+
+        ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
+        ds.read()
+
+
+
+
+        print("(do_annotation=false):going to load annotated data from the disk.")
+
+
+        objUofaTrainTest = UofaTrainTest()
+
+        if (run_name == "dev"):
+            print("run_name == dev")
+            data_folder = objUofaTrainTest.data_folder_dev
+        else:
+            if (run_name == "train"):
+                print("run_name == train")
+                data_folder = objUofaTrainTest.data_folder_train
+            else:
+                if (run_name == "small"):
+                    print("run_name == small")
+                    data_folder = objUofaTrainTest.data_folder_train_small
+                else:
+                    if (run_name == "test"):
+                        print("run_name == test")
+                        data_folder = objUofaTrainTest.data_folder_test
+
+
+        #load the labels from the disk
+        lbl_file= objUofaTrainTest.label_folder+objUofaTrainTest.label_dev_file
+        all_labels= objUofaTrainTest.read_csv_list(lbl_file)
+
+
+
+        bf = data_folder + objUofaTrainTest.annotated_body_split_folder
+        bfl = bf + objUofaTrainTest.annotated_only_lemmas
+
+        bf = data_folder + objUofaTrainTest.annotated_body_split_folder
+        bfl = bf + objUofaTrainTest.annotated_only_lemmas
+        bfw = bf + objUofaTrainTest.annotated_words
+        bfe = bf + objUofaTrainTest.annotated_only_entities
+
+        hf = data_folder + objUofaTrainTest.annotated_head_split_folder
+        hfl = hf + objUofaTrainTest.annotated_only_lemmas
+        hfw = hf + objUofaTrainTest.annotated_words
+        hfe = hf + objUofaTrainTest.annotated_only_entities
+
+
+
+
+        #print(f"hfl:{hfl}")
+        #print(f"bfl:{bfl}")
+        #print("going to read annotated data from disk:")
+
+
+
+        heads_lemmas = objUofaTrainTest.read_json(hfl)
+        bodies_lemmas = objUofaTrainTest.read_json(bfl)
+        heads_entities = objUofaTrainTest.read_json(hfe)
+        bodies_entities = objUofaTrainTest.read_json(bfe)
+        heads_words = objUofaTrainTest.read_json(hfw)
+        bodies_words = objUofaTrainTest.read_json(bfw)
+
+        print(f"length of headline_words:{len(heads_words)}")
+        print(f"length of bodies_words:{len(bodies_words)}")
+        print(f"length of all_labels:{len(all_labels)}")
+
+
+
+        counter=0
+        #h stands for headline and b for body
+        for he, be, hl, bl, hw, bw,indiv_label in\
+                tq(zip(heads_entities, bodies_entities, heads_lemmas,
+                                                    bodies_lemmas,
+                                                      heads_words,
+                                                      bodies_words,all_labels),
+                   total=len(all_labels),desc="reading annotated data"):
+
+            counter=counter+1
+            label = indiv_label
+
+
+
+            if not (label == "unrelated"):
+
+
+                if (label == 'discuss'):
+                    new_label = "NOT ENOUGH INFO"
+                if (label == 'agree'):
+                    new_label = "SUPPORTS"
+                if (label == 'disagree'):
+                    new_label = "REFUTES"
+
+
+                he_split=  he.split(" ")
+                be_split = be.split(" ")
+                hl_split = hl.split(" ")
+                bl_split = bl.split(" ")
+                hw_split = hw.split(" ")
+                bw_split = bw.split(" ")
+
+                # note that these words are equivalent
+                # hypothesis == = claim = headline
+                # premise == = evidence = body
+                #
+                # print(f"hypothesis_before_annotation: {hw}")
+                # print(f"premise_before_annotation: {bw}")
+
+                # premise_ann=bw
+                # hypothesis_ann=hw
+
+
+
+
+                premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
+
+
+
+
+
+                #
+                #
+                # print(f"***********starting new sentence\n\n")
+                # print(f"hypothesis_before_annotation: {hw}")
+                # print(f"premise_before_annotation: {bw}")
+                # print(f"hypothesis_ann: {hypothesis_ann}")
+                # print(f"premise_ann: {premise_ann}")
+                # print(f"label: {label}")
+                # sys.exit(1)
+
+
+
+
+
+
+                # if(label=="NOT ENOUGH INFO"):
+                # print(f"premise_ann: {premise_ann}")
+                # print("\n")
+                # print(f"hypothesis_ann: {hypothesis_ann}")
+                # print("\n")
+                # print(f"label: {label}")
+                #
+
+                #
+                #
+
+
+
+
+
+
+
+
+                #instances.append(self.text_to_instance(premise_ann, hypothesis_ann, new_label))
+
+                # this is for testing without any SMART  NER stuff- just plain text
+                instances.append(self.text_to_instance(bw, hw, new_label))
+
+
+        print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
+
+
+
+        if not instances:
+            raise ConfigurationError("No instances were read from the given filepath {}. "
+                                     "Is the path correct?".format(file_path))
+        return Dataset(instances)
 
 
     def read_fnc(self, d):
@@ -316,7 +501,6 @@ class FEVERReader(DatasetReader):
         hypothesis_tokens = self._claim_tokenizer.tokenize(hypothesis)
         fields['premise'] = TextField(premise_tokens, self._token_indexers) if premise is not None else None
         fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
-
         if label is not None:
             fields['label'] = LabelField(label)
         return Instance(fields)
