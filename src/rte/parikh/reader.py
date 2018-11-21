@@ -300,7 +300,7 @@ class FEVERReader(DatasetReader):
         if (run_name == "dev"):
             print("run_name == dev")
             path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
-            data_folder = objUofaTrainTest.data_root + path_to_pyproc_annotated_data_folder
+            data_folder = objUofaTrainTest.data_root + str(path_to_pyproc_annotated_data_folder)
 
         else:
             if (run_name == "train"):
