@@ -281,14 +281,14 @@ if __name__ == "__main__":
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
     path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
-    logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
-    sys.exit(1)
+
 
     log_file_name = "dev_feverlog.txt" + str(args.slice) + "_" + str(args.randomseed)
-    logger = setup_custom_logger('root', args.lmode,log_file_name)
+    mithun_logger = setup_custom_logger('root', args.lmode,log_file_name)
 
-    logger.info("inside main function going to call eval on "+str(dataset_to_test))
-
+    mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
+    mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
+    sys.exit(1)
 
 
     if(dataset_to_test=="fnc"):
