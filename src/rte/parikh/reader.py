@@ -313,9 +313,9 @@ class FEVERReader(DatasetReader):
                         print("run_name == test")
                         data_folder = objUofaTrainTest.data_folder_test
 
-        print(f"value of data_folder is {data_folder}")
+
         mithun_logger.info(f"value of data_folder is {data_folder}")
-        sys.exit(1)
+
 
         #load the labels from the disk
         lbl_file= objUofaTrainTest.label_folder+objUofaTrainTest.label_dev_file
