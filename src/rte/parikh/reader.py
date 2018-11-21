@@ -272,17 +272,18 @@ class FEVERReader(DatasetReader):
         print(f"refutes_counter: {refutes_counter}")
         print(f"refutes_overlap_counter: {refutes_overlap_counter}")
 
-        sys.exit(1)
+
 
 
         return Dataset(instances)
 
     def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly):
-        #logger.info("got inside read")
-        #logging.info("got inside read")
-
-
-
+        nei_overlap_counter = 0
+        nei_counter = 0
+        supports_overlap_counter = 0
+        supports_counter = 0
+        refutes_overlap_counter = 0
+        refutes_counter = 0
         instances = []
 
         ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
@@ -399,55 +400,45 @@ class FEVERReader(DatasetReader):
 
 
 
-                premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+                premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
+                # This is for the analysis of the NEI over-predicting
+                if (label == "NOT ENOUGH INFO"):
+                    nei_counter = nei_counter + 1
+                    if (found_intersection):
+                        # print("\n")
+                        # print(f"hw: {hw}")
+                        # print(f"bw: {bw}")
+                        # print(f"hypothesis_ann: {hypothesis_ann}")
+                        # print(f"premise_ann: {premise_ann}")
+                        #
+                        # print(f"label: {label}")
+
+                        nei_overlap_counter = nei_overlap_counter + 1
+
+                if (label == "SUPPORTS"):
+                    supports_counter = supports_counter + 1
+                    if (found_intersection):
+                        supports_overlap_counter = supports_overlap_counter + 1
+
+                if (label == "REFUTES"):
+                    refutes_counter = refutes_counter + 1
+                    if (found_intersection):
+                        refutes_overlap_counter = refutes_overlap_counter + 1
 
 
-
-
-                #
-                #
-                # print(f"***********starting new sentence\n\n")
-                # print(f"hypothesis_before_annotation: {hw}")
-                # print(f"premise_before_annotation: {bw}")
-                # print(f"hypothesis_ann: {hypothesis_ann}")
-                # print(f"premise_ann: {premise_ann}")
-                # print(f"label: {label}")
-                # sys.exit(1)
-
-
-
-
-
-
-                # if(label=="NOT ENOUGH INFO"):
-                # print(f"premise_ann: {premise_ann}")
-                # print("\n")
-                # print(f"hypothesis_ann: {hypothesis_ann}")
-                # print("\n")
-                # print(f"label: {label}")
-                #
-
-                #
-                #
-
-
-
-
-
-
-
-
-                #instances.append(self.text_to_instance(premise_ann, hypothesis_ann, new_label))
-
-                # this is for testing without any SMART  NER stuff- just plain text
                 instances.append(self.text_to_instance(bw, hw, new_label))
 
 
         print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
 
-
+        print(f"nei_overlap_counter: {nei_counter}")
+        print(f"nei_overlap_counter: {nei_overlap_counter}")
+        print(f"supports_counter: {supports_counter}")
+        print(f"supports_overlap_counter: {supports_overlap_counter}")
+        print(f"refutes_counter: {refutes_counter}")
+        print(f"refutes_overlap_counter: {refutes_overlap_counter}")
 
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
