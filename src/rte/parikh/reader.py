@@ -406,7 +406,7 @@ class FEVERReader(DatasetReader):
                 premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
-                if (found_intersection):
+                #if (found_intersection):
                     # print("\n")
                     # print(f"hypothesis_before_annotation: {hw}")
                     # print(f"premise_before_annotation: {bw}")
@@ -415,7 +415,7 @@ class FEVERReader(DatasetReader):
                     # print(f"label: {label}")
                     # sys.exit(1)
                 # This is for the analysis of the NEI over-predicting
-                if (new_label == "NOT ENOUGH INFO"):
+                if(new_label == "NOT ENOUGH INFO"):
                     nei_counter = nei_counter + 1
                     if (found_intersection):
                         nei_overlap_counter = nei_overlap_counter + 1
