@@ -391,8 +391,7 @@ class FEVERReader(DatasetReader):
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
                 #
-                # print(f"hypothesis_before_annotation: {hw}")
-                # print(f"premise_before_annotation: {bw}")
+
 
                 # premise_ann=bw
                 # hypothesis_ann=hw
@@ -403,19 +402,22 @@ class FEVERReader(DatasetReader):
                 premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
+                if (found_intersection):
+                    print("\n")
+                    print(f"hw: {hw}")
+                    print(f"bw: {bw}")
+                    print(f"hypothesis_before_annotation: {hw}")
+                    print(f"premise_before_annotation: {bw}")
+                    print(f"hypothesis_ann: {hypothesis_ann}")
+                    print(f"premise_ann: {premise_ann}")
+                    print(f"label: {label}")
+                    sys.exit(1)
                 # This is for the analysis of the NEI over-predicting
                 if (label == "NOT ENOUGH INFO"):
                     nei_counter = nei_counter + 1
                     if (found_intersection):
-                        # print("\n")
-                        # print(f"hw: {hw}")
-                        # print(f"bw: {bw}")
-                        # print(f"hypothesis_ann: {hypothesis_ann}")
-                        # print(f"premise_ann: {premise_ann}")
-                        #
-                        # print(f"label: {label}")
-
                         nei_overlap_counter = nei_overlap_counter + 1
+
 
                 if (label == "SUPPORTS"):
                     supports_counter = supports_counter + 1
