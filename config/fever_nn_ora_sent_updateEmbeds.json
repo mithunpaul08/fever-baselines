@@ -1,6 +1,7 @@
 {
   "uofa_params": {
     "data": "fnc",
+    "path_to_pyproc_annotated_data_folder": ""/data/fnc-data-ann/dev/"",
     "random_seed":98467,
     "training_slice_percent":10,
     },

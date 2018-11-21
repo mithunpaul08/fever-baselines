@@ -277,7 +277,7 @@ class FEVERReader(DatasetReader):
 
         return Dataset(instances)
 
-    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly):
+    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly,uofa_params):
         nei_overlap_counter = 0
         nei_counter = 0
         supports_overlap_counter = 0
@@ -299,7 +299,9 @@ class FEVERReader(DatasetReader):
 
         if (run_name == "dev"):
             print("run_name == dev")
-            data_folder = objUofaTrainTest.data_folder_dev
+            path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
+            data_folder = objUofaTrainTest.data_root + path_to_pyproc_annotated_data_folder
+
         else:
             if (run_name == "train"):
                 print("run_name == train")
@@ -313,6 +315,8 @@ class FEVERReader(DatasetReader):
                         print("run_name == test")
                         data_folder = objUofaTrainTest.data_folder_test
 
+        print(f"value of data_folder is {data_folder}")
+        sys.exit(1)
 
         #load the labels from the disk
         lbl_file= objUofaTrainTest.label_folder+objUofaTrainTest.label_dev_file
@@ -413,18 +417,18 @@ class FEVERReader(DatasetReader):
                     print(f"label: {label}")
                     sys.exit(1)
                 # This is for the analysis of the NEI over-predicting
-                if (label == "NOT ENOUGH INFO"):
+                if (new_label == "NOT ENOUGH INFO"):
                     nei_counter = nei_counter + 1
                     if (found_intersection):
                         nei_overlap_counter = nei_overlap_counter + 1
 
 
-                if (label == "SUPPORTS"):
+                if (new_label == "SUPPORTS"):
                     supports_counter = supports_counter + 1
                     if (found_intersection):
                         supports_overlap_counter = supports_overlap_counter + 1
 
-                if (label == "REFUTES"):
+                if (new_label == "REFUTES"):
                     refutes_counter = refutes_counter + 1
                     if (found_intersection):
                         refutes_overlap_counter = refutes_overlap_counter + 1

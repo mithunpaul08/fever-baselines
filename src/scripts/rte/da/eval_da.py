@@ -112,6 +112,8 @@ def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
+
+
     model = archive.model
     model.eval()
 
@@ -124,7 +126,12 @@ def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
     do_annotation_live = False
-    data = reader.read_annotated_fnc_and_do_ner_replacement(args.in_file, "dev", do_annotation_live).instances
+
+    uofa_params = params.pop('uofa_params', {})
+
+
+
+    data = reader.read_annotated_fnc_and_do_ner_replacement(args.in_file, "dev", do_annotation_live,uofa_params).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
     #
     ###################end of running model and saving
