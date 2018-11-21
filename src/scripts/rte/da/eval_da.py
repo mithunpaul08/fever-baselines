@@ -45,7 +45,7 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
                                  claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
-    logger.info("Reading training data from %s", args.in_file)
+    logger.info("Reading  data from %s", args.in_file)
 
 
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
@@ -195,6 +195,9 @@ if __name__ == "__main__":
 
     log_file_name = "dev_feverlog.txt" + str(args.slice) + "_" + str(args.randomseed)
     logger = setup_custom_logger('root', args.lmode,log_file_name)
+
+    logger.info("inside main function going to call eval on "+str(dataset_to_test))
+    sys.exit(1)
 
 
     if(dataset_to_test=="fnc"):

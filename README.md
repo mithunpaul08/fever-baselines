@@ -31,7 +31,7 @@ A sample command to run the training and dev together decomposable attention mod
 
 Note: To run dev alone, comment out the lines corresponding to training in the shell script. You will have to still provide -m and -c command line inputs
 
-Eg:`./runner_oracle_decomp_args.sh -m smartner_tr-fever-c config/fever_nn_ora_sent_updateEmbeds.json`
+Eg:`./runner_oracle_decomp_args.sh -m smartner_tr-fever -c config/fever_nn_ora_sent_updateEmbeds.json -n 23232 -slice 10`
 
 To run the With handcrafted features + SVM pipe line (from fever baseline model) + SVM (our model): use `./runner_ir.sh`
 
