@@ -399,7 +399,8 @@ class FEVERReader(DatasetReader):
                 # premise_ann=bw
                 # hypothesis_ann=hw
 
-
+                print(f"hypothesis_before_annotation: {hw}")
+                print(f"premise_before_annotation: {bw}")
 
 
                 premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
@@ -407,8 +408,6 @@ class FEVERReader(DatasetReader):
 
                 if (found_intersection):
                     print("\n")
-                    print(f"hw: {hw}")
-                    print(f"bw: {bw}")
                     print(f"hypothesis_before_annotation: {hw}")
                     print(f"premise_before_annotation: {bw}")
                     print(f"hypothesis_ann: {hypothesis_ann}")
