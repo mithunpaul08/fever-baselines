@@ -15,6 +15,8 @@ from common.util.log_helper import LogHelper
 from retrieval.fever_doc_db import FeverDocDB
 from rte.parikh.reader import FEVERReader
 from rte.mithun.read_fake_news_data import load_fever_DataSet
+from rte.mithun.log import setup_custom_logger
+
 from tqdm import tqdm
 
 import argparse
@@ -27,7 +29,7 @@ from collections import defaultdict
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-def eval_model(db: FeverDocDB, args) -> Model:
+def eval_model(db: FeverDocDB, args,logger) -> Model:
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
 
     config = archive.config
@@ -42,7 +44,8 @@ def eval_model(db: FeverDocDB, args) -> Model:
                                  claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
-    logger.info("Reading training data from %s", args.in_file)
+    logger.info("Reading  data from %s", args.in_file)
+
 
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
@@ -56,21 +59,21 @@ def eval_model(db: FeverDocDB, args) -> Model:
 
     if args.log is not None:
         f = open(args.log,"w+")
-    if_ctr, else_ctr = 0, 0
     pred_dict = defaultdict(int)
 
     for item in tqdm(data):
         if item.fields["premise"] is None or item.fields["premise"].sequence_length() == 0:
+            # Handles some edge case we presume, never really gets used
             cls = "NOT ENOUGH INFO"
-            if_ctr += 1
         else:
-            else_ctr += 1
-
             prediction = model.forward_on_instance(item, args.cuda_device)
             cls = model.vocab._index_to_token["labels"][np.argmax(prediction["label_probs"])]
+            #print(f'np.argmax(prediction[label_probs]) = {np.argmax(prediction["label_probs"])}')
+            #print(f"cls: {cls}")
 
 
         if "label" in item.fields:
+            #print(item.fields["label"].label)
             actual.append(item.fields["label"].label)
         predicted.append(cls)
         pred_dict[cls] += 1
@@ -94,10 +97,18 @@ def eval_model(db: FeverDocDB, args) -> Model:
         print(classification_report(actual, predicted))
         print(confusion_matrix(actual, predicted))
 
+        logger.info(accuracy_score(actual, predicted))
+        logger.info(classification_report(actual, predicted))
+        logger.info(confusion_matrix(actual, predicted))
+
+
+
     return model
 
 
 def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
+
+    print("got inside eval_model_fnc_data")
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
@@ -246,17 +257,33 @@ if __name__ == "__main__":
                            type=str,
                            default="",
                            help='a HOCON structure used to override the experiment configuration')
-
-
+    parser.add_argument('--param_path',
+                        type=str,
+                        help='path to parameter file describing the model to be trained')
+    parser.add_argument('--lmode',
+                        type=str,
+                        help='log mode. the mode in which logs will be created . DEBUG , INFO, ERROR, WARNING etc')
+    parser.add_argument("--randomseed", type=str, default=None,
+                        help='random number that will be used as seed for lstm initial weight generation)')
+    parser.add_argument("--slice", type=int, default=None,
+                        help='what slice of training data is this going to be trained on)')
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
 
-    #this will ideally be used only once. i.e when you convert the fake news data into fever format and annotate it with pyprocessors
-    #convert_fnc_to_fever_and_annotate(db, args, logger)
-    eval_model_fnc(db,args)
-   
+    params = Params.from_file(args.param_path, args.overrides)
+    uofa_params = params.pop('uofa_params', {})
+    dataset_to_test = uofa_params.pop('data', {})
 
-    #eval_model(db,args)
+    log_file_name = "dev_feverlog.txt" + str(args.slice) + "_" + str(args.randomseed)
+    logger = setup_custom_logger('root', args.lmode,log_file_name)
 
+    logger.info("inside main function going to call eval on "+str(dataset_to_test))
+
+
+
+    if(dataset_to_test=="fnc"):
+        eval_model_fnc_data(db,args)
+    elif (dataset_to_test=="fever"):
+        eval_model(db,args,logger)
 

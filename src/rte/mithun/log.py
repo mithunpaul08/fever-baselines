@@ -1,6 +1,6 @@
 import logging
 
-def setup_custom_logger(name, lmode):
+def setup_custom_logger(name, lmode,log_file_name):
     log_mode=logging.DEBUG
 
     if(lmode=="DEBUG"):
@@ -23,7 +23,7 @@ def setup_custom_logger(name, lmode):
     logging.basicConfig(level=log_mode,
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%m-%d %H:%M',
-                    filename='log_fever.txt',
+                    filename=log_file_name,
                     filemode='w')
 
     logger = logging.getLogger(name)

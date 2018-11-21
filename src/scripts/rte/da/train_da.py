@@ -14,6 +14,7 @@ from common.util.random import SimpleRandom
 from retrieval.fever_doc_db import FeverDocDB
 from rte.parikh.reader import FEVERReader
 from sklearn.externals import joblib
+from rte.mithun.log import setup_custom_logger
 
 import argparse
 import logging
@@ -23,7 +24,7 @@ import json
 logger = logging.getLogger(__name__)  # pylint:    disable=invalid-name
 
 def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_device:int,
-                serialization_dir: str, filtering: str) -> Model:
+                serialization_dir: str, filtering: str, randomseed:int, slice:int) -> Model:
     """
     This function can be used as an entry point to running models in AllenNLP
     directly from a JSON specification using a :class:`Driver`. Note that if
@@ -42,10 +43,15 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
         The directory in which to save results and logs.
     """
 
-    uofa_params = params.pop('uofa_params', {})
-    my_seed = uofa_params.pop('random_seed', {})
 
-    SimpleRandom.set_seeds_from_config_file(my_seed)
+
+
+
+
+    #uofa_params = params.pop('uofa_params', {})
+    #my_seed = uofa_params.pop('random_seed', {})
+
+    SimpleRandom.set_seeds_from_config_file(randomseed)
 
 
 
@@ -76,8 +82,30 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     logger.info("Reading training data from %s", train_data_path)
     run_name=args.mode
     do_annotation_on_the_fly=False
-    train_data = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly)
+
+
+
+
+    train_data_instances = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly).instances
     #joblib.dump(train_data, "fever_tr_dataset_format.pkl")
+
+    #if you want to train on a smaller slice
+    #uofa_params = params.pop('uofa_params', {})
+    #training_slice_percent = uofa_params.pop('training_slice_percent', {})
+
+    training_slice_percent=slice
+
+
+    total_training_data = len(train_data_instances)
+
+    print(total_training_data)
+
+    training_slice_count= int(total_training_data * training_slice_percent/100)
+    print(training_slice_count)
+
+    train_data_slice=Dataset(train_data_instances[0:training_slice_count])
+    train_data=train_data_slice
+
 
 
     all_datasets = [train_data]
@@ -119,7 +147,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
                                   train_data,
                                   validation_data,
                                   trainer_params)
-
+    print("going to start training")
     trainer.train()
 
     # Now tar up results
@@ -152,6 +180,9 @@ if __name__ == "__main__":
 
 
     parser.add_argument("--mode", type=str, default=None, help='train,test,dev,small)')
+    parser.add_argument("--randomseed", type=str, default=None, help='random number that will be used as seed for lstm initial weight generation)')
+    parser.add_argument("--slice", type=int, default=None,
+                        help='what slice of training data is this going to be trained on)')
 
     args = parser.parse_args()
 
@@ -159,4 +190,10 @@ if __name__ == "__main__":
 
     params = Params.from_file(args.param_path,args.overrides)
 
-    train_model(db,params,args.cuda_device,args.logdir,args.filtering)
+    #todo fix me. get this from command line or atleast a params config file
+    log_file_name="training_feverlog.txt"+str(args.slice)+"_"+str(args.randomseed)
+    logger = setup_custom_logger('root', "INFO",log_file_name)
+
+    logger.info(f"Going to train on  {args.slice} percentage of training data.")
+
+    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice)
