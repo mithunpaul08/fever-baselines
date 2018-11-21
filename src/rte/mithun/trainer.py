@@ -1421,16 +1421,17 @@ class UofaTrainTest():
 
         return prev, dict_tokenner_newner, new_sent, full_name, unique_new_ners, unique_new_tokens, dict_newner_token
 
+
+'''     # while parsig through the new evidence sentence you might encounter a new NER tag (eg: PER-E1).
+        #here new evidence sentence means that the sentence which was creatd when we took just the evidence and collapsed
+        #i.e JRR Tolkein, was collapsed to one PERSON E-1.        # check if the token of this NER tag over laps with claim also somewhere. If it does
+        replace its current NER tag with the one in the claim. Essentially we are pointing out overlaps to the classifier'''
     def check_exists_in_claim(self,new_ev_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev, dict_tokenner_newner_claims):
 
 
         combined_sent=[]
 
-        # while parsig through the new evidence sentence you might encounter a new NER tag (eg: PER-E1).
-        #here new evidence sentence means that the sentence which was creatd when we took just the evidence and collapsed
-        #i.e JRR Tolkein, was collapsed to one PERSON E-1
 
-        # check if the token of this NER tag over laps with claim also somewhere
         found_intersection = False
 
         for ev_new_ner_value in new_ev_sent_after_collapse:
@@ -1458,8 +1459,8 @@ class UofaTrainTest():
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
                         found_intersection = True
                         print("overlap exists between the token in claim and evidence ")
-                        print(f"token_split:{token_split}")
-                        print(f"name_cl_split:{name_cl_split}")
+                        # print(f"token_split:{token_split}")
+                        # print(f"name_cl_split:{name_cl_split}")
 
 
                         # also confirm that NER value also matches. This is to avoid john amsterdam PER overlapping with AMSTERDAM LOC
@@ -1468,8 +1469,8 @@ class UofaTrainTest():
 
                             if (ev_new_ner_value == v):
                                 actual_ner_tag=k[1]
-                                print(f"ev_new_ner_value:{ev_new_ner_value}")
-                                print(f"actual_ner_tag:{actual_ner_tag}")
+                                # print(f"ev_new_ner_value:{ev_new_ner_value}")
+                                # print(f"actual_ner_tag:{actual_ner_tag}")
 
                                 break
 
@@ -1496,10 +1497,8 @@ class UofaTrainTest():
 
             else:
                 combined_sent.append(ev_new_ner_value)
-                
-        if(found_intersection):
-            print(combined_sent)
-            sys.exit(1)
+
+
 
         return combined_sent,found_intersection
 
