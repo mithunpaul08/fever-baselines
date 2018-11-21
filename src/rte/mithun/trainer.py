@@ -33,12 +33,9 @@ class UofaTrainTest():
         self.annotated_only_dep = "ann_deps.json"
         self.annotated_words = "ann_words.json"
         self.annotated_whole_data_head = "ann_head_tr.json"
-
-        self.label_dev_file="labels_dev.csv"
-
+        self.label_dev_file="fnc_dev_labels.csv"
         self.annotated_body_split_folder = "split_body/"
         self.annotated_head_split_folder = "split_head/"
-        # pick based on which folder you are running from. if not on home folder:
         self.data_root = os.getcwd()
         self.data_folder_train = self.data_root + "/data/fever-data-ann/train/"
         self.data_folder_train_small = self.data_root + "/data/fever-data-ann/train_small/"

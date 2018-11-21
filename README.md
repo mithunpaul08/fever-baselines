@@ -26,7 +26,8 @@ Second time onwards use: `docker start procserv`
 
 A sample command to run the training and dev together decomposable attention model, with Smart NER (replace tokens with NER tags but checking if they exists in the claim) looks like:
 
-`time ./runner_oracle_decomp_args.sh -m smartner_tr-fever -l log_smartner_tr-fever -r train  -c config/fever_nn_ora_sent_updateEmbeds.json`
+#`time ./runner_oracle_decomp_args.sh -m smartner_tr-fever -l log_smartner_tr-fever -r train  -c config/fever_nn_ora_sent_updateEmbeds.json`
+`PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db data/models/smartner_tr-fever.tar.gz data/fever/dev.ns.pages.p1.jsonl --param_path config/fever_nn_ora_sent_updateEmbeds.json  --randomseed 123123 --slice 10`
 
 
 Note: To run dev alone, comment out the lines corresponding to training in the shell script. You will have to still provide -m and -c command line inputs
