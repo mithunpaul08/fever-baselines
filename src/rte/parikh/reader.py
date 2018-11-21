@@ -277,7 +277,7 @@ class FEVERReader(DatasetReader):
 
         return Dataset(instances)
 
-    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly,uofa_params):
+    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data):
         nei_overlap_counter = 0
         nei_counter = 0
         supports_overlap_counter = 0
@@ -299,8 +299,8 @@ class FEVERReader(DatasetReader):
 
         if (run_name == "dev"):
             print("run_name == dev")
-            path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
-            data_folder = objUofaTrainTest.data_root + str(path_to_pyproc_annotated_data_folder)
+
+            data_folder = objUofaTrainTest.data_root + str(path_to_fnc_annotated_data)
 
         else:
             if (run_name == "train"):

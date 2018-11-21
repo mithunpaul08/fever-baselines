@@ -106,7 +106,7 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data) -> Model:
 
     print("got inside eval_model_fnc_data")
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
@@ -127,11 +127,10 @@ def eval_model_fnc_data(db: FeverDocDB, args) -> Model:
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
     do_annotation_live = False
 
-    uofa_params = params.pop('uofa_params', {})
 
 
 
-    data = reader.read_annotated_fnc_and_do_ner_replacement(args.in_file, "dev", do_annotation_live,uofa_params).instances
+    data = reader.read_annotated_fnc_and_do_ner_replacement(args.in_file, "dev", do_annotation_live,path_to_fnc_annotated_data).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
     #
     ###################end of running model and saving
@@ -281,6 +280,9 @@ if __name__ == "__main__":
     params = Params.from_file(args.param_path, args.overrides)
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
+    path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
+    logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
+    sys.exit(1)
 
     log_file_name = "dev_feverlog.txt" + str(args.slice) + "_" + str(args.randomseed)
     logger = setup_custom_logger('root', args.lmode,log_file_name)
@@ -290,7 +292,7 @@ if __name__ == "__main__":
 
 
     if(dataset_to_test=="fnc"):
-        eval_model_fnc_data(db,args)
+        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder)
     elif (dataset_to_test=="fever"):
         eval_model(db,args,logger)
 
