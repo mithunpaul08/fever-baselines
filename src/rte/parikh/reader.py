@@ -277,7 +277,7 @@ class FEVERReader(DatasetReader):
 
         return Dataset(instances)
 
-    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data):
+    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data,mithun_logger):
         nei_overlap_counter = 0
         nei_counter = 0
         supports_overlap_counter = 0
@@ -290,9 +290,7 @@ class FEVERReader(DatasetReader):
         ds.read()
 
 
-
-
-        print("(do_annotation=false):going to load annotated data from the disk.")
+        mithun_logger.info("(do_annotation=false):going to load annotated data from the disk.")
 
 
         objUofaTrainTest = UofaTrainTest()
@@ -316,6 +314,7 @@ class FEVERReader(DatasetReader):
                         data_folder = objUofaTrainTest.data_folder_test
 
         print(f"value of data_folder is {data_folder}")
+        mithun_logger.info(f"value of data_folder is {data_folder}")
         sys.exit(1)
 
         #load the labels from the disk

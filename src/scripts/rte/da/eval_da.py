@@ -106,7 +106,7 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data,mithun_logger) -> Model:
 
     print("got inside eval_model_fnc_data")
     archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
@@ -130,7 +130,7 @@ def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data) -> Mode
 
 
 
-    data = reader.read_annotated_fnc_and_do_ner_replacement(args.in_file, "dev", do_annotation_live,path_to_fnc_annotated_data).instances
+    data = reader.read_annotated_fnc_and_do_ner_replacement(args.in_file, "dev", do_annotation_live,path_to_fnc_annotated_data,mithun_logger).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
     #
     ###################end of running model and saving
@@ -288,11 +288,11 @@ if __name__ == "__main__":
 
     mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
     mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
-    sys.exit(1)
+
 
 
     if(dataset_to_test=="fnc"):
-        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder)
+        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger)
     elif (dataset_to_test=="fever"):
         eval_model(db,args,logger)
 
