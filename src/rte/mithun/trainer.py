@@ -1448,16 +1448,17 @@ class UofaTrainTest():
                     ner_cl=tup[1]
                     name_cl_split = set(name_cl.split(" "))
 
-                    # print(f"tup:{tup}")
-                    # print(f"name_cl:{name_cl}")
-                    # print(f"name_cl_split:{name_cl_split}")
+                    print(f"tup:{tup}")
+                    print(f"name_cl:{name_cl}")
+                    print(f"name_cl_split:{name_cl_split}")
 
 
-                    #
 
 
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
-                        #print("name exists")
+                        print("overlap exists between the token in claim and evidence ")
+                        print(f"token_split:{token_split}")
+                        print(f"name_cl_split:{name_cl_split}")
 
 
                         # also confirm that NER value also matches. This is to avoid john amsterdam PER overlapping with AMSTERDAM LOC
@@ -1466,10 +1467,9 @@ class UofaTrainTest():
 
                             if (ev_new_ner_value == v):
                                 actual_ner_tag=k[1]
-                                # print(actual_ner_tag)
-                                # print(f"actual_ner_tag:{actual_ner_tag}")
-                                # print(f"actual_ner_tag:{actual_ner_tag}")
-                                # sys.exit(1)
+                                print(f"ev_new_ner_value:{ev_new_ner_value}")
+                                print(f"actual_ner_tag:{actual_ner_tag}")
+                                sys.exit(1)
                                 break
 
                         #now check if this NER tag in evidence also matches with that in claims
@@ -1477,7 +1477,8 @@ class UofaTrainTest():
                             val_claim = dict_tokenner_newner_claims[tup]
                             combined_sent.append(val_claim)
                             found_intersection=True
-                            #print("found_intersection=True")
+                            print("found_intersection=True")
+                            sys.exit(1)
 
                 #if there is no intersection/common NER entities between headline and body
                 if not (found_intersection):
