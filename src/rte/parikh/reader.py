@@ -437,13 +437,13 @@ class FEVERReader(DatasetReader):
 
         print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
 
-        print(f"nei_overlap_counter: {nei_counter}")
-        print(f"nei_overlap_counter: {nei_overlap_counter}")
-        print(f"supports_counter: {supports_counter}")
-        print(f"supports_overlap_counter: {supports_overlap_counter}")
-        print(f"refutes_counter: {refutes_counter}")
-        print(f"refutes_overlap_counter: {refutes_overlap_counter}")
-        sys.exit(1)
+        # print(f"nei_overlap_counter: {nei_counter}")
+        # print(f"nei_overlap_counter: {nei_overlap_counter}")
+        # print(f"supports_counter: {supports_counter}")
+        # print(f"supports_overlap_counter: {supports_overlap_counter}")
+        # print(f"refutes_counter: {refutes_counter}")
+        # print(f"refutes_overlap_counter: {refutes_overlap_counter}")
+        # sys.exit(1)
 
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
