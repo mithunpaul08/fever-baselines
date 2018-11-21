@@ -197,7 +197,7 @@ if __name__ == "__main__":
     logger = setup_custom_logger('root', args.lmode,log_file_name)
 
     logger.info("inside main function going to call eval on "+str(dataset_to_test))
-    sys.exit(1)
+
 
 
     if(dataset_to_test=="fnc"):
