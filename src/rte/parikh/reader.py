@@ -277,7 +277,7 @@ class FEVERReader(DatasetReader):
 
         return Dataset(instances)
 
-    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly):
+    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data,mithun_logger):
         nei_overlap_counter = 0
         nei_counter = 0
         supports_overlap_counter = 0
@@ -290,16 +290,16 @@ class FEVERReader(DatasetReader):
         ds.read()
 
 
-
-
-        print("(do_annotation=false):going to load annotated data from the disk.")
+        mithun_logger.info("(do_annotation=false):going to load annotated data from the disk.")
 
 
         objUofaTrainTest = UofaTrainTest()
 
         if (run_name == "dev"):
             print("run_name == dev")
-            data_folder = objUofaTrainTest.data_folder_dev
+
+            data_folder = objUofaTrainTest.data_root + str(path_to_fnc_annotated_data)
+
         else:
             if (run_name == "train"):
                 print("run_name == train")
@@ -312,6 +312,9 @@ class FEVERReader(DatasetReader):
                     if (run_name == "test"):
                         print("run_name == test")
                         data_folder = objUofaTrainTest.data_folder_test
+
+
+        mithun_logger.info(f"value of data_folder is {data_folder}")
 
 
         #load the labels from the disk
@@ -391,38 +394,39 @@ class FEVERReader(DatasetReader):
                 # hypothesis == = claim = headline
                 # premise == = evidence = body
                 #
-                # print(f"hypothesis_before_annotation: {hw}")
-                # print(f"premise_before_annotation: {bw}")
+
 
                 # premise_ann=bw
                 # hypothesis_ann=hw
 
-
+                # print(f"hypothesis_before_annotation: {hw}")
+                # print(f"premise_before_annotation: {bw}")
 
 
                 premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
+                #if (found_intersection):
+                    # print("\n")
+                    # print(f"hypothesis_before_annotation: {hw}")
+                    # print(f"premise_before_annotation: {bw}")
+                    # print(f"hypothesis_ann: {hypothesis_ann}")
+                    # print(f"premise_ann: {premise_ann}")
+                    # print(f"label: {label}")
+                    # sys.exit(1)
                 # This is for the analysis of the NEI over-predicting
-                if (label == "NOT ENOUGH INFO"):
+                if(new_label == "NOT ENOUGH INFO"):
                     nei_counter = nei_counter + 1
                     if (found_intersection):
-                        # print("\n")
-                        # print(f"hw: {hw}")
-                        # print(f"bw: {bw}")
-                        # print(f"hypothesis_ann: {hypothesis_ann}")
-                        # print(f"premise_ann: {premise_ann}")
-                        #
-                        # print(f"label: {label}")
-
                         nei_overlap_counter = nei_overlap_counter + 1
 
-                if (label == "SUPPORTS"):
+
+                if (new_label == "SUPPORTS"):
                     supports_counter = supports_counter + 1
                     if (found_intersection):
                         supports_overlap_counter = supports_overlap_counter + 1
 
-                if (label == "REFUTES"):
+                if (new_label == "REFUTES"):
                     refutes_counter = refutes_counter + 1
                     if (found_intersection):
                         refutes_overlap_counter = refutes_overlap_counter + 1
@@ -433,12 +437,13 @@ class FEVERReader(DatasetReader):
 
         print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
 
-        print(f"nei_overlap_counter: {nei_counter}")
-        print(f"nei_overlap_counter: {nei_overlap_counter}")
-        print(f"supports_counter: {supports_counter}")
-        print(f"supports_overlap_counter: {supports_overlap_counter}")
-        print(f"refutes_counter: {refutes_counter}")
-        print(f"refutes_overlap_counter: {refutes_overlap_counter}")
+        # print(f"nei_overlap_counter: {nei_counter}")
+        # print(f"nei_overlap_counter: {nei_overlap_counter}")
+        # print(f"supports_counter: {supports_counter}")
+        # print(f"supports_overlap_counter: {supports_overlap_counter}")
+        # print(f"refutes_counter: {refutes_counter}")
+        # print(f"refutes_overlap_counter: {refutes_overlap_counter}")
+        # sys.exit(1)
 
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
