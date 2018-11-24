@@ -290,6 +290,8 @@ if __name__ == "__main__":
 
     mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
     mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
+    mithun_logger.info("value of archive_file " + str(args.archive_file))
+    sys.exit(1)
 
 
 
