@@ -189,10 +189,24 @@ if __name__ == "__main__":
     db = FeverDocDB(args.db)
 
     params = Params.from_file(args.param_path,args.overrides)
+    uofa_params = params.pop('uofa_params', {})
+    read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
+    debug_mode = uofa_params.pop('debug_mode', {})
 
-    #todo fix me. get this from command line or atleast a params config file
-    log_file_name="training_feverlog.txt"+str(args.slice)+"_"+str(args.randomseed)
-    logger = setup_custom_logger('root', "INFO",log_file_name)
+
+    slice = ""
+    random_seed = ""
+
+    if(read_random_seed_from_commandline):
+        slice=args.slice
+        random_seed=args.randomseed
+    else:
+        slice = uofa_params.pop('training_slice_percent', {})
+        random_seed = uofa_params.pop('random_seed', {})
+
+
+    log_file_name="training_feverlog.txt"+str(slice)+"_"+str(random_seed)
+    logger = setup_custom_logger('root', debug_mode,log_file_name)
 
     logger.info(f"Going to train on  {args.slice} percentage of training data.")
 
