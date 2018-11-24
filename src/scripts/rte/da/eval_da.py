@@ -106,7 +106,13 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args,uofa_params,mithun_logger) -> Model:
+
+
+    name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
+    path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
+    path_to_fnc_annotated_data = uofa_params.pop('path_to_fnc_annotated_data', {})
+
 
     print("got inside eval_model_fnc_data")
     archive = load_archive(path_to_trained_models_folder+name_of_trained_model_to_use, cuda_device=args.cuda_device)
@@ -279,6 +285,7 @@ if __name__ == "__main__":
 
     params = Params.from_file(args.param_path, args.overrides)
     uofa_params = params.pop('uofa_params', {})
+
     dataset_to_test = uofa_params.pop('data', {})
     slice = uofa_params.pop('training_slice_percent', {})
     random_seed = uofa_params.pop('random_seed', {})
@@ -300,7 +307,7 @@ if __name__ == "__main__":
 
 
     if(dataset_to_test=="fnc"):
-        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use)
+        eval_model_fnc_data (db,args,uofa_params,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use)
     elif (dataset_to_test=="fever"):
         eval_model(db,args,logger)
 
