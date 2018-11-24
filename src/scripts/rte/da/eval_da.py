@@ -291,7 +291,7 @@ if __name__ == "__main__":
     debug_mode = uofa_params.pop('debug_mode', {})
     path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
     read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
-    features = TokenIndexer.dict_from_params(uofa_params.pop('features', {}))
+    #features = TokenIndexer.dict_from_params(uofa_params.pop('features', {}))
 
     slice = ""
     random_seed = ""
