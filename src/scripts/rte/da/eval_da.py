@@ -280,7 +280,7 @@ if __name__ == "__main__":
     params = Params.from_file(args.param_path, args.overrides)
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
-    slice = uofa_params.pop('slice', {})
+    slice = uofa_params.pop('training_slice_percent', {})
     random_seed = uofa_params.pop('random_seed', {})
     path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
 
