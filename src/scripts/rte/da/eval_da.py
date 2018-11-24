@@ -281,10 +281,11 @@ if __name__ == "__main__":
     uofa_params = params.pop('uofa_params', {})
     dataset_to_test = uofa_params.pop('data', {})
     slice = uofa_params.pop('slice', {})
+    random_seed = uofa_params.pop('random_seed', {})
     path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
 
 
-    log_file_name = "dev_feverlog.txt" + str(slice) + "_" + str(args.randomseed)
+    log_file_name = "dev_feverlog.txt" + str(slice) + "_" + str(random_seed)
     mithun_logger = setup_custom_logger('root', args.lmode,log_file_name)
 
     mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
