@@ -38,7 +38,8 @@ esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-for RANDOMSEED in 98467 12459 58354
+for RANDOMSEED in 98467
+#12459 58354
 do
   for SLICE in 100
   do
