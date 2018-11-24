@@ -117,9 +117,9 @@ class FEVERReader(DatasetReader):
         return instances
 
     @overrides
-    def read(self, file_path: str, run_name, do_annotation_on_the_fly):
-        #logger.info("got inside read")
-        #logging.info("got inside read")
+    def read(self, file_path: str, run_name, do_annotation_on_the_fly,mithun_logger):
+        mithun_logger.info("got inside read")
+        mithun_logger.info("got inside read")
 
         nei_overlap_counter = 0
         nei_counter = 0

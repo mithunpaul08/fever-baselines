@@ -29,9 +29,9 @@ from collections import defaultdict
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-def eval_model(db: FeverDocDB, args,logger,path_to_trained_models_folder,name_of_trained_model_to_use) -> Model:
+def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use) -> Model:
 
-    logger.info("got eval_model eval_model_fnc_data")
+    mithun_logger.info("got eval_model eval_model_fnc_data")
     archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
@@ -45,13 +45,13 @@ def eval_model(db: FeverDocDB, args,logger,path_to_trained_models_folder,name_of
                                  claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
-    logger.info("Reading  data from %s", args.in_file)
+    mithun_logger.info("Reading  data from %s", args.in_file)
 
 
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
     do_annotation_live = False
-    data = reader.read(args.in_file,"dev",do_annotation_live).instances
+    data = reader.read(args.in_file,"dev",do_annotation_live,mithun_logger).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
 
     actual = []
@@ -98,9 +98,9 @@ def eval_model(db: FeverDocDB, args,logger,path_to_trained_models_folder,name_of
         print(classification_report(actual, predicted))
         print(confusion_matrix(actual, predicted))
 
-        logger.info(accuracy_score(actual, predicted))
-        logger.info(classification_report(actual, predicted))
-        logger.info(confusion_matrix(actual, predicted))
+        mithun_logger.info(accuracy_score(actual, predicted))
+        mithun_logger.info(classification_report(actual, predicted))
+        mithun_logger.info(confusion_matrix(actual, predicted))
 
 
 
