@@ -306,5 +306,5 @@ if __name__ == "__main__":
     if(dataset_to_test=="fnc"):
         eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder)
     elif (dataset_to_test=="fever"):
-        eval_model(db,args,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder)
+        eval_model(db,args,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
 
