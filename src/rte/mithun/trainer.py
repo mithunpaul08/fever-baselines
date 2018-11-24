@@ -1460,7 +1460,7 @@ class UofaTrainTest():
 
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
                         found_intersection = True
-                        print("overlap exists between the token in claim and evidence ")
+                        #print("overlap exists between the token in claim and evidence ")
                         # print(f"token_split:{token_split}")
                         # print(f"name_cl_split:{name_cl_split}")
 
