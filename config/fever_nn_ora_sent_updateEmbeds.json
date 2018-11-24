@@ -5,7 +5,8 @@
     "random_seed":98467,
     "training_slice_percent":10,
     "name_of_trained_model_to_use":"smartner_tr-fever_12459_75.tar.gz",
-    "debug_mode":"INFO"
+    "debug_mode":"INFO",
+    "path_to_trained_models_folder":"/data/models/"
     },
   "dataset_reader": {
     "type": "fever",

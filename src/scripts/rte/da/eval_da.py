@@ -106,10 +106,10 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder) -> Model:
 
     print("got inside eval_model_fnc_data")
-    archive = load_archive(name_of_trained_model_to_use, cuda_device=args.cuda_device)
+    archive = load_archive(path_to_trained_models_folder+name_of_trained_model_to_use, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
 
@@ -285,6 +285,8 @@ if __name__ == "__main__":
     name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
     path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
     debug_mode = uofa_params.pop('debug_mode', {})
+    path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
+
 
 
     log_file_name = "dev_feverlog.txt" + str(slice) + "_" + str(random_seed)
