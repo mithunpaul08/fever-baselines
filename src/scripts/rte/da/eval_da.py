@@ -254,7 +254,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument('db', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('archive_file', type=str, help='/path/to/saved/db.db')
+    parser.add_argument('--archive_file', type=str, help='/path/to/saved/db.db')
     parser.add_argument('in_file', type=str, help='/path/to/saved/db.db')
     parser.add_argument('--log', required=False, default=None,  type=str, help='/path/to/saved/db.db')
 
