@@ -106,10 +106,10 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data,mithun_logger) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use) -> Model:
 
     print("got inside eval_model_fnc_data")
-    archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
+    archive = load_archive(name_of_trained_model_to_use, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
 
@@ -254,7 +254,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument('db', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('--archive_file', type=str, help='/path/to/saved/db.db')
+    #parser.add_argument('--archive_file', type=str, help='/path/to/saved/db.db')
     parser.add_argument('in_file', type=str, help='/path/to/saved/db.db')
     parser.add_argument('--log', required=False, default=None,  type=str, help='/path/to/saved/db.db')
 
@@ -282,6 +282,8 @@ if __name__ == "__main__":
     dataset_to_test = uofa_params.pop('data', {})
     slice = uofa_params.pop('training_slice_percent', {})
     random_seed = uofa_params.pop('random_seed', {})
+    name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
+
     path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
 
 
@@ -290,13 +292,13 @@ if __name__ == "__main__":
 
     mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
     mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
-    mithun_logger.info("value of archive_file " + str(args.archive_file))
+    mithun_logger.info("value of name_of_trained_model_to_use " + str(args.name_of_trained_model_to_use))
     sys.exit(1)
 
 
 
     if(dataset_to_test=="fnc"):
-        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger)
+        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use)
     elif (dataset_to_test=="fever"):
         eval_model(db,args,logger)
 
