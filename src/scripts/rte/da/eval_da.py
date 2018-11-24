@@ -290,6 +290,7 @@ if __name__ == "__main__":
     path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
     debug_mode = uofa_params.pop('debug_mode', {})
     path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
+    features = TokenIndexer.dict_from_params(uofa_params.pop('features', {}))
 
 
 
@@ -299,6 +300,7 @@ if __name__ == "__main__":
 
     mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
     mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
+    mithun_logger.info("value of name_of_trained_model_to_use " + str(name_of_trained_model_to_use))
     mithun_logger.info("value of name_of_trained_model_to_use " + str(name_of_trained_model_to_use))
 
 

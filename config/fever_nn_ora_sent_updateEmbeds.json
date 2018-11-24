@@ -8,8 +8,9 @@
     "debug_mode":"INFO",
     "path_to_trained_models_folder":"data/models/",
     "features": {
-        "lowercase_tokens": true,
-        "person-c1": true
+        "lowercase_tokens": false,
+        "person-c1": true,
+        "update-embeddings": true,
       }
     },
   "dataset_reader": {
@@ -46,7 +47,7 @@
         "projection_dim": 200,
         "pretrained_file": "data/glove/glove.6B.300d.txt.gz",
         "embedding_dim": 300,
-        "trainable": false
+        "trainable": true
       }
     },
     "attend_feedforward": {
