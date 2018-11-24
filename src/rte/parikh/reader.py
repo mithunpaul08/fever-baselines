@@ -191,8 +191,8 @@ class FEVERReader(DatasetReader):
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
                                                           heads_words,
-                                                          bodies_words,ds.data),
-                       total=len(ds.data),desc="reading annotated data"):
+                                                          bodies_words,heads_tags,heads_deps,heads_complete_annotation),
+                       total=len(heads_complete_annotation),desc="reading annotated data"):
 
                 counter=counter+1
 
