@@ -269,10 +269,10 @@ if __name__ == "__main__":
     parser.add_argument('--lmode',
                         type=str,
                         help='log mode. the mode in which logs will be created . DEBUG , INFO, ERROR, WARNING etc')
-    parser.add_argument("--randomseed", type=str, default=None,
-                        help='random number that will be used as seed for lstm initial weight generation)')
-    parser.add_argument("--slice", type=int, default=None,
-                        help='what slice of training data is this going to be trained on)')
+    # parser.add_argument("--randomseed", type=str, default=None,
+    #                     help='random number that will be used as seed for lstm initial weight generation)')
+    # parser.add_argument("--slice", type=int, default=None,
+    #                     help='what slice of training data is this going to be trained on)')
 
     args = parser.parse_args()
     db = FeverDocDB(args.db)
