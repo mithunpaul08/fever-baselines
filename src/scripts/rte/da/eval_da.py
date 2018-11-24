@@ -29,9 +29,10 @@ from collections import defaultdict
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-def eval_model(db: FeverDocDB, args,logger) -> Model:
-    archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
+def eval_model(db: FeverDocDB, args,logger,path_to_trained_models_folder,name_of_trained_model_to_use) -> Model:
 
+    logger.info("got eval_model eval_model_fnc_data")
+    archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
 
@@ -305,5 +306,5 @@ if __name__ == "__main__":
     if(dataset_to_test=="fnc"):
         eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder)
     elif (dataset_to_test=="fever"):
-        eval_model(db,args,logger)
+        eval_model(db,args,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder)
 
