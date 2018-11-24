@@ -24,7 +24,7 @@ import json
 logger = logging.getLogger(__name__)  # pylint:    disable=invalid-name
 
 def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_device:int,
-                serialization_dir: str, filtering: str, randomseed:int, slice:int) -> Model:
+                serialization_dir: str, filtering: str, randomseed:int, slice:int,mithun_logger) -> Model:
     """
     This function can be used as an entry point to running models in AllenNLP
     directly from a JSON specification using a :class:`Driver`. Note that if
@@ -86,7 +86,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
 
 
-    train_data_instances = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly).instances
+    train_data_instances = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly,mithun_logger).instances
     #joblib.dump(train_data, "fever_tr_dataset_format.pkl")
 
     #if you want to train on a smaller slice
@@ -206,8 +206,8 @@ if __name__ == "__main__":
 
 
     log_file_name="training_feverlog.txt"+str(slice)+"_"+str(random_seed)
-    logger = setup_custom_logger('root', debug_mode,log_file_name)
+    mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
 
-    logger.info(f"Going to train on  {args.slice} percentage of training data.")
+    mithun_logger.info(f"Going to train on  {args.slice} percentage of training data with random seed value{args.randomseed}.")
 
-    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice)
+    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice,mithun_logger)
