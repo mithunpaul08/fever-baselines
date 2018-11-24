@@ -307,7 +307,7 @@ if __name__ == "__main__":
 
 
     if(dataset_to_test=="fnc"):
-        eval_model_fnc_data (db,args,uofa_params,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use)
+        eval_model_fnc_data (db,args,uofa_params,mithun_logger)
     elif (dataset_to_test=="fever"):
         eval_model(db,args,logger)
 
