@@ -1,98 +1,187 @@
 {
-  "uofa_params": {
-    "data": "fever",
-    "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",
-    "read_random_seed_from_commandline":true,
-    "random_seed":98467,
-    "training_slice_percent":100,
-    "name_of_trained_model_to_use":"smartner_tr-fever_98467_100.tar.gz",
-    "debug_mode":"INFO",
-    "path_to_trained_models_folder":"data/models/",
-    "features": {
-        "lowercase_tokens": false,
-        "person-c1": true,
-        "update-embeddings": true,
-      }
-    },
-  "dataset_reader": {
-    "type": "fever",
-    "sentence_level":true,
-    "token_indexers": {
-      "tokens": {
-        "type": "single_id",
-        "lowercase_tokens": true
-      }
-    },
-    "wiki_tokenizer": {
-      "type":"word",
-      "word_splitter": {
-        "type": "just_spaces"
-      },
-      "end_tokens":["@@END@@"]
-    },
-    "claim_tokenizer": {
-      "type":"word",
-      "word_splitter": {
-        "type": "simple"
-      },
-      "end_tokens":["@@END@@"]
-    }
-  },
-  "train_data_path": "data/fever/train.ns.pages.p1.jsonl",
-  //"validation_data_path": none,
-  "model": {
-    "type": "decomposable_attention",
-    "text_field_embedder": {
-      "tokens": {
-        "type": "embedding",
-        "projection_dim": 200,
-        "pretrained_file": "data/glove/glove.6B.300d.txt.gz",
-        "embedding_dim": 300,
-        "trainable": true
-      }
-    },
-    "attend_feedforward": {
-      "input_dim": 200,
-      "num_layers": 2,
-      "hidden_dims": 200,
-      "activations": "relu",
-      "dropout": 0.2
-    },
-    "similarity_function": {"type": "dot_product"},
-    "compare_feedforward": {
-      "input_dim": 400,
-      "num_layers": 2,
-      "hidden_dims": 200,
-      "activations": "relu",
-      "dropout": 0.2
-    },
-    "aggregate_feedforward": {
-      "input_dim": 400,
-      "num_layers": 2,
-      "hidden_dims": [200, 3],
-      "activations": ["relu", "linear"],
-      "dropout": [0.2, 0.0]
-    },
-     "initializer": [
-      [".*linear_layers.*weight", {"type": "xavier_normal"}],
-      [".*token_embedder_tokens\._projection.*weight", {"type": "xavier_normal"}]
-     ]
+   "uofa_params": {
+     "data_annotation": {
+       "do_annotation": false
+     },
+     "dataset_to_train_on": "fever",
+     "fever_dataset_details": {
+       "run_small": true,
+       "small_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train_small/",
+         "slice_percent": 100
+       },
+       "run_train": true,
+       "train_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train/",
+         "slice_percent": 100
+       },
+       "run_dev": true,
+       "dev_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",
+         "slice_percent": 100
+       },
+       "run_test": false,
+       "test_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/test/",
+         "slice_percent": 100
+       }
+     },
+     "fnc_dataset_details": {
+       "run_small": true,
+       "small_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fnc/train_small/",
+         "slice_percent": 100
+       },
+       "run_train": true,
+       "train_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fnc/train/",
+         "slice_percent": 100
+       },
+       "run_dev": true,
+       "dev_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fnc/dev/",
+         "slice_percent": 100,
+         "name_of_trained_model_to_use": "smartner_tr-fever_98467_100.tar.gz"
+       },
+       "run_test": false,
+       "test_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fnc/test/",
+         "slice_percent": 100,
+         "name_of_trained_model_to_use": "smartner_tr-fever_98467_100.tar.gz"
+       }
+     },
+     "read_random_seed_from_commandline": true,
+     "random_seed": 98467,
+     "debug_mode": "INFO",
+     "path_to_trained_models_folder": "data/models/",
+     "features": {
+       "run_hand_crafted_features": false,
+       "run_NER_based_features": true,
+       "hand_crafted_features_details": {
+         "lowercase_tokens": false,
+         "person-c1": true,
+         "update-embeddings": true
+       },
+       "NER_features_details": {
+         "use_plain_NER": false,
+         "lowercase_tokens": false,
+         "person-c1": true,
+         "update-embeddings": true
+       }
+     }
    },
-  "iterator": {
-    "type": "bucket",
-    "sorting_keys": [["premise", "num_tokens"], ["hypothesis", "num_tokens"]],
-    "batch_size": 32
-  },
-
-  "trainer": {
-    "num_epochs": 140,
-    "patience": 20,
-    "cuda_device": 0,
-    "grad_clipping": 5.0,
-    "validation_metric": "+accuracy",
-    "no_tqdm": true,
-    "optimizer": {
-      "type": "adagrad"
-    }
-  }
+   "dataset_reader":{
+      "type":"fever",
+      "sentence_level":true,
+      "token_indexers":{
+         "tokens":{
+            "type":"single_id",
+            "lowercase_tokens":true
+         }
+      },
+      "wiki_tokenizer":{
+         "type":"word",
+         "word_splitter":{
+            "type":"just_spaces"
+         },
+         "end_tokens":[
+            "@@END@@"
+         ]
+      },
+      "claim_tokenizer":{
+         "type":"word",
+         "word_splitter":{
+            "type":"simple"
+         },
+         "end_tokens":[
+            "@@END@@"
+         ]
+      }
+   },
+   "train_data_path":"data/fever/train.ns.pages.p1.jsonl",
+   //"validation_data_path":none,
+   "model":{
+      "type":"decomposable_attention",
+      "text_field_embedder":{
+         "tokens":{
+            "type":"embedding",
+            "projection_dim":200,
+            "pretrained_file":"data/glove/glove.6B.300d.txt.gz",
+            "embedding_dim":300,
+            "trainable":true
+         }
+      },
+      "attend_feedforward":{
+         "input_dim":200,
+         "num_layers":2,
+         "hidden_dims":200,
+         "activations":"relu",
+         "dropout":0.2
+      },
+      "similarity_function":{
+         "type":"dot_product"
+      },
+      "compare_feedforward":{
+         "input_dim":400,
+         "num_layers":2,
+         "hidden_dims":200,
+         "activations":"relu",
+         "dropout":0.2
+      },
+      "aggregate_feedforward":{
+         "input_dim":400,
+         "num_layers":2,
+         "hidden_dims":[
+            200,
+            3
+         ],
+         "activations":[
+            "relu",
+            "linear"
+         ],
+         "dropout":[
+            0.2,
+            0.0
+         ]
+      },
+      "initializer":[
+         [
+            ".*linear_layers.*weight",
+            {
+               "type":"xavier_normal"
+            }
+         ],
+         [
+            ".*token_embedder_tokens\._projection.*weight",
+            {
+               "type":"xavier_normal"
+            }
+         ]
+      ]
+   },
+   "iterator":{
+      "type":"bucket",
+      "sorting_keys":[
+         [
+            "premise",
+            "num_tokens"
+         ],
+         [
+            "hypothesis",
+            "num_tokens"
+         ]
+      ],
+      "batch_size":32
+   },
+   "trainer":{
+      "num_epochs":140,
+      "patience":20,
+      "cuda_device":0,
+      "grad_clipping":5.0,
+      "validation_metric":"+accuracy",
+      "no_tqdm":true,
+      "optimizer":{
+         "type":"adagrad"
+      }
+   }
 }
