@@ -5,7 +5,7 @@
     "read_random_seed_from_commandline":true,
     "random_seed":98467,
     "training_slice_percent":100,
-    "name_of_trained_model_to_use":"decomp_with_plain_ner_24thoct2018.tar.gz",
+    "name_of_trained_model_to_use":"smartner_tr-fever_98467_100.tar.gz",
     "debug_mode":"INFO",
     "path_to_trained_models_folder":"data/models/",
     "features": {
