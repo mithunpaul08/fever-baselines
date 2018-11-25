@@ -1,7 +1,7 @@
 {
   "uofa_params": {
     "data": "fever",
-    "path_to_pyproc_annotated_data_folder": "/data/fnc-data-ann/dev/",
+    "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",
     "read_random_seed_from_commandline":true,
     "random_seed":98467,
     "training_slice_percent":100,
