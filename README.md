@@ -1,8 +1,13 @@
 
 # UOFA- Fact Extraction and VERification
 
-This code is built on top of sheffield's fever baseline. So we assume you have installed all the required documents they mention in their [readme file](https://github.com/sheffieldnlp/fever-baselines)
+# What is it?
+This is a fact verification system that will be unlexicalized. The advantage of this system is that it is domain transferable. 
+This is a follow up on the recently concluded Fact Verification(FEVER) challenge and workshop. Details can be found at the fever [homepage](http://fever.ai/) 
 
+# Software Dependencies
+
+code is built on top of sheffield's fever baseline. So we assume you have installed all the required documents they mention in their [readme file](https://github.com/sheffieldnlp/fever-baselines)
 
 Apart from that you will need PyProcessors over Docker. After you have installed [Docker](https://www.docker.com/), do:
 
@@ -16,6 +21,33 @@ note: the docker run command is for the very first time you create this containe
 Second time onwards use: `docker start procserv`
 
 
+
+## Instructions to run the trained model on the FEVER dev data:
+
+- `mkdir mithun_hw4`
+- `cd  mithun_hw4`
+- `git clone git@github.com:mithunpaul08/fever-baselines.git .`
+- `git checkout v1.9`
+- `mkdir  -p data/fever-data-ann`
+- `conda env create -f environment.yml`
+- `source activate hw4mithun`
+- Download devhw4.zip from [this](https://drive.google.com/file/d/1rH5p_euolj2lmsbdHHUVA03rghGT7msb/view) link 
+   - (curl or wget should work on based on your OS)
+   - if curl or wget doesn't work please read [this] (https://stackoverflow.com/questions/25010369/wget-curl-large-file-from-google-drive) solution
+   - Please unzip so that a new folder called dev should be created as: data/fever-data-ann/dev Eg: `unzip devhw4.zip data/fever-data-ann/dev`
+- `pip install -r requirements.txt`
+    -(run export LANG=C.UTF-8 if installation of DrQA fails)
+    - Also ignore incompatibility warnings please
+- `bash scripts/download-processed-wiki.sh`
+- `mkdir -p data/models`
+- Download the trained model from [this] (https://drive.google.com/file/u/1/d/1D8syoDID3btYTlYt2zpnKrVZLLMGKu8n/view?usp=sharing)google drive link to the data/models folder
+- `export CUDA_DEVICE=0`
+    -Assuming you have a GPU, if you don't please do: export CUDA_DEVICE=1
+- `PYTHONPATH=src python src/scripts/rte/da/eval_da.py data/fever/fever.db  data/fever/dev.ns.pages.p1.jsonl --param_path config/fever_nn_ora_sent_hw4.json --randomseed 1234 --slice 100`
+    - Run this command in the home directory (the one which has requirements.txt) 
+
+
+## Instructions to train  trained model on the FEVER dev data:
 
 
 ## In our project we are experimenting with fact verification but unlexicalized.
