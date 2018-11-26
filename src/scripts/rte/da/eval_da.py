@@ -29,9 +29,10 @@ from collections import defaultdict
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-def eval_model(db: FeverDocDB, args,logger) -> Model:
-    archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
+def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use) -> Model:
 
+    mithun_logger.info("got eval_model eval_model_fnc_data")
+    archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
 
@@ -44,13 +45,13 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
                                  claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
                                  token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
-    logger.info("Reading  data from %s", args.in_file)
+    mithun_logger.info("Reading  data from %s", args.in_file)
 
 
     # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
     #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
     do_annotation_live = False
-    data = reader.read(args.in_file,"dev",do_annotation_live).instances
+    data = reader.read(args.in_file,"dev",do_annotation_live,mithun_logger).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
 
     actual = []
@@ -97,19 +98,21 @@ def eval_model(db: FeverDocDB, args,logger) -> Model:
         print(classification_report(actual, predicted))
         print(confusion_matrix(actual, predicted))
 
-        logger.info(accuracy_score(actual, predicted))
-        logger.info(classification_report(actual, predicted))
-        logger.info(confusion_matrix(actual, predicted))
+        mithun_logger.info(accuracy_score(actual, predicted))
+        mithun_logger.info(classification_report(actual, predicted))
+        mithun_logger.info(confusion_matrix(actual, predicted))
 
 
 
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args,path_to_fnc_annotated_data,mithun_logger) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args, path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder) -> Model:
+
+
 
     print("got inside eval_model_fnc_data")
-    archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
+    archive = load_archive(path_to_trained_models_folder+name_of_trained_model_to_use, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
 
@@ -254,7 +257,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument('db', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('archive_file', type=str, help='/path/to/saved/db.db')
+    #parser.add_argument('--archive_file', type=str, help='/path/to/saved/db.db')
     parser.add_argument('in_file', type=str, help='/path/to/saved/db.db')
     parser.add_argument('--log', required=False, default=None,  type=str, help='/path/to/saved/db.db')
 
@@ -279,20 +282,40 @@ if __name__ == "__main__":
 
     params = Params.from_file(args.param_path, args.overrides)
     uofa_params = params.pop('uofa_params', {})
+
     dataset_to_test = uofa_params.pop('data', {})
+    slice = uofa_params.pop('training_slice_percent', {})
+    random_seed = uofa_params.pop('random_seed', {})
+    name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
     path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
+    debug_mode = uofa_params.pop('debug_mode', {})
+    path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
+    read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
+    #features = TokenIndexer.dict_from_params(uofa_params.pop('features', {}))
 
+    slice = ""
+    random_seed = ""
 
-    log_file_name = "dev_feverlog.txt" + str(args.slice) + "_" + str(args.randomseed)
-    mithun_logger = setup_custom_logger('root', args.lmode,log_file_name)
+    if (read_random_seed_from_commandline):
+        slice = args.slice
+        random_seed = args.randomseed
+    else:
+        slice = uofa_params.pop('training_slice_percent', {})
+        random_seed = uofa_params.pop('random_seed', {})
+
+    log_file_name = "dev_feverlog.txt" + str(slice) + "_" + str(random_seed)
+    mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
+
 
     mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
     mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
+    mithun_logger.info("value of name_of_trained_model_to_use " + str(name_of_trained_model_to_use))
+    mithun_logger.info("value of name_of_trained_model_to_use " + str(name_of_trained_model_to_use))
 
 
 
     if(dataset_to_test=="fnc"):
-        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger)
+        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder)
     elif (dataset_to_test=="fever"):
-        eval_model(db,args,logger)
+        eval_model(db,args,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
 

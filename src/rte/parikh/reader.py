@@ -117,9 +117,9 @@ class FEVERReader(DatasetReader):
         return instances
 
     @overrides
-    def read(self, file_path: str, run_name, do_annotation_on_the_fly):
-        #logger.info("got inside read")
-        #logging.info("got inside read")
+    def read(self, file_path: str, run_name, do_annotation_on_the_fly,mithun_logger):
+        mithun_logger.info("got inside read")
+        mithun_logger.info("got inside read")
 
         nei_overlap_counter = 0
         nei_counter = 0
@@ -191,8 +191,8 @@ class FEVERReader(DatasetReader):
                     tq(zip(heads_entities, bodies_entities, heads_lemmas,
                                                         bodies_lemmas,
                                                           heads_words,
-                                                          bodies_words,ds.data),
-                       total=len(ds.data),desc="reading annotated data"):
+                                                          bodies_words,heads_tags,heads_deps,heads_complete_annotation),
+                       total=len(heads_complete_annotation),desc="reading annotated data"):
 
                 counter=counter+1
 
@@ -210,20 +210,20 @@ class FEVERReader(DatasetReader):
 
 
                 premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-                print(f"hypothesis before annotation: {hw}")
-                print(f"premise before annotation: {bw}")
+                # print(f"hypothesis before annotation: {hw}")
+                # print(f"premise before annotation: {bw}")
 
-                premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
                 #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
                 # print("value of the first premise and hypothesis after smart ner replacement is")
                 # print(premise_ann)
                 # print(hypothesis_ann)
 
-                print(f"headline words: {hw}")
-                print(f"body words: {bw}")
-                print(f"hypothesis_ann: {hypothesis_ann}")
-                print(f"premise_ann: {premise_ann}")
+                # print(f"headline words: {hw}")
+                # print(f"body words: {bw}")
+                # print(f"hypothesis_ann: {hypothesis_ann}")
+                # print(f"premise_ann: {premise_ann}")
 
 
 

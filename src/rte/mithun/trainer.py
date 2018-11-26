@@ -1291,7 +1291,7 @@ class UofaTrainTest():
         return (instances)
 
 
-#EXPECTS ALL THESE TO BE AN ARRAY. SPLIT ON SPACE IF YOU HAVENT he, be, hl, bl, hw, bw
+    #EXPECTS ALL THESE TO BE AN ARRAY. SPLIT ON SPACE IF YOU HAVENT he, be, hl, bl, hw, bw
     def convert_SMARTNER_form_per_sent(self, claims_ner_list, evidence_ner_list, hl, bl, claims_words_list, evidence_words_list):
 
             
@@ -1460,7 +1460,7 @@ class UofaTrainTest():
 
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
                         found_intersection = True
-                        print("overlap exists between the token in claim and evidence ")
+                        #print("overlap exists between the token in claim and evidence ")
                         # print(f"token_split:{token_split}")
                         # print(f"name_cl_split:{name_cl_split}")
 

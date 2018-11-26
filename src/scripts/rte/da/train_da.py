@@ -24,7 +24,7 @@ import json
 logger = logging.getLogger(__name__)  # pylint:    disable=invalid-name
 
 def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_device:int,
-                serialization_dir: str, filtering: str, randomseed:int, slice:int) -> Model:
+                serialization_dir: str, filtering: str, randomseed:int, slice:int,mithun_logger) -> Model:
     """
     This function can be used as an entry point to running models in AllenNLP
     directly from a JSON specification using a :class:`Driver`. Note that if
@@ -86,7 +86,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
 
 
-    train_data_instances = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly).instances
+    train_data_instances = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly,mithun_logger).instances
     #joblib.dump(train_data, "fever_tr_dataset_format.pkl")
 
     #if you want to train on a smaller slice
@@ -189,11 +189,30 @@ if __name__ == "__main__":
     db = FeverDocDB(args.db)
 
     params = Params.from_file(args.param_path,args.overrides)
+    uofa_params = params.pop('uofa_params', {})
+    read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
+    debug_mode = uofa_params.pop('debug_mode', {})
+    features = uofa_params.pop('features', {})
+    print(f"value of features is{features}")
+    lowercase_tokens = features.pop('lowercase_tokens', {})
+    print(f"value of lowercase_tokens is{lowercase_tokens}")
+    sys.exit(1)
 
-    #todo fix me. get this from command line or atleast a params config file
-    log_file_name="training_feverlog.txt"+str(args.slice)+"_"+str(args.randomseed)
-    logger = setup_custom_logger('root', "INFO",log_file_name)
 
-    logger.info(f"Going to train on  {args.slice} percentage of training data.")
+    slice = ""
+    random_seed = ""
 
-    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice)
+    if(read_random_seed_from_commandline):
+        slice=args.slice
+        random_seed=args.randomseed
+    else:
+        slice = uofa_params.pop('training_slice_percent', {})
+        random_seed = uofa_params.pop('random_seed', {})
+
+
+    log_file_name="training_feverlog.txt"+str(slice)+"_"+str(random_seed)
+    mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
+
+    mithun_logger.info(f"Going to train on  {args.slice} percentage of training data with random seed value{args.randomseed}.")
+
+    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice,mithun_logger)

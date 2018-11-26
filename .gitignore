@@ -7,3 +7,4 @@ data/
 features/
 logs/
 models/
+venv/*
