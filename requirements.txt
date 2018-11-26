@@ -11,5 +11,5 @@ tensorboard-pytorch
 git+git://github.com/j6mes/drqa@parallel
 git+git://github.com/sheffieldnlp/fever-scorer@master
 #below are the uofa ones
-#git+https://github.com/myedibleenso/py-processors.git
-#torchwordemb
+git+https://github.com/myedibleenso/py-processors.git
+torchwordemb
