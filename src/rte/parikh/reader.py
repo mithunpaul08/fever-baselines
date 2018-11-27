@@ -209,16 +209,16 @@ class FEVERReader(DatasetReader):
                 # premise == = evidence = body
 
 
-                premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-                # print(f"hypothesis before annotation: {hw}")
-                # print(f"premise before annotation: {bw}")
+                #premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+                print(f"hypothesis before annotation: {hw}")
+                print(f"premise before annotation: {bw}")
 
-                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
+                premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
-                # print("value of the first premise and hypothesis after smart ner replacement is")
-                # print(premise_ann)
-                # print(hypothesis_ann)
+                print("value of the first premise and hypothesis after  ner replacement is")
+                print(premise_ann)
+                print(hypothesis_ann)
+                sys.exit(1)
 
                 # print(f"headline words: {hw}")
                 # print(f"body words: {bw}")
