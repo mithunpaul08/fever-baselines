@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use) -> Model:
 
-    mithun_logger.info("got eval_model eval_model_fnc_data")
+    mithun_logger.info("got inside eval_model ")
     archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device=args.cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
