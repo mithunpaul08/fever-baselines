@@ -231,30 +231,30 @@ class FEVERReader(DatasetReader):
                 label=str(hfc)
 
 
-                # This is for the analysis of the NEI over-predicting
-                if(label=="NOT ENOUGH INFO"):
-                    nei_counter=nei_counter+1
-                    if(found_intersection):
-
-                        # print("\n")
-                        # print(f"hw: {hw}")
-                        # print(f"bw: {bw}")
-                        # print(f"hypothesis_ann: {hypothesis_ann}")
-                        # print(f"premise_ann: {premise_ann}")
-                        #
-                        # print(f"label: {label}")
-
-                        nei_overlap_counter=nei_overlap_counter+1
-
-                if (label == "SUPPORTS"):
-                    supports_counter = supports_counter + 1
-                    if (found_intersection):
-                        supports_overlap_counter=supports_overlap_counter+1
-
-                if (label == "REFUTES"):
-                    refutes_counter = refutes_counter + 1
-                    if (found_intersection):
-                        refutes_overlap_counter = refutes_overlap_counter + 1
+                # # This is for the analysis of the NEI over-predicting
+                # if(label=="NOT ENOUGH INFO"):
+                #     nei_counter=nei_counter+1
+                #     if(found_intersection):
+                #
+                #         # print("\n")
+                #         # print(f"hw: {hw}")
+                #         # print(f"bw: {bw}")
+                #         # print(f"hypothesis_ann: {hypothesis_ann}")
+                #         # print(f"premise_ann: {premise_ann}")
+                #         #
+                #         # print(f"label: {label}")
+                #
+                #         nei_overlap_counter=nei_overlap_counter+1
+                #
+                # if (label == "SUPPORTS"):
+                #     supports_counter = supports_counter + 1
+                #     if (found_intersection):
+                #         supports_overlap_counter=supports_overlap_counter+1
+                #
+                # if (label == "REFUTES"):
+                #     refutes_counter = refutes_counter + 1
+                #     if (found_intersection):
+                #         refutes_overlap_counter = refutes_overlap_counter + 1
 
 
 
@@ -266,12 +266,12 @@ class FEVERReader(DatasetReader):
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
                                      "Is the path correct?".format(file_path))
-        print(f"nei_overlap_counter: {nei_counter}")
-        print(f"nei_overlap_counter: {nei_overlap_counter}")
-        print(f"supports_counter: {supports_counter}")
-        print(f"supports_overlap_counter: {supports_overlap_counter}")
-        print(f"refutes_counter: {refutes_counter}")
-        print(f"refutes_overlap_counter: {refutes_overlap_counter}")
+        # print(f"nei_overlap_counter: {nei_counter}")
+        # print(f"nei_overlap_counter: {nei_overlap_counter}")
+        # print(f"supports_counter: {supports_counter}")
+        # print(f"supports_overlap_counter: {supports_overlap_counter}")
+        # print(f"refutes_counter: {refutes_counter}")
+        # print(f"refutes_overlap_counter: {refutes_overlap_counter}")
 
 
 
