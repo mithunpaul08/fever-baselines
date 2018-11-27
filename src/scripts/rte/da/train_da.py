@@ -196,7 +196,7 @@ if __name__ == "__main__":
     print(f"value of features is{features}")
     lowercase_tokens = features.pop('lowercase_tokens', {})
     print(f"value of lowercase_tokens is{lowercase_tokens}")
-   
+
 
 
     slice = ""
