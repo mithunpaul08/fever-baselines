@@ -286,8 +286,13 @@ if __name__ == "__main__":
     dataset_to_test = uofa_params.pop('data', {})
     slice = uofa_params.pop('training_slice_percent', {})
     random_seed = uofa_params.pop('random_seed', {})
-    name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
-    path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
+
+    fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
+    dev_partition_details=fever_dataset_details.pop('dev_partition_details', {})
+
+    name_of_trained_model_to_use=dev_partition_details.pop('name_of_trained_model_to_use', {})
+    path_to_pyproc_annotated_data_folder = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+
     debug_mode = uofa_params.pop('debug_mode', {})
     path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
     read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
