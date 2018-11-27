@@ -3,7 +3,8 @@
      "data_annotation": {
        "do_annotation": false
      },
-     "dataset_to_train_on": "fever",
+     "dataset_to_work_on": "fever",
+     "type_of_runs": "train,dev",
      "fever_dataset_details": {
        "run_small": true,
        "small_partition_details": {

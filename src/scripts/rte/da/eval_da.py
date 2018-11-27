@@ -283,7 +283,7 @@ if __name__ == "__main__":
     params = Params.from_file(args.param_path, args.overrides)
     uofa_params = params.pop('uofa_params', {})
 
-    dataset_to_test = uofa_params.pop('data', {})
+    dataset_to_test = uofa_params.pop('dataset_to_work_on', {})
     slice = uofa_params.pop('training_slice_percent', {})
     random_seed = uofa_params.pop('random_seed', {})
 
@@ -314,8 +314,8 @@ if __name__ == "__main__":
 
     mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
     mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
-    mithun_logger.info("value of name_of_trained_model_to_use " + str(name_of_trained_model_to_use))
-    mithun_logger.info("value of name_of_trained_model_to_use " + str(name_of_trained_model_to_use))
+    mithun_logger.info("value of name_of_trained_model_to_use: " + str(name_of_trained_model_to_use))
+    mithun_logger.info("value of dataset_to_work_on: " + str(dataset_to_work_on))
 
 
 
