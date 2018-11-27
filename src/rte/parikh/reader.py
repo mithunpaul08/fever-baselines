@@ -213,18 +213,16 @@ class FEVERReader(DatasetReader):
 
                 premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
-                # print(f"hypothesis before annotation: {hw}")
-                # print(f"premise before annotation: {bw}")
-                #
-                # print("value of the first premise and hypothesis after  ner replacement is")
-                # print(premise_ann)
-                # print(hypothesis_ann)
+                print(f"hypothesis before annotation: {hw}")
+                print(f"premise before annotation: {bw}")
+
+                print("value of the first premise and hypothesis after  ner replacement is")
+                print(premise_ann)
+                print(hypothesis_ann)
+                sys.exit(1)
                 #
 
-                # print(f"headline words: {hw}")
-                # print(f"body words: {bw}")
-                # print(f"hypothesis_ann: {hypothesis_ann}")
-                # print(f"premise_ann: {premise_ann}")
+
 
 
 
