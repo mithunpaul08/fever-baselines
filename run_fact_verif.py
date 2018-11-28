@@ -3,7 +3,7 @@ import argparse
 import sys
 from src.rte.mithun.log import setup_custom_logger
 from types import *
-from src.scripts.rte.da import *
+from src.scripts.rte.da.train_da import train_da
 
 if __name__ == "__main__":
 
@@ -49,10 +49,9 @@ if __name__ == "__main__":
         operation=list_of_runs[index]
         logfile_full_name=log_file_base_name+"_"+ds+"_"+operation+".log"
         print(f"value of logfile_full_name:{logfile_full_name}")
-        mithun_logger = setup_custom_logger('root', logger_mode, logfile_full_name)
-        mithun_logger.debug(f"going to run {operation} on dataset {ds}")
-        if(ds=="fever" and operation="train"):
-            train_model(db, params, args.cuda_device, args.logdir, args.filtering, args.randomseed, args.slice,
-                        mithun_logger)
+        general_log = setup_custom_logger('root', logger_mode, logfile_full_name)
+        general_log.debug(f"going to run {operation} on dataset {ds}")
+        if ds == "fever" and operation=="train" :
+            train_da(general_log, ds, operation,logger_mode)
 
 

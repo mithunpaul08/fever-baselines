@@ -156,7 +156,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     return model
 
 
-def train_da():
+def train_da(ds,operation,logger_mode):
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
     LogHelper.get_logger(__name__)
@@ -185,33 +185,36 @@ def train_da():
     #
     # args = parser.parse_args()
 
-    path_to_saved_db = uofa_params.pop("path_to_saved_db")
-
-    db = FeverDocDB(path_to_saved_db)
 
     params = Params.from_file(args.param_path,args.overrides)
     uofa_params = params.pop('uofa_params', {})
+    path_to_saved_db = uofa_params.pop("path_to_saved_db")
+    db = FeverDocDB(path_to_saved_db)
     read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
-    debug_mode = uofa_params.pop('debug_mode', {})
-    features = uofa_params.pop('features', {})
-    print(f"value of features is{features}")
-    lowercase_tokens = features.pop('lowercase_tokens', {})
-    print(f"value of lowercase_tokens is{lowercase_tokens}")
+    # debug_mode = uofa_params.pop('debug_mode', {})
+    # features = uofa_params.pop('features', {})
+    # print(f"value of features is{features}")
+    # lowercase_tokens = features.pop('lowercase_tokens', {})
+    # print(f"value of lowercase_tokens is{lowercase_tokens}")
 
 
-
-    slice = ""
-    random_seed = ""
-
+    #
+    # slice = ""
+    # random_seed = ""
+    #
     if(read_random_seed_from_commandline):
         slice=args.slice
         random_seed=args.randomseed
     else:
-        slice = uofa_params.pop('training_slice_percent', {})
-        random_seed = uofa_params.pop('random_seed', {})
+        if(ds=="fever" and operation=="train") :
+            fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
+            train_partition_details = fever_dataset_details.pop('train_partition_details', {})
+            slice = train_partition_details.pop('slice_percent', {})
+            random_seed = uofa_params.pop('random_seed', {})
+
 
 
     log_file_name="training_feverlog.txt"+str(slice)+"_"+str(random_seed)
-    mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
+    mithun_logger = setup_custom_logger('root', logger_mode ,log_file_name)
 
     mithun_logger.info(f"Going to train on  {args.slice} percentage of training data with random seed value{args.randomseed}.")
