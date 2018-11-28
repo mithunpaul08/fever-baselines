@@ -1,10 +1,12 @@
 {
    "uofa_params": {
      "logger_details": {
-       "logger_mode": "INFO",
+       "logger_mode": "DEBUG",
        "log_file_base_name": "log_rte",
        "log_folder":"logs/"
      },
+
+     "path_to_saved_db":"data/fever/fever.db",
 
      "data_annotation": {
        "do_annotation": false

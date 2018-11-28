@@ -156,37 +156,38 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     return model
 
 
-
-if __name__ == "__main__":
+def train_da():
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
     LogHelper.get_logger(__name__)
 
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('db', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('param_path',
-                           type=str,
-                           help='path to parameter file describing the model to be trained')
+    # parser = argparse.ArgumentParser()
+    # parser.add_argument('db', type=str, help='/path/to/saved/db.db')
+    # parser.add_argument('param_path',
+    #                        type=str,
+    #                        help='path to parameter file describing the model to be trained')
+    #
+    # parser.add_argument("logdir",type=str)
+    #
+    # parser.add_argument("--filtering", type=str, default=None)
+    # parser.add_argument("--cuda-device", type=int, default=None, help='id of GPU to use (if any)')
+    # parser.add_argument('-o', '--overrides',
+    #                        type=str,
+    #                        default="",
+    #                        help='a HOCON structure used to override the experiment configuration')
+    #
+    #
+    # parser.add_argument("--mode", type=str, default=None, help='train,test,dev,small)')
+    # parser.add_argument("--randomseed", type=str, default=None, help='random number that will be used as seed for lstm initial weight generation)')
+    # parser.add_argument("--slice", type=int, default=None,
+    #                     help='what slice of training data is this going to be trained on)')
+    #
+    # args = parser.parse_args()
 
-    parser.add_argument("logdir",type=str)
+    path_to_saved_db = uofa_params.pop("path_to_saved_db")
 
-    parser.add_argument("--filtering", type=str, default=None)
-    parser.add_argument("--cuda-device", type=int, default=None, help='id of GPU to use (if any)')
-    parser.add_argument('-o', '--overrides',
-                           type=str,
-                           default="",
-                           help='a HOCON structure used to override the experiment configuration')
-
-
-    parser.add_argument("--mode", type=str, default=None, help='train,test,dev,small)')
-    parser.add_argument("--randomseed", type=str, default=None, help='random number that will be used as seed for lstm initial weight generation)')
-    parser.add_argument("--slice", type=int, default=None,
-                        help='what slice of training data is this going to be trained on)')
-
-    args = parser.parse_args()
-
-    db = FeverDocDB(args.db)
+    db = FeverDocDB(path_to_saved_db)
 
     params = Params.from_file(args.param_path,args.overrides)
     uofa_params = params.pop('uofa_params', {})
@@ -214,5 +215,3 @@ if __name__ == "__main__":
     mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
 
     mithun_logger.info(f"Going to train on  {args.slice} percentage of training data with random seed value{args.randomseed}.")
-
-    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice,mithun_logger)
