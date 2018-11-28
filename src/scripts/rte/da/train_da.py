@@ -162,29 +162,6 @@ def train_da(ds,operation,logger_mode):
     LogHelper.get_logger(__name__)
 
 
-    # parser = argparse.ArgumentParser()
-    # parser.add_argument('db', type=str, help='/path/to/saved/db.db')
-    # parser.add_argument('param_path',
-    #                        type=str,
-    #                        help='path to parameter file describing the model to be trained')
-    #
-    # parser.add_argument("logdir",type=str)
-    #
-    # parser.add_argument("--filtering", type=str, default=None)
-    # parser.add_argument("--cuda-device", type=int, default=None, help='id of GPU to use (if any)')
-    # parser.add_argument('-o', '--overrides',
-    #                        type=str,
-    #                        default="",
-    #                        help='a HOCON structure used to override the experiment configuration')
-    #
-    #
-    # parser.add_argument("--mode", type=str, default=None, help='train,test,dev,small)')
-    # parser.add_argument("--randomseed", type=str, default=None, help='random number that will be used as seed for lstm initial weight generation)')
-    # parser.add_argument("--slice", type=int, default=None,
-    #                     help='what slice of training data is this going to be trained on)')
-    #
-    # args = parser.parse_args()
-
 
     params = Params.from_file(args.param_path,args.overrides)
     uofa_params = params.pop('uofa_params', {})

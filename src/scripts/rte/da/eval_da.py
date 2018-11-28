@@ -248,44 +248,19 @@ def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
 
 
 
-if __name__ == "__main__":
+def eval_da(dataset_to_work_on):
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
     LogHelper.get_logger(__name__)
 
 
-    parser = argparse.ArgumentParser()
 
-    parser.add_argument('db', type=str, help='/path/to/saved/db.db')
-    #parser.add_argument('--archive_file', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('in_file', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('--log', required=False, default=None,  type=str, help='/path/to/saved/db.db')
 
-    parser.add_argument("--cuda-device", type=int, default=-1, help='id of GPU to use (if any)')
-    parser.add_argument('-o', '--overrides',
-                           type=str,
-                           default="",
-                           help='a HOCON structure used to override the experiment configuration')
-    parser.add_argument('--param_path',
-                        type=str,
-                        help='path to parameter file describing the model to be trained')
-    parser.add_argument('--lmode',
-                        type=str,
-                        help='log mode. the mode in which logs will be created . DEBUG , INFO, ERROR, WARNING etc')
-    parser.add_argument("--randomseed", type=str, default=None,
-                        help='random number that will be used as seed for lstm initial weight generation)')
-    parser.add_argument("--slice", type=int, default=None,
-                        help='what slice of training data is this going to be trained on)')
-
-    args = parser.parse_args()
-    db = FeverDocDB(args.db)
-
-    params = Params.from_file(args.param_path, args.overrides)
+    params = Params.from_file(args.param_path,args.overrides)
     uofa_params = params.pop('uofa_params', {})
+    path_to_saved_db = uofa_params.pop("path_to_saved_db")
+    db = FeverDocDB(path_to_saved_db)
 
-    dataset_to_work_on = uofa_params.pop('dataset_to_work_on', {})
-    slice = uofa_params.pop('training_slice_percent', {})
-    random_seed = uofa_params.pop('random_seed', {})
 
     fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
     dev_partition_details=fever_dataset_details.pop('dev_partition_details', {})
@@ -316,6 +291,7 @@ if __name__ == "__main__":
     mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
     mithun_logger.info("value of name_of_trained_model_to_use: " + str(name_of_trained_model_to_use))
     mithun_logger.info("value of dataset_to_work_on: " + str(dataset_to_work_on))
+    
 
 
 

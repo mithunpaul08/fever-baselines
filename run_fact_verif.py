@@ -4,6 +4,7 @@ import sys
 from src.rte.mithun.log import setup_custom_logger
 from types import *
 from src.scripts.rte.da.train_da import train_da
+from src.scripts.rte.da.eval_da import train_da
 
 if __name__ == "__main__":
 
@@ -53,5 +54,8 @@ if __name__ == "__main__":
         general_log.debug(f"going to run {operation} on dataset {ds}")
         if ds == "fever" and operation=="train" :
             train_da(general_log, ds, operation,logger_mode)
+        else:
+            if ds == "fnc" and operation == "dev":
+                train_da(general_log, ds, operation, logger_mode)
 
 
