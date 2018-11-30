@@ -107,7 +107,7 @@ def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folde
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args, path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation) -> Model:
 
 
 
@@ -133,7 +133,7 @@ def eval_model_fnc_data(db: FeverDocDB, args, path_to_fnc_annotated_data,mithun_
 
 
 
-    data = reader.read_annotated_fnc_and_do_ner_replacement( args, operation, do_annotation_live,path_to_fnc_annotated_data,mithun_logger).instances
+    data = reader.read_annotated_fnc_and_do_ner_replacement( args, operation, do_annotation_live,mithun_logger).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
     #
     ###################end of running model and saving
@@ -297,6 +297,7 @@ def eval_da(dataset_to_work_on,args,operation):
 
     if(dataset_to_work_on== "fnc"):
         eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation)
+
     elif (dataset_to_work_on == "fever"):
         eval_model(db,args,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
 

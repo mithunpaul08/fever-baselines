@@ -276,7 +276,7 @@ class FEVERReader(DatasetReader):
 
         return Dataset(instances)
 
-    def read_annotated_fnc_and_do_ner_replacement(self, args, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data,mithun_logger):
+    def read_annotated_fnc_and_do_ner_replacement(self, args, run_name, do_annotation_on_the_fly,mithun_logger):
         nei_overlap_counter = 0
         nei_counter = 0
         supports_overlap_counter = 0
@@ -299,22 +299,27 @@ class FEVERReader(DatasetReader):
         features = uofa_params.pop('features', {})
         run_NER_based_features = features.pop('run_NER_based_features', {})
 
-        use_plain_NER= False; 
+        fnc_dataset_details = uofa_params.pop('fnc_dataset_details', {})
+
+
+
+        use_plain_NER= False;
 
         if(run_NER_based_features):
             NER_features_details = features.pop('NER_features_details', {})
             use_plain_NER = NER_features_details.pop('use_plain_NER', {})
 
-
+        data_folder=""
 
         if (run_name == "dev"):
             print("run_name == dev")
-
+            dev_partition_details = fnc_dataset_details.pop('dev_partition_details', {})
+            path_to_fnc_annotated_data = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
             data_folder = objUofaTrainTest.data_root + str(path_to_fnc_annotated_data)
 
 
 
-        mithun_logger.info(f"value of data_folder is {data_folder}")
+        mithun_logger.debug(f"value of data_folder is {data_folder}")
 
 
         #load the labels from the disk
@@ -352,9 +357,9 @@ class FEVERReader(DatasetReader):
         heads_words = objUofaTrainTest.read_json(hfw)
         bodies_words = objUofaTrainTest.read_json(bfw)
 
-        print(f"length of headline_words:{len(heads_words)}")
-        print(f"length of bodies_words:{len(bodies_words)}")
-        print(f"length of all_labels:{len(all_labels)}")
+        mithun_logger.debug(f"length of headline_words:{len(heads_words)}")
+        mithun_logger.debug(f"length of bodies_words:{len(bodies_words)}")
+        mithun_logger.debug(f"length of all_labels:{len(all_labels)}")
 
 
 
