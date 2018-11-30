@@ -320,6 +320,7 @@ class FEVERReader(DatasetReader):
 
 
         mithun_logger.debug(f"value of data_folder is {data_folder}")
+        mithun_logger.debug(f"value of use_plain_NER is {use_plain_NER}")
 
 
         #load the labels from the disk
