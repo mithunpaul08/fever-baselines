@@ -6,7 +6,7 @@ from allennlp.commands.train import prepare_environment
 from typing import List, Union, Dict, Any
 from allennlp.common import Params
 from allennlp.common.tee_logger import TeeLogger
-from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
+from allennlp.data import Vocabulary, DataIterator, DatasetReader, Tokenizer, TokenIndexer
 from allennlp.models import Model, archive_model
 from allennlp.training import Trainer
 from common.util.log_helper import LogHelper
@@ -103,7 +103,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     training_slice_count= int(total_training_data * training_slice_percent/100)
     print(training_slice_count)
 
-    train_data_slice=Dataset(train_data_instances[0:training_slice_count])
+    train_data_slice=(train_data_instances[0:training_slice_count]).instances
     train_data=train_data_slice
 
 
@@ -126,7 +126,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
     logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
     vocab = Vocabulary.from_params(params.pop("vocabulary", {}),
-                                   Dataset([instance for dataset in all_datasets
+                                   ([instance for dataset in all_datasets
                                             for instance in dataset.instances]))
     vocab.save_to_files(os.path.join(serialization_dir, "vocabulary"))
 

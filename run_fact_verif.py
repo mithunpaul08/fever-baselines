@@ -4,7 +4,7 @@ import sys
 from src.rte.mithun.log import setup_custom_logger
 from types import *
 from src.scripts.rte.da.train_da import train_da
-from src.scripts.rte.da.eval_da import train_da
+from src.scripts.rte.da.eval_da import eval_da
 
 if __name__ == "__main__":
 
