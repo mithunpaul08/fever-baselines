@@ -107,12 +107,12 @@ def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folde
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args, path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args, path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device) -> Model:
 
 
 
     print("got inside eval_model_fnc_data")
-    archive = load_archive(path_to_trained_models_folder+name_of_trained_model_to_use, cuda_device=args.cuda_device)
+    archive = load_archive(path_to_trained_models_folder+name_of_trained_model_to_use, cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
 
@@ -271,6 +271,7 @@ def eval_da(dataset_to_work_on,args):
     debug_mode = uofa_params.pop('debug_mode', {})
     path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
     read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
+    cuda_device = uofa_params.pop('cuda_device', {})
     #features = TokenIndexer.dict_from_params(uofa_params.pop('features', {}))
 
     slice = ""
@@ -296,7 +297,7 @@ def eval_da(dataset_to_work_on,args):
 
 
     if(dataset_to_work_on== "fnc"):
-        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder)
+        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device)
     elif (dataset_to_work_on == "fever"):
         eval_model(db,args,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
 

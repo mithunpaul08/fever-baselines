@@ -5,7 +5,7 @@
        "log_file_base_name": "log_rte",
        "log_folder":"logs/"
      },
-
+     "cuda_device":0,
      "path_to_saved_db":"data/fever/fever.db",
 
      "data_annotation": {
