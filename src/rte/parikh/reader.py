@@ -299,7 +299,7 @@ class FEVERReader(DatasetReader):
         features = uofa_params.pop('features', {})
         run_NER_based_features = features.pop('run_NER_based_features', {})
 
-        use_plain_NER=false;
+        use_plain_NER= False; 
 
         if(run_NER_based_features):
             NER_features_details = features.pop('NER_features_details', {})
