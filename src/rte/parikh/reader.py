@@ -276,7 +276,7 @@ class FEVERReader(DatasetReader):
 
         return Dataset(instances)
 
-    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data,mithun_logger):
+    def read_annotated_fnc_and_do_ner_replacement(self,  run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data,mithun_logger):
         nei_overlap_counter = 0
         nei_counter = 0
         supports_overlap_counter = 0
@@ -284,9 +284,9 @@ class FEVERReader(DatasetReader):
         refutes_overlap_counter = 0
         refutes_counter = 0
         instances = []
-
-        ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
-        ds.read()
+        #
+        # ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
+        # ds.read()
 
 
         mithun_logger.info("(do_annotation=false):going to load annotated data from the disk.")
@@ -312,18 +312,6 @@ class FEVERReader(DatasetReader):
 
             data_folder = objUofaTrainTest.data_root + str(path_to_fnc_annotated_data)
 
-        else:
-            if (run_name == "train"):
-                print("run_name == train")
-                data_folder = objUofaTrainTest.data_folder_train
-            else:
-                if (run_name == "small"):
-                    print("run_name == small")
-                    data_folder = objUofaTrainTest.data_folder_train_small
-                else:
-                    if (run_name == "test"):
-                        print("run_name == test")
-                        data_folder = objUofaTrainTest.data_folder_test
 
 
         mithun_logger.info(f"value of data_folder is {data_folder}")

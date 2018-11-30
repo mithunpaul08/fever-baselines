@@ -133,7 +133,7 @@ def eval_model_fnc_data(db: FeverDocDB, args, path_to_fnc_annotated_data,mithun_
 
 
 
-    data = reader.read_annotated_fnc_and_do_ner_replacement(args.in_file, operation, do_annotation_live,path_to_fnc_annotated_data,mithun_logger).instances
+    data = reader.read_annotated_fnc_and_do_ner_replacement( operation, do_annotation_live,path_to_fnc_annotated_data,mithun_logger).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
     #
     ###################end of running model and saving
