@@ -56,6 +56,6 @@ if __name__ == "__main__":
             train_da(general_log, ds, operation,logger_mode)
         else:
             if ds == "fnc" and operation == "dev":
-                eval_da(ds)
+                eval_da(ds,args)
 
 

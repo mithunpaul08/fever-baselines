@@ -248,7 +248,7 @@ def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
 
 
 
-def eval_da(dataset_to_work_on):
+def eval_da(dataset_to_work_on,args):
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
     LogHelper.get_logger(__name__)
