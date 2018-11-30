@@ -13,7 +13,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-p','--param_path',
                            type=str,
-                           help='path to parameter file describing the model to be trained')
+                           help='path to parameter file describing the model to be trained'
+    parser.add_argument('-o', '--overrides',
+                        type=str,
+                        default="",
+                        help='a HOCON structure used to override the experiment configuration')
 
     args = parser.parse_args()
     params = Params.from_file(args.param_path)
