@@ -294,6 +294,19 @@ class FEVERReader(DatasetReader):
 
         objUofaTrainTest = UofaTrainTest()
 
+        params = Params.from_file(args.param_path, args.overrides)
+        uofa_params = params.pop('uofa_params', {})
+        features = uofa_params.pop('features', {})
+        run_NER_based_features = features.pop('run_NER_based_features', {})
+
+        use_plain_NER=false;
+
+        if(run_NER_based_features):
+            NER_features_details = features.pop('NER_features_details', {})
+            use_plain_NER = NER_features_details.pop('use_plain_NER', {})
+
+
+
         if (run_name == "dev"):
             print("run_name == dev")
 
@@ -400,19 +413,21 @@ class FEVERReader(DatasetReader):
 
                 # print(f"hypothesis_before_annotation: {hw}")
                 # print(f"premise_before_annotation: {bw}")
+                if(use_plain_NER):
+                    premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
+                else:
+                    premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
 
-
-                premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
                 #if (found_intersection):
-                    # print("\n")
-                    # print(f"hypothesis_before_annotation: {hw}")
-                    # print(f"premise_before_annotation: {bw}")
-                    # print(f"hypothesis_ann: {hypothesis_ann}")
-                    # print(f"premise_ann: {premise_ann}")
-                    # print(f"label: {label}")
-                    # sys.exit(1)
+                print("\n")
+                print(f"hypothesis_before_annotation: {hw}")
+                print(f"premise_before_annotation: {bw}")
+                print(f"hypothesis_ann: {hypothesis_ann}")
+                print(f"premise_ann: {premise_ann}")
+                print(f"label: {label}")
+                sys.exit(1)
+
                 # This is for the analysis of the NEI over-predicting
                 if(new_label == "NOT ENOUGH INFO"):
                     nei_counter = nei_counter + 1
