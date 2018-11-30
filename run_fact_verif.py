@@ -13,7 +13,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-p','--param_path',
                            type=str,
-                           help='path to parameter file describing the model to be trained'
+                           help='path to parameter file describing the model to be trained')
     parser.add_argument('-o', '--overrides',
                         type=str,
                         default="",
