@@ -1,5 +1,6 @@
 from allennlp.common import Params
 from allennlp.models import Model, archive_model, load_archive
+from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
 import argparse
 import sys,os
 from src.rte.mithun.log import setup_custom_logger
