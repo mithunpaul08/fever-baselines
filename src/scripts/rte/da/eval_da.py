@@ -29,37 +29,16 @@ from collections import defaultdict
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use) -> Model:
+def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use,cuda_device) -> Model:
 
-    mithun_logger.info("got eval_model eval_model_fnc_data")
-    archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device=args.cuda_device)
-    config = archive.config
-    ds_params = config["dataset_reader"]
-
+    mithun_logger.info("got inside eval_model ")
+    archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
     model = archive.model
     model.eval()
 
-    reader = FEVERReader(db,
-                                 sentence_level=ds_params.pop("sentence_level",False),
-                                 wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
-                                 claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
-                                 token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
-
-    mithun_logger.info("Reading  data from %s", args.in_file)
-
-
-    # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
-    #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
-    do_annotation_live = False
-    data = reader.read(args.in_file,"dev",do_annotation_live,mithun_logger).instances
-    joblib.dump(data, "fever_dev_dataset_format.pkl")
 
     actual = []
-
     predicted = []
-
-    if args.log is not None:
-        f = open(args.log,"w+")
     pred_dict = defaultdict(int)
 
     for item in tqdm(data):
@@ -67,30 +46,25 @@ def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folde
             # Handles some edge case we presume, never really gets used
             cls = "NOT ENOUGH INFO"
         else:
-            prediction = model.forward_on_instance(item, args.cuda_device)
+            prediction = model.forward_on_instance(item, cuda_device)
             cls = model.vocab._index_to_token["labels"][np.argmax(prediction["label_probs"])]
-            #print(f'np.argmax(prediction[label_probs]) = {np.argmax(prediction["label_probs"])}')
-            #print(f"cls: {cls}")
 
 
         if "label" in item.fields:
-            #print(item.fields["label"].label)
             actual.append(item.fields["label"].label)
         predicted.append(cls)
         pred_dict[cls] += 1
 
-        if args.log is not None:
-            if "label" in item.fields:
-                f.write(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
-            else:
-                f.write(json.dumps({"predicted":cls})+"\n")
-    # print(f'if_ctr = {if_ctr}')
-    # print(f'else_ctr = {else_ctr}')
-    # print(f'pred_dict = {pred_dict}')
+
+        if "label" in item.fields:
+            mithun_logger.info(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
+        else:
+            mithun_logger.info(json.dumps({"predicted":cls})+"\n")
 
 
-    if args.log is not None:
-        f.close()
+
+    # if args.log is not None:
+    #     f.close()
 
 
     if len(actual) > 0:
@@ -107,12 +81,12 @@ def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folde
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args, path_to_fnc_annotated_data,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation,path_to_fnc_annotated_data) -> Model:
 
 
 
     print("got inside eval_model_fnc_data")
-    archive = load_archive(path_to_trained_models_folder+name_of_trained_model_to_use, cuda_device=args.cuda_device)
+    archive = load_archive(path_to_trained_models_folder+name_of_trained_model_to_use, cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
 
@@ -133,7 +107,7 @@ def eval_model_fnc_data(db: FeverDocDB, args, path_to_fnc_annotated_data,mithun_
 
 
 
-    data = reader.read_annotated_fnc_and_do_ner_replacement(args.in_file, "dev", do_annotation_live,path_to_fnc_annotated_data,mithun_logger).instances
+    data = reader.read_annotated_fnc_and_do_ner_replacement( args, operation, do_annotation_live,mithun_logger,path_to_fnc_annotated_data).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
     #
     ###################end of running model and saving
@@ -248,74 +222,48 @@ def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
 
 
 
-if __name__ == "__main__":
+def eval_da(dataset_to_work_on,args,operation,mithun_logger):
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
     LogHelper.get_logger(__name__)
 
 
-    parser = argparse.ArgumentParser()
 
-    parser.add_argument('db', type=str, help='/path/to/saved/db.db')
-    #parser.add_argument('--archive_file', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('in_file', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('--log', required=False, default=None,  type=str, help='/path/to/saved/db.db')
 
-    parser.add_argument("--cuda-device", type=int, default=-1, help='id of GPU to use (if any)')
-    parser.add_argument('-o', '--overrides',
-                           type=str,
-                           default="",
-                           help='a HOCON structure used to override the experiment configuration')
-    parser.add_argument('--param_path',
-                        type=str,
-                        help='path to parameter file describing the model to be trained')
-    parser.add_argument('--lmode',
-                        type=str,
-                        help='log mode. the mode in which logs will be created . DEBUG , INFO, ERROR, WARNING etc')
-    parser.add_argument("--randomseed", type=str, default=None,
-                        help='random number that will be used as seed for lstm initial weight generation)')
-    parser.add_argument("--slice", type=int, default=None,
-                        help='what slice of training data is this going to be trained on)')
-
-    args = parser.parse_args()
-    db = FeverDocDB(args.db)
-
-    params = Params.from_file(args.param_path, args.overrides)
+    params = Params.from_file(args.param_path,args.overrides)
     uofa_params = params.pop('uofa_params', {})
-
-    dataset_to_test = uofa_params.pop('data', {})
-    slice = uofa_params.pop('training_slice_percent', {})
-    random_seed = uofa_params.pop('random_seed', {})
-    name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
-    path_to_pyproc_annotated_data_folder = uofa_params.pop('path_to_pyproc_annotated_data_folder', {})
-    debug_mode = uofa_params.pop('debug_mode', {})
-    path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
-    read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
-    #features = TokenIndexer.dict_from_params(uofa_params.pop('features', {}))
-
-    slice = ""
-    random_seed = ""
-
-    if (read_random_seed_from_commandline):
-        slice = args.slice
-        random_seed = args.randomseed
-    else:
-        slice = uofa_params.pop('training_slice_percent', {})
-        random_seed = uofa_params.pop('random_seed', {})
-
-    log_file_name = "dev_feverlog.txt" + str(slice) + "_" + str(random_seed)
-    mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
+    path_to_saved_db = uofa_params.pop("path_to_saved_db")
+    db = FeverDocDB(path_to_saved_db)
 
 
-    mithun_logger.info("inside main function going to call eval on "+str(dataset_to_test))
+
+
+
+    mithun_logger.info("inside main function going to call eval on " + str(dataset_to_work_on))
     mithun_logger.info("path_to_pyproc_annotated_data_folder " + str(path_to_pyproc_annotated_data_folder))
-    mithun_logger.info("value of name_of_trained_model_to_use " + str(name_of_trained_model_to_use))
-    mithun_logger.info("value of name_of_trained_model_to_use " + str(name_of_trained_model_to_use))
+    mithun_logger.info("value of name_of_trained_model_to_use: " + str(name_of_trained_model_to_use))
+    mithun_logger.info("value of dataset_to_work_on: " + str(dataset_to_work_on))
 
 
 
-    if(dataset_to_test=="fnc"):
-        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder)
-    elif (dataset_to_test=="fever"):
+
+    if(dataset_to_work_on== "fnc"):
+        fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
+        dev_partition_details = fever_dataset_details.pop('dev_partition_details', {})
+        name_of_trained_model_to_use = dev_partition_details.pop('name_of_trained_model_to_use', {})
+        path_to_pyproc_annotated_data_folder = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+        debug_mode = uofa_params.pop('debug_mode', {})
+        path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
+        path_to_fnc_annotated_data = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+        eval_model_fnc_data (db,args,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation,path_to_fnc_annotated_data)
+
+    elif (dataset_to_work_on == "fever"):
+        fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
+        dev_partition_details = fever_dataset_details.pop('dev_partition_details', {})
+        name_of_trained_model_to_use = dev_partition_details.pop('name_of_trained_model_to_use', {})
+        path_to_pyproc_annotated_data_folder = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+        debug_mode = uofa_params.pop('debug_mode', {})
+        path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
+
         eval_model(db,args,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
 

@@ -6,7 +6,7 @@ from allennlp.commands.train import prepare_environment
 from typing import List, Union, Dict, Any
 from allennlp.common import Params
 from allennlp.common.tee_logger import TeeLogger
-from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
+from allennlp.data import Vocabulary, DataIterator, DatasetReader, Tokenizer, TokenIndexer
 from allennlp.models import Model, archive_model
 from allennlp.training import Trainer
 from common.util.log_helper import LogHelper
@@ -103,7 +103,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     training_slice_count= int(total_training_data * training_slice_percent/100)
     print(training_slice_count)
 
-    train_data_slice=Dataset(train_data_instances[0:training_slice_count])
+    train_data_slice=(train_data_instances[0:training_slice_count]).instances
     train_data=train_data_slice
 
 
@@ -126,7 +126,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
     logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
     vocab = Vocabulary.from_params(params.pop("vocabulary", {}),
-                                   Dataset([instance for dataset in all_datasets
+                                   ([instance for dataset in all_datasets
                                             for instance in dataset.instances]))
     vocab.save_to_files(os.path.join(serialization_dir, "vocabulary"))
 
@@ -156,63 +156,43 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     return model
 
 
-
-if __name__ == "__main__":
+def train_da(ds,operation,logger_mode):
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
     LogHelper.get_logger(__name__)
 
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('db', type=str, help='/path/to/saved/db.db')
-    parser.add_argument('param_path',
-                           type=str,
-                           help='path to parameter file describing the model to be trained')
-
-    parser.add_argument("logdir",type=str)
-
-    parser.add_argument("--filtering", type=str, default=None)
-    parser.add_argument("--cuda-device", type=int, default=None, help='id of GPU to use (if any)')
-    parser.add_argument('-o', '--overrides',
-                           type=str,
-                           default="",
-                           help='a HOCON structure used to override the experiment configuration')
-
-
-    parser.add_argument("--mode", type=str, default=None, help='train,test,dev,small)')
-    parser.add_argument("--randomseed", type=str, default=None, help='random number that will be used as seed for lstm initial weight generation)')
-    parser.add_argument("--slice", type=int, default=None,
-                        help='what slice of training data is this going to be trained on)')
-
-    args = parser.parse_args()
-
-    db = FeverDocDB(args.db)
 
     params = Params.from_file(args.param_path,args.overrides)
     uofa_params = params.pop('uofa_params', {})
+    path_to_saved_db = uofa_params.pop("path_to_saved_db")
+    db = FeverDocDB(path_to_saved_db)
     read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
-    debug_mode = uofa_params.pop('debug_mode', {})
-    features = uofa_params.pop('features', {})
-    print(f"value of features is{features}")
-    lowercase_tokens = features.pop('lowercase_tokens', {})
-    print(f"value of lowercase_tokens is{lowercase_tokens}")
-    sys.exit(1)
+    # debug_mode = uofa_params.pop('debug_mode', {})
+    # features = uofa_params.pop('features', {})
+    # print(f"value of features is{features}")
+    # lowercase_tokens = features.pop('lowercase_tokens', {})
+    # print(f"value of lowercase_tokens is{lowercase_tokens}")
 
 
-    slice = ""
-    random_seed = ""
-
+    #
+    # slice = ""
+    # random_seed = ""
+    #
     if(read_random_seed_from_commandline):
         slice=args.slice
         random_seed=args.randomseed
     else:
-        slice = uofa_params.pop('training_slice_percent', {})
-        random_seed = uofa_params.pop('random_seed', {})
+        if(ds=="fever" and operation=="train") :
+            fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
+            train_partition_details = fever_dataset_details.pop('train_partition_details', {})
+            slice = train_partition_details.pop('slice_percent', {})
+            random_seed = uofa_params.pop('random_seed', {})
+
 
 
     log_file_name="training_feverlog.txt"+str(slice)+"_"+str(random_seed)
-    mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
+    mithun_logger = setup_custom_logger('root', logger_mode ,log_file_name)
 
     mithun_logger.info(f"Going to train on  {args.slice} percentage of training data with random seed value{args.randomseed}.")
-
-    train_model(db,params,args.cuda_device,args.logdir,args.filtering,args.randomseed,args.slice,mithun_logger)
+    #todo:call train_model

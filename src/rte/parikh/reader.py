@@ -117,7 +117,7 @@ class FEVERReader(DatasetReader):
         return instances
 
     @overrides
-    def read(self, file_path: str, run_name, do_annotation_on_the_fly,mithun_logger):
+    def read(self, mithun_logger,data_folder):
         mithun_logger.info("got inside read")
         mithun_logger.info("got inside read")
 
@@ -136,148 +136,147 @@ class FEVERReader(DatasetReader):
 
         # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etc.
         # This takes along time. so almost always we do it only once, and load it from disk
-        if(do_annotation_on_the_fly):
-            instances = self.annotation_on_the_fly(file_path, run_name, objUOFADataReader)
+        # if(do_annotation_on_the_fly):
+        #     instances = self.annotation_on_the_fly(file_path, run_name, objUOFADataReader)
 
         # replacing hypothesis with the annotated one-either load pre-annotated data
         # from disk
-        else:
+        #else:
 
-            print("(do_annotation=false):going to load annotated data from the disk. ")
+        print("(do_annotation=false):going to load annotated data from the disk. ")
 
+        #
+        objUofaTrainTest = UofaTrainTest()
+
+        # folders = {"dev": objUofaTrainTest.data_folder_dev, "train": objUofaTrainTest.data_folder_train,
+        #            "test": objUofaTrainTest.data_folder_test,  "small": objUofaTrainTest. data_folder_train_small100}
+        #
+        # data_folder = folders[run_name]
+        # print(f"Run name: {run_name}")
+        mithun_logger.debug(f"data_folder: {data_folder}")
+
+        bf = data_folder + objUofaTrainTest.annotated_body_split_folder
+        bfl = bf + objUofaTrainTest.annotated_only_lemmas
+        bfw = bf + objUofaTrainTest.annotated_words
+        bfe = bf + objUofaTrainTest.annotated_only_entities
+
+        hf = data_folder + objUofaTrainTest.annotated_head_split_folder
+        hft = hf + objUofaTrainTest.annotated_only_tags
+        hfd= hf + objUofaTrainTest.annotated_only_dep
+        hfl = hf + objUofaTrainTest.annotated_only_lemmas
+        hfw = hf + objUofaTrainTest.annotated_words
+        hfe = hf + objUofaTrainTest.annotated_only_entities
+        hfcomplete = hf + objUofaTrainTest.annotated_whole_data_head
+
+        #print(f"hfl:{hfl}")
+        #print(f"bfl:{bfl}")
+        #print("going to read annotated data from disk:")
+
+        heads_lemmas = objUofaTrainTest.read_json(hfl)
+        bodies_lemmas = objUofaTrainTest.read_json(bfl)
+        heads_entities = objUofaTrainTest.read_json(hfe)
+        bodies_entities = objUofaTrainTest.read_json(bfe)
+        heads_words = objUofaTrainTest.read_json(hfw)
+        bodies_words = objUofaTrainTest.read_json(bfw)
+        heads_tags= objUofaTrainTest.read_json(hft)
+        heads_deps = objUofaTrainTest.read_json_deps(hfd)
+        heads_complete_annotation=objUofaTrainTest.read_id_field_json(hfcomplete)
+
+        print(f"length of bodies_words:{len(bodies_words)}")
+
+        counter=0
+
+
+        for he, be, hl, bl, hw, bw,ht,hd,hfc in\
+                tq(zip(heads_entities, bodies_entities, heads_lemmas,
+                                                    bodies_lemmas,
+                                                      heads_words,
+                                                      bodies_words,heads_tags,heads_deps,heads_complete_annotation),
+                   total=len(heads_complete_annotation),desc="reading annotated data"):
+
+            counter=counter+1
+
+
+
+            he_split=  he.split(" ")
+            be_split = be.split(" ")
+            hl_split = hl.split(" ")
+            bl_split = bl.split(" ")
+            hw_split = hw.split(" ")
+            bw_split = bw.split(" ")
+
+            # hypothesis == = claim = headline
+            # premise == = evidence = body
+
+
+            #premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
+
+            premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
+
+            # print(f"hypothesis before annotation: {hw}")
+            # print(f"premise before annotation: {bw}")
             #
-            objUofaTrainTest = UofaTrainTest()
-
-            folders = {"dev": objUofaTrainTest.data_folder_dev, "train": objUofaTrainTest.data_folder_train,
-                       "test": objUofaTrainTest.data_folder_test,  "small": objUofaTrainTest. data_folder_train_small100}
-
-            data_folder = folders[run_name]
-            print(f"Run name: {run_name}")
-            print(f"data_folder: {data_folder}")
-
-            bf = data_folder + objUofaTrainTest.annotated_body_split_folder
-            bfl = bf + objUofaTrainTest.annotated_only_lemmas
-            bfw = bf + objUofaTrainTest.annotated_words
-            bfe = bf + objUofaTrainTest.annotated_only_entities
-
-            hf = data_folder + objUofaTrainTest.annotated_head_split_folder
-            hft = hf + objUofaTrainTest.annotated_only_tags
-            hfd= hf + objUofaTrainTest.annotated_only_dep
-            hfl = hf + objUofaTrainTest.annotated_only_lemmas
-            hfw = hf + objUofaTrainTest.annotated_words
-            hfe = hf + objUofaTrainTest.annotated_only_entities
-            hfcomplete = hf + objUofaTrainTest.annotated_whole_data_head
-
-            #print(f"hfl:{hfl}")
-            #print(f"bfl:{bfl}")
-            #print("going to read annotated data from disk:")
-
-            heads_lemmas = objUofaTrainTest.read_json(hfl)
-            bodies_lemmas = objUofaTrainTest.read_json(bfl)
-            heads_entities = objUofaTrainTest.read_json(hfe)
-            bodies_entities = objUofaTrainTest.read_json(bfe)
-            heads_words = objUofaTrainTest.read_json(hfw)
-            bodies_words = objUofaTrainTest.read_json(bfw)
-            heads_tags= objUofaTrainTest.read_json(hft)
-            heads_deps = objUofaTrainTest.read_json_deps(hfd)
-            heads_complete_annotation=objUofaTrainTest.read_id_field_json(hfcomplete)
-
-            print(f"length of bodies_words:{len(bodies_words)}")
-
-            counter=0
-
-
-            for he, be, hl, bl, hw, bw,ht,hd,hfc in\
-                    tq(zip(heads_entities, bodies_entities, heads_lemmas,
-                                                        bodies_lemmas,
-                                                          heads_words,
-                                                          bodies_words,heads_tags,heads_deps,heads_complete_annotation),
-                       total=len(heads_complete_annotation),desc="reading annotated data"):
-
-                counter=counter+1
+            # print("value of the first premise and hypothesis after  ner replacement is")
+            # print(premise_ann)
+            # print(hypothesis_ann)
+            # sys.exit(1)
+            #
 
 
 
-                he_split=  he.split(" ")
-                be_split = be.split(" ")
-                hl_split = hl.split(" ")
-                bl_split = bl.split(" ")
-                hw_split = hw.split(" ")
-                bw_split = bw.split(" ")
-
-                # hypothesis == = claim = headline
-                # premise == = evidence = body
 
 
-                premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-                # print(f"hypothesis before annotation: {hw}")
-                # print(f"premise before annotation: {bw}")
-
-                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
-
-                # print("value of the first premise and hypothesis after smart ner replacement is")
-                # print(premise_ann)
-                # print(hypothesis_ann)
-
-                # print(f"headline words: {hw}")
-                # print(f"body words: {bw}")
-                # print(f"hypothesis_ann: {hypothesis_ann}")
-                # print(f"premise_ann: {premise_ann}")
+            label=str(hfc)
 
 
-
-                label=str(hfc)
-
-
-                # This is for the analysis of the NEI over-predicting
-                if(label=="NOT ENOUGH INFO"):
-                    nei_counter=nei_counter+1
-                    if(found_intersection):
-
-                        # print("\n")
-                        # print(f"hw: {hw}")
-                        # print(f"bw: {bw}")
-                        # print(f"hypothesis_ann: {hypothesis_ann}")
-                        # print(f"premise_ann: {premise_ann}")
-                        #
-                        # print(f"label: {label}")
-
-                        nei_overlap_counter=nei_overlap_counter+1
-
-                if (label == "SUPPORTS"):
-                    supports_counter = supports_counter + 1
-                    if (found_intersection):
-                        supports_overlap_counter=supports_overlap_counter+1
-
-                if (label == "REFUTES"):
-                    refutes_counter = refutes_counter + 1
-                    if (found_intersection):
-                        refutes_overlap_counter = refutes_overlap_counter + 1
+            # # This is for the analysis of the NEI over-predicting
+            # if(label=="NOT ENOUGH INFO"):
+            #     nei_counter=nei_counter+1
+            #     if(found_intersection):
+            #
+            #         # print("\n")
+            #         # print(f"hw: {hw}")
+            #         # print(f"bw: {bw}")
+            #         # print(f"hypothesis_ann: {hypothesis_ann}")
+            #         # print(f"premise_ann: {premise_ann}")
+            #         #
+            #         # print(f"label: {label}")
+            #
+            #         nei_overlap_counter=nei_overlap_counter+1
+            #
+            # if (label == "SUPPORTS"):
+            #     supports_counter = supports_counter + 1
+            #     if (found_intersection):
+            #         supports_overlap_counter=supports_overlap_counter+1
+            #
+            # if (label == "REFUTES"):
+            #     refutes_counter = refutes_counter + 1
+            #     if (found_intersection):
+            #         refutes_overlap_counter = refutes_overlap_counter + 1
 
 
 
-                instances.append(self.text_to_instance(premise_ann.lower(), hypothesis_ann.lower(), label))
+            instances.append(self.text_to_instance(premise_ann.lower(), hypothesis_ann.lower(), label))
 
 
-        print(f"after reading and converting training data to smart ner format. The length of the number of training data is:{len(instances)}")
+        print(f"after reading and converting training data to  ner format. The length of the number of training data is:{len(instances)}")
 
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
                                      "Is the path correct?".format(file_path))
-        print(f"nei_overlap_counter: {nei_counter}")
-        print(f"nei_overlap_counter: {nei_overlap_counter}")
-        print(f"supports_counter: {supports_counter}")
-        print(f"supports_overlap_counter: {supports_overlap_counter}")
-        print(f"refutes_counter: {refutes_counter}")
-        print(f"refutes_overlap_counter: {refutes_overlap_counter}")
+        # print(f"nei_overlap_counter: {nei_counter}")
+        # print(f"nei_overlap_counter: {nei_overlap_counter}")
+        # print(f"supports_counter: {supports_counter}")
+        # print(f"supports_overlap_counter: {supports_overlap_counter}")
+        # print(f"refutes_counter: {refutes_counter}")
+        # print(f"refutes_overlap_counter: {refutes_overlap_counter}")
 
 
 
 
         return Dataset(instances)
 
-    def read_annotated_fnc_and_do_ner_replacement(self, file_path: str, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data,mithun_logger):
+    def read_annotated_fnc_and_do_ner_replacement(self, args, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data):
         nei_overlap_counter = 0
         nei_counter = 0
         supports_overlap_counter = 0
@@ -285,9 +284,9 @@ class FEVERReader(DatasetReader):
         refutes_overlap_counter = 0
         refutes_counter = 0
         instances = []
-
-        ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
-        ds.read()
+        #
+        # ds = FEVERDataSet(file_path,reader=self.reader, formatter=self.formatter)
+        # ds.read()
 
 
         mithun_logger.info("(do_annotation=false):going to load annotated data from the disk.")
@@ -295,26 +294,15 @@ class FEVERReader(DatasetReader):
 
         objUofaTrainTest = UofaTrainTest()
 
-        if (run_name == "dev"):
-            print("run_name == dev")
+        params = Params.from_file(args.param_path, args.overrides)
+        uofa_params = params.pop('uofa_params', {})
 
-            data_folder = objUofaTrainTest.data_root + str(path_to_fnc_annotated_data)
-
-        else:
-            if (run_name == "train"):
-                print("run_name == train")
-                data_folder = objUofaTrainTest.data_folder_train
-            else:
-                if (run_name == "small"):
-                    print("run_name == small")
-                    data_folder = objUofaTrainTest.data_folder_train_small
-                else:
-                    if (run_name == "test"):
-                        print("run_name == test")
-                        data_folder = objUofaTrainTest.data_folder_test
+        data_folder = objUofaTrainTest.data_root + str(path_to_fnc_annotated_data)
 
 
-        mithun_logger.info(f"value of data_folder is {data_folder}")
+
+        mithun_logger.debug(f"value of data_folder is {data_folder}")
+        mithun_logger.debug(f"value of use_plain_NER is {use_plain_NER}")
 
 
         #load the labels from the disk
@@ -352,9 +340,9 @@ class FEVERReader(DatasetReader):
         heads_words = objUofaTrainTest.read_json(hfw)
         bodies_words = objUofaTrainTest.read_json(bfw)
 
-        print(f"length of headline_words:{len(heads_words)}")
-        print(f"length of bodies_words:{len(bodies_words)}")
-        print(f"length of all_labels:{len(all_labels)}")
+        mithun_logger.debug(f"length of headline_words:{len(heads_words)}")
+        mithun_logger.debug(f"length of bodies_words:{len(bodies_words)}")
+        mithun_logger.debug(f"length of all_labels:{len(all_labels)}")
 
 
 
@@ -401,19 +389,21 @@ class FEVERReader(DatasetReader):
 
                 # print(f"hypothesis_before_annotation: {hw}")
                 # print(f"premise_before_annotation: {bw}")
+                if(use_plain_NER):
+                    premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
+                else:
+                    premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
 
-
-                premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-                #premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
 
                 #if (found_intersection):
-                    # print("\n")
-                    # print(f"hypothesis_before_annotation: {hw}")
-                    # print(f"premise_before_annotation: {bw}")
-                    # print(f"hypothesis_ann: {hypothesis_ann}")
-                    # print(f"premise_ann: {premise_ann}")
-                    # print(f"label: {label}")
-                    # sys.exit(1)
+                print("\n")
+                print(f"hypothesis_before_annotation: {hw}")
+                print(f"premise_before_annotation: {bw}")
+                print(f"hypothesis_ann: {hypothesis_ann}")
+                print(f"premise_ann: {premise_ann}")
+                print(f"label: {label}")
+                sys.exit(1)
+
                 # This is for the analysis of the NEI over-predicting
                 if(new_label == "NOT ENOUGH INFO"):
                     nei_counter = nei_counter + 1
