@@ -29,8 +29,7 @@ from rte.mithun.trainer import UofaTrainTest
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
 
-@DatasetReader.register("fever")
-class FEVERReaderUofa(DatasetReader):
+class FEVERReaderUofa():
     """
     Reads a file from the Stanford Natural Language Inference (SNLI) dataset.  This data is
     formatted as jsonl, one json-formatted instance per line.  The keys in the data are
