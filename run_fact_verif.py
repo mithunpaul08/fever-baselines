@@ -129,8 +129,7 @@ if __name__ == "__main__":
     print(f"value of logger_details is {logger_details}")
     print(type(logger_details))
     assert type(logger_details) is not Params
-    logger_mode = logger_details.pop('logger_mode', {}
-
+    logger_mode = logger_details.pop('logger_mode', {})
     assert type(logger_mode) is not Params
 
     general_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
