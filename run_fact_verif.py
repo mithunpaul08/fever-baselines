@@ -172,7 +172,7 @@ if __name__ == "__main__":
             data=generate_features(zipped_annotated_data, feature, feature_details,reader)
 
         name_of_trained_model_to_use=""
-        
+
         #step 5
         if (run_name == "dev"):
             frn = run_name + "_partition_details"
