@@ -168,42 +168,31 @@ if __name__ == "__main__":
         assert type(data_partition_details) is  Params
         path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
         assert type(path_to_pyproc_annotated_data_folder) is not Params
-        label_dev_file = data_partition_details.pop('label_dev_file', {})
-        mithun_logger.debug(f"value of label_dev_file is:{label_dev_file}")
-        assert type(label_dev_file) is not Params
-        label_folder = data_partition_details.pop('label_folder', {})
-        mithun_logger.debug(f"value of label_folder is:{label_folder}")
-
-
-
-        log_file_base_name = logger_details.pop('log_file_base_name', {})
-        assert type(log_file_base_name) is not Params
 
         # todo: this is a hack where we are reading the labels of fnc data from a separate labels only file.
         # However, this should have been written along with the pyproc annotated data, so that it can be r
         # ead back inside the generate features function, just like we do for fever data.
 
         all_labels=None
+
+
         if (dataset == "fnc"):
-            mithun_logger.debug(f"value of dataset is:{dataset}")
-            fds = dataset + "_dataset_details"
-            mithun_logger.debug(f"value of dataset is:{dataset}")
-            mithun_logger.debug(f"value of fdsfds is:{fds}")
-            dataset_details = uofa_params.pop(fds, {})
-            mithun_logger.debug(f"value of frn is:{frn}")
-            data_partition_details = dataset_details.pop(frn, {})
-            mithun_logger.debug(f"value of data_partition_details is:{data_partition_details}")
-            #assert type(data_partition_details) is  Params
-            path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder',
-                                                                              {})
-            mithun_logger.debug(f"value of path_to_pyproc_annotated_data_folder is:{path_to_pyproc_annotated_data_folder}")
-            #assert type(path_to_pyproc_annotated_data_folder) is not Params
-
-
-            #assert type(label_folder) is not Params
+            label_dev_file = data_partition_details.pop('label_dev_file', {})
+            mithun_logger.debug(f"value of label_dev_file is:{label_dev_file}")
+            assert type(label_dev_file) is not Params
+            label_folder = data_partition_details.pop('label_folder', {})
+            assert type(label_folder) is str
+            mithun_logger.debug(f"value of label_folder is:{label_folder}")
+            assert type(label_dev_file) is str
             lbl_file = label_folder + label_dev_file
             mithun_logger.debug(f"value of lbl_file is:{lbl_file}")
+            assert type(lbl_file) is str
             all_labels = objUofaTrainTest.read_csv_list(lbl_file)
+
+
+
+
+
 
         #step 3
         reader = FEVERReaderUofa()
