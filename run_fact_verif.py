@@ -23,12 +23,19 @@ Parameters
 def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,mithun_logger):
     mithun_logger.debug(f"got inside generate_features")
     instances = []
-    for he, be, hl, bl, hw, bw, ht, hd, hfc in zipped_annotated_data:
+    for he, be, hl, bl, hw, bw, ht, hd,label in zipped_annotated_data:
             #tqdm(,total=len(he), desc="reading annotated data"):
 
 
-        label = str(hfc)
+        label = str(label)
         mithun_logger.debug(f"value of label is:{label}")
+
+        he_split = he.split(" ")
+        be_split = be.split(" ")
+        hl_split = hl.split(" ")
+        bl_split = bl.split(" ")
+        hw_split = hw.split(" ")
+        bw_split = bw.split(" ")
 
         #
         # if not (label == "unrelated"):
@@ -166,17 +173,36 @@ if __name__ == "__main__":
 
         log_file_base_name = logger_details.pop('log_file_base_name', {})
         assert type(log_file_base_name) is not Params
-        # log_file_name = dataset + "_" + run_name + "_feverlog.txt" + "_" + str(random_seed)
-        # mithun_logger = setup_custom_logger('root', logger_mode, log_file_name)
+
+        # todo: this is a hack where we are reading the labels of fnc data from a separate labels only file.
+        # However, this should have been written along with the pyproc annotated data, so that it can be r
+        # ead back inside the generate features function, just like we do for fever data.
+
+        all_labels=None
+        if (dataset == "fnc"):
+            self.label_dev_file = "fnc_dev_labels.csv"
+            self.label_folder = self.data_root + "/data/labels/"
+            data_partition_details = dataset_details.pop(frn, {})
+            assert type(data_partition_details) is not Params
+            label_dev_file = data_partition_details.pop('label_dev_file', {})
+            assert type(label_dev_file) is not Params
+            label_folder = data_partition_details.pop('label_folder', {})
+            assert type(label_folder) is not Params
+            lbl_file = objUofaTrainTest.label_folder + objUofaTrainTest.label_dev_file
+            all_labels = objUofaTrainTest.read_csv_list(lbl_file)
 
         #step 3
         reader = FEVERReaderUofa()
         cwd=os.getcwd()
-        zipped_annotated_data = reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder)
+        zipped_annotated_data = reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder,all_labels)
 
         #step 4
         features = uofa_params.pop("features", {})
         assert type(features) is not Params
+
+
+
+
 
         #todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
         data = None
@@ -196,6 +222,7 @@ if __name__ == "__main__":
             assert type(data_partition_details) is not Params
             name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use',{})
             assert type(name_of_trained_model_to_use) is not Params
+
 
 
         type_of_classifier = uofa_params.pop("type_of_classifier", {})
