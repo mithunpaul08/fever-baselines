@@ -20,7 +20,7 @@ Parameters
 
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
-def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,mithun_logger,objUofaTrainTest):
+def generate_features(zipped_annotated_data,feature,feature_details,reader,mithun_logger,objUofaTrainTest):
     mithun_logger.debug(f"got inside generate_features")
     instances = []
     for he, be, hl, bl, hw, bw, ht, hd,hfc,label in zipped_annotated_data:
@@ -67,18 +67,18 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
             mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
             mithun_logger.debug(f"value of hypothesis_ann is:{hypothesis_ann}")
 
-            person_c1 = feature_detail_dict.pop('person_c1', {})
-            lower_case_tokens= feature_detail_dict.pop('lower_case_tokens', {})
-            update_embeddings= feature_detail_dict.pop('update_embeddings', {})
-            assert type(person_c1) is str
-            assert type(lower_case_tokens) is bool
-            assert type(update_embeddings) is bool
-
-            if(lower_case_tokens):
-                premise_ann=premise_ann.lower(),
-                hypothesis_ann=hypothesis_ann.lower()
-                mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
-                mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
+            # person_c1 = feature_details.pop('person_c1', {})
+            # lower_case_tokens= feature_details.pop('lower_case_tokens', {})
+            # update_embeddings= feature_details.pop('update_embeddings', {})
+            # assert type(person_c1) is str
+            # assert type(lower_case_tokens) is bool
+            # assert type(update_embeddings) is bool
+            #
+            # if(lower_case_tokens):
+            #     premise_ann=premise_ann.lower(),
+            #     hypothesis_ann=hypothesis_ann.lower()
+            #     mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
+            #     mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
             sys.exit(1)
 
             instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
@@ -217,17 +217,7 @@ if __name__ == "__main__":
             mithun_logger.debug(f"value of fdl is:{fdl}")
             mithun_logger.debug(f"value of feature is:{feature}")
             feature_details=uofa_params.pop("fdl", {})
-            mithun_logger.debug(f"value of feature_details is:{feature_details}")
-            assert type(feature_details) is  Params
-            person_c1 = feature_details.pop_bool('person_c1', {})
-            lower_case_tokens = feature_details.pop_bool('lower_case_tokens', {})
-            update_embeddings = feature_details.pop_bool('update_embeddings', {})
-            mithun_logger.debug(f"value of person_c1 is:{person_c1}")
 
-
-            assert type(person_c1) is bool
-            assert type(lower_case_tokens) is bool
-            assert type(update_embeddings) is bool
             data=generate_features(zipped_annotated_data, feature, feature_details,reader,mithun_logger,objUofaTrainTest).instances
 
 
