@@ -124,31 +124,34 @@ if __name__ == "__main__":
     assert type(cuda_device) is not Params
     assert type(random_seed) is not Params
 
+    # step 2.1.1
+    logger_details = uofa_params.pop('logger_details', {})
+    assert type(logger_details) is not Params
+    logger_mode = logger_details.pop('logger_mode', {})
+    assert type(logger_mode) is not Params
+
+    general_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
 
 
-
-    for (d,r) in (zip(datasets_to_work_on,list_of_runs)):
-
+    for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
+        general_logger.debug(dataset)
         #Step 2
-        fds=d+"_dataset_details"
+        fds= dataset + "_dataset_details"
+        general_logger.debug(fds)
         dataset_details = uofa_params.pop(fds, {})
         assert type(dataset_details) is not Params
-        frn=r+"_partition_details"
+        frn= run_name + "_partition_details"
         data_partition_details = dataset_details.pop(frn, {})
         assert type(data_partition_details) is not Params
         path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
         assert type(path_to_pyproc_annotated_data_folder) is not Params
 
-        #step 2.1.1
-        logger_details = uofa_params.pop('logger_details', {})
-        assert type(logger_details) is not Params
-        logger_mode = logger_details.pop('logger_mode', {})
-        assert type(logger_mode) is not Params
+
 
         log_file_base_name = logger_details.pop('log_file_base_name', {})
         assert type(log_file_base_name) is not Params
-        log_file_name = d+"_"+r+"_feverlog.txt" +  "_" + str(random_seed)
-        mithun_logger = setup_custom_logger('root', debug_mode, log_file_name)
+        log_file_name = dataset + "_" + run_name + "_feverlog.txt" + "_" + str(random_seed)
+        mithun_logger = setup_custom_logger('root', logger_mode, log_file_name)
 
         #step 3
         reader = FEVERReaderUofa()
@@ -167,8 +170,8 @@ if __name__ == "__main__":
 
 
         #step 5
-        if (r == "dev"):
-            frn = r + "_partition_details"
+        if (run_name == "dev"):
+            frn = run_name + "_partition_details"
             data_partition_details = dataset_details.pop(frn, {})
             assert type(data_partition_details) is not Params
             name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use',{})
@@ -178,9 +181,9 @@ if __name__ == "__main__":
         type_of_classifier = uofa_params.pop("type_of_classifier", {})
 
         if(type_of_classifier=="decomp_attention"):
-            if(r=="train"):
+            if(run_name== "train"):
                 train_da(general_log, ds, operation, logger_mode)
-            if(r=="dev"):
+            if(run_name== "dev"):
                 eval_model(data,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
 
 
