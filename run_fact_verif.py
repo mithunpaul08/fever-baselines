@@ -180,11 +180,8 @@ if __name__ == "__main__":
         name_of_trained_model_to_use = ""
 
         if (run_name == "dev"):
-            frn = run_name + "_partition_details"
-            data_partition_details = dataset_details.pop(frn, {})
-            assert type(data_partition_details) is not Params
             name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
-            assert type(name_of_trained_model_to_use) is not Params
+            assert type(name_of_trained_model_to_use) is str
 
 
 
