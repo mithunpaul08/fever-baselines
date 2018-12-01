@@ -180,8 +180,6 @@ if __name__ == "__main__":
 
         all_labels=None
         if (dataset == "fnc"):
-            self.label_dev_file = "fnc_dev_labels.csv"
-            self.label_folder = self.data_root + "/data/labels/"
             data_partition_details = dataset_details.pop(frn, {})
             assert type(data_partition_details) is not Params
             label_dev_file = data_partition_details.pop('label_dev_file', {})
