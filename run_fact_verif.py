@@ -9,6 +9,7 @@ from src.scripts.rte.da.eval_da import eval_model
 from rte.parikh.reader_uofa import FEVERReaderUofa
 from tqdm import tqdm
 from rte.mithun.trainer import UofaTrainTest
+from retrieval.fever_doc_db import FeverDocDB
 
 
 """takes a data set and a dictionary of features and generate features based on the requirement. 
