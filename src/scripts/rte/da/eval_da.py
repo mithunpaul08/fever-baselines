@@ -40,9 +40,10 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
     actual = []
 
     predicted = []
-
-    if args.log is not None:
-        f = open(args.log,"w+")
+    #
+    # if args.log is not None:
+    #     f = open(args.log,"w+")
+    #
     pred_dict = defaultdict(int)
 
     for item in tqdm(data):
@@ -61,14 +62,14 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
 
         if args.log is not None:
             if "label" in item.fields:
-                f.write(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
+                mithun_logger.info(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
             else:
-                f.write(json.dumps({"predicted":cls})+"\n")
+                mithun_logger.info(json.dumps({"predicted":cls})+"\n")
 
 
 
-    if args.log is not None:
-        f.close()
+    # if args.log is not None:
+    #     f.close()
 
 
     if len(actual) > 0:
