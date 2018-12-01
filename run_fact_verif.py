@@ -158,7 +158,7 @@ if __name__ == "__main__":
         #step 3
         reader = FEVERReaderUofa()
         cwd=os.getcwd()
-        zipped_annotated_data = reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder).instances
+        zipped_annotated_data = reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder)
 
         #step 4
         features = uofa_params.pop("features", {})
@@ -169,7 +169,7 @@ if __name__ == "__main__":
         for feature in features:
             fdl= feature + "_details"
             feature_details=uofa_params.pop("fdl", {})
-            data=generate_features(zipped_annotated_data, feature, feature_details,reader)
+            data=generate_features(zipped_annotated_data, feature, feature_details,reader).instances
 
         name_of_trained_model_to_use=""
 
