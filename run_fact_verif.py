@@ -180,6 +180,7 @@ if __name__ == "__main__":
 
         all_labels=None
         if (dataset == "fnc"):
+            mithun_logger.debug(f"value of dataset is:{dataset}")
             fds = dataset + "_dataset_details"
             mithun_logger.debug(f"value of dataset is:{dataset}")
             mithun_logger.debug(f"value of fdsfds is:{fds}")
@@ -188,6 +189,10 @@ if __name__ == "__main__":
             data_partition_details = dataset_details.pop(frn, {})
             mithun_logger.debug(f"value of data_partition_details is:{data_partition_details}")
             assert type(data_partition_details) is  Params
+            path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder',
+                                                                              {})
+            assert type(path_to_pyproc_annotated_data_folder) is not Params
+
             label_dev_file = data_partition_details.pop('label_dev_file', {})
             mithun_logger.debug(f"value of label_dev_file is:{label_dev_file}")
             assert type(label_dev_file) is not Params
