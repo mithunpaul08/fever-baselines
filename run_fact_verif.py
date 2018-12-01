@@ -219,10 +219,13 @@ if __name__ == "__main__":
             feature_details=uofa_params.pop("fdl", {})
             mithun_logger.debug(f"value of feature_details is:{feature_details}")
             assert type(feature_details) is  Params
-            person_c1 = feature_details.pop('person_c1', {})
-            lower_case_tokens = feature_details.pop('lower_case_tokens', {})
-            update_embeddings = feature_details.pop('update_embeddings', {})
-            assert type(person_c1) is str
+            person_c1 = feature_details.pop_bool('person_c1', {})
+            lower_case_tokens = feature_details.pop_bool('lower_case_tokens', {})
+            update_embeddings = feature_details.pop_bool('update_embeddings', {})
+            mithun_logger.debug(f"value of person_c1 is:{person_c1}")
+
+
+            assert type(person_c1) is bool
             assert type(lower_case_tokens) is bool
             assert type(update_embeddings) is bool
             data=generate_features(zipped_annotated_data, feature, feature_details,reader,mithun_logger,objUofaTrainTest).instances
