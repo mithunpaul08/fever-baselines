@@ -195,3 +195,4 @@ def train_da(ds,operation,logger_mode):
     mithun_logger = setup_custom_logger('root', logger_mode ,log_file_name)
 
     mithun_logger.info(f"Going to train on  {args.slice} percentage of training data with random seed value{args.randomseed}.")
+    #todo:call train_model

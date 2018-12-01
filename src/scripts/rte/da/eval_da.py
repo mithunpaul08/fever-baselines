@@ -107,7 +107,7 @@ def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folde
     return model
 
 
-def eval_model_fnc_data(db: FeverDocDB, args,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation) -> Model:
+def eval_model_fnc_data(db: FeverDocDB, args,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation,path_to_fnc_annotated_data) -> Model:
 
 
 
@@ -133,7 +133,7 @@ def eval_model_fnc_data(db: FeverDocDB, args,mithun_logger,name_of_trained_model
 
 
 
-    data = reader.read_annotated_fnc_and_do_ner_replacement( args, operation, do_annotation_live,mithun_logger).instances
+    data = reader.read_annotated_fnc_and_do_ner_replacement( args, operation, do_annotation_live,mithun_logger,path_to_fnc_annotated_data).instances
     joblib.dump(data, "fever_dev_dataset_format.pkl")
     #
     ###################end of running model and saving
@@ -262,14 +262,7 @@ def eval_da(dataset_to_work_on,args,operation):
     db = FeverDocDB(path_to_saved_db)
 
 
-    fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
-    dev_partition_details=fever_dataset_details.pop('dev_partition_details', {})
 
-    name_of_trained_model_to_use=dev_partition_details.pop('name_of_trained_model_to_use', {})
-    path_to_pyproc_annotated_data_folder = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
-
-    debug_mode = uofa_params.pop('debug_mode', {})
-    path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
     read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
     cuda_device = uofa_params.pop('cuda_device', {})
 
@@ -283,8 +276,8 @@ def eval_da(dataset_to_work_on,args,operation):
         slice = uofa_params.pop('training_slice_percent', {})
         random_seed = uofa_params.pop('random_seed', {})
 
-    log_file_name = "dev_feverlog.txt" + str(slice) + "_" + str(random_seed)
-    mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
+    # log_file_name = "dev_feverlog.txt" + str(slice) + "_" + str(random_seed)
+    # mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
 
 
     mithun_logger.info("inside main function going to call eval on " + str(dataset_to_work_on))
@@ -296,8 +289,22 @@ def eval_da(dataset_to_work_on,args,operation):
 
 
     if(dataset_to_work_on== "fnc"):
-        eval_model_fnc_data (db,args,path_to_pyproc_annotated_data_folder,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation)
+        fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
+        dev_partition_details = fever_dataset_details.pop('dev_partition_details', {})
+        name_of_trained_model_to_use = dev_partition_details.pop('name_of_trained_model_to_use', {})
+        path_to_pyproc_annotated_data_folder = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+        debug_mode = uofa_params.pop('debug_mode', {})
+        path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
+        path_to_fnc_annotated_data = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+        eval_model_fnc_data (db,args,mithun_logger,name_of_trained_model_to_use,path_to_trained_models_folder,cuda_device,operation,path_to_fnc_annotated_data)
 
     elif (dataset_to_work_on == "fever"):
+        fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
+        dev_partition_details = fever_dataset_details.pop('dev_partition_details', {})
+        name_of_trained_model_to_use = dev_partition_details.pop('name_of_trained_model_to_use', {})
+        path_to_pyproc_annotated_data_folder = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+        debug_mode = uofa_params.pop('debug_mode', {})
+        path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
+
         eval_model(db,args,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
 

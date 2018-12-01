@@ -5,8 +5,7 @@
        "log_file_base_name": "log_rte",
        "log_folder":"logs/"
      },
-     "cuda_device":0,
-     "path_to_saved_db":"data/fever/fever.db",
+
 
      "data_annotation": {
        "do_annotation": false
@@ -36,6 +35,10 @@
        "test_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/test/",
          "slice_percent": 100
+       },
+       "annotation_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/test/",
+         "slice_percent": 100
        }
      },
      "fnc_dataset_details": {
@@ -56,8 +59,14 @@
          "path_to_pyproc_annotated_data_folder": "/data/fnc/test/",
          "slice_percent": 100,
          "name_of_trained_model_to_use": "log_plainner-fever_98467_100.tar.gz"
+       },
+       "annotation_partition_details": {
+         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/test/",
+         "slice_percent": 100
        }
      },
+     "cuda_device":0,
+     "path_to_saved_db":"data/fever/fever.db",
      "read_random_seed_from_commandline": false,
      "random_seed": 98467,
      "path_to_trained_models_folder": "data/models/",
@@ -70,7 +79,7 @@
          "update-embeddings": true
        },
        "NER_features_details": {
-         "use_plain_NER": false,
+         "use_plain_NER": true,
          "lowercase_tokens": false,
          "person-c1": true,
          "update-embeddings": true
