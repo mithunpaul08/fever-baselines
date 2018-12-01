@@ -49,7 +49,6 @@ class FEVERReaderUofa():
 
 
 
-    @overrides
     def read(self, mithun_logger,data_folder):
         mithun_logger.info("got inside read in file reader_uofa.py and class FEVERReaderUofa" )
 
