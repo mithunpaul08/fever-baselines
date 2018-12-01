@@ -191,6 +191,7 @@ if __name__ == "__main__":
             #assert type(data_partition_details) is  Params
             path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder',
                                                                               {})
+            mithun_logger.debug(f"value of path_to_pyproc_annotated_data_folder is:{path_to_pyproc_annotated_data_folder}")
             #assert type(path_to_pyproc_annotated_data_folder) is not Params
 
             label_dev_file = data_partition_details.pop('label_dev_file', {})
