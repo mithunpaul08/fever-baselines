@@ -6,7 +6,7 @@ from types import *
 from src.scripts.rte.da.train_da import train_da
 from src.scripts.rte.da.eval_da import eval_model
 from rte.parikh.reader_uofa import FEVERReaderUofa
-
+from tqdm import tqdm
 
 """takes a data set and a dictionary of features and generate features based on the requirement. 
 EG: take claim evidence and create smartner based replaced text
@@ -18,18 +18,24 @@ Parameters
 
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
-def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader):
+def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,mithun_logger):
     instances = []
-    for he, be, hl, bl, hw, bw, ht, hd, hfc in \
-            tq(zipped_annotated_data,total=len(heads_complete_annotation), desc="reading annotated data"):
+    for he, be, hl, bl, hw, bw, ht, hd, hfc in zipped_annotated_data:
+            #tqdm(,total=len(he), desc="reading annotated data"):
 
-        premise = heads_words
-        hypothesis = bodies_words
 
         label = str(hfc)
+        mithun_logger.debug(f"value of label is:{label}")
 
-        instances.append(reader.text_to_instance(premise, hypothesis, label))
-
+        #
+        # if not (label == "unrelated"):
+        #
+        #     if (label == 'discuss'):
+        #         new_label = "NOT ENOUGH INFO"
+        #     if (label == 'agree'):
+        #         new_label = "SUPPORTS"
+        #     if (label == 'disagree'):
+        #         new_label = "REFUTES"
         premise_ann=""
         hypothesis_ann=""
 
@@ -45,7 +51,10 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader):
                                                                                                                       bl_split,
                                                                                                                       hw_split,
                                                                                                                       bw_split)
-        person_c1 = feature_detail_dict.pop('person_c1', {})
+        mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
+        mithun_logger.debug(f"value of label is:{hypothesis_ann}")
+
+            person_c1 = feature_detail_dict.pop('person_c1', {})
         lower_case_tokens= feature_detail_dict.pop('lower_case_tokens', {})
         update_embeddings= feature_detail_dict.pop('update_embeddings', {})
         assert type(person_c1) is not Params
@@ -57,7 +66,7 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader):
             hypothesis_ann=hypothesis_ann.lower()
 
 
-        instances.append(text_to_instance(premise_ann, hypothesis_ann, new_label))
+        instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
     if len(instances)==0:
         raise ConfigurationError("No instances were read from the given filepath {}. "
@@ -128,7 +137,7 @@ if __name__ == "__main__":
     logger_details = uofa_params.pop('logger_details', {})
     # print(f"value of logger_details is {logger_details}")
     # print(type(logger_details))
-    assert type(logger_details) is  Params
+    assert type(logger_details) is Params
     logger_mode = logger_details.pop('logger_mode', {})
     assert type(logger_mode) is not Params
 
@@ -169,7 +178,9 @@ if __name__ == "__main__":
         for feature in features:
             fdl= feature + "_details"
             feature_details=uofa_params.pop("fdl", {})
-            data=generate_features(zipped_annotated_data, feature, feature_details,reader).instances
+            data=generate_features(zipped_annotated_data, feature, feature_details,reader,mithun_logger).instances
+
+
 
         name_of_trained_model_to_use=""
 
