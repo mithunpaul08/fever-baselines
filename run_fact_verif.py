@@ -18,7 +18,7 @@ Parameters
 
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
-def generate_features(zipped_annotated_data,feature,feature_detail_dict):
+def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader):
     instances = []
     for he, be, hl, bl, hw, bw, ht, hd, hfc in \
             tq(zipped_annotated_data,total=len(heads_complete_annotation), desc="reading annotated data"):
@@ -28,7 +28,7 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict):
 
         label = str(hfc)
 
-        instances.append(self.text_to_instance(premise, hypothesis, label))
+        instances.append(reader.text_to_instance(premise, hypothesis, label))
 
         premise_ann=""
         hypothesis_ann=""
@@ -175,7 +175,7 @@ if __name__ == "__main__":
         for feature in features:
             fdl= feature + "_details"
             feature_details=uofa_params.pop("fdl", {})
-            data=generate_features(zipped_annotated_data, feature, feature_details)
+            data=generate_features(zipped_annotated_data, feature, feature_details,reader)
 
 
         #step 5
