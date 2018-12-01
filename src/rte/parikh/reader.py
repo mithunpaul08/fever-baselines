@@ -276,7 +276,7 @@ class FEVERReader(DatasetReader):
 
         return Dataset(instances)
 
-    def read_annotated_fnc_and_do_ner_replacement(self, args, run_name, do_annotation_on_the_fly,,path_to_fnc_annotated_data):
+    def read_annotated_fnc_and_do_ner_replacement(self, args, run_name, do_annotation_on_the_fly,path_to_fnc_annotated_data):
         nei_overlap_counter = 0
         nei_counter = 0
         supports_overlap_counter = 0
