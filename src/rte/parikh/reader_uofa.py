@@ -81,7 +81,7 @@ class FEVERReaderUofa():
 
         mithun_logger.debug(f"length of bodies_words:{len(bodies_words)}")
 
-        assert len(all_labels)=len(heads_entities)
+        assert len(all_labels) == len(heads_entities)
 
         data=zip(heads_entities, bodies_entities, heads_lemmas,
                                                     bodies_lemmas,
