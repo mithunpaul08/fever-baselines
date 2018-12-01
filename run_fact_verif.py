@@ -1,6 +1,6 @@
 from allennlp.common import Params
 import argparse
-import sys
+import sys,os
 from src.rte.mithun.log import setup_custom_logger
 from types import *
 from src.scripts.rte.da.train_da import train_da
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     logger_mode = logger_details.pop('logger_mode', {})
     assert type(logger_mode) is not Params
 
-    general_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
+    mithun_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
 
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
@@ -152,12 +152,13 @@ if __name__ == "__main__":
 
         log_file_base_name = logger_details.pop('log_file_base_name', {})
         assert type(log_file_base_name) is not Params
-        log_file_name = dataset + "_" + run_name + "_feverlog.txt" + "_" + str(random_seed)
-        mithun_logger = setup_custom_logger('root', logger_mode, log_file_name)
+        # log_file_name = dataset + "_" + run_name + "_feverlog.txt" + "_" + str(random_seed)
+        # mithun_logger = setup_custom_logger('root', logger_mode, log_file_name)
 
         #step 3
         reader = FEVERReaderUofa()
-        zipped_annotated_data = reader.read(mithun_logger, path_to_pyproc_annotated_data_folder).instances
+        cwd=os.getcwd()
+        zipped_annotated_data = reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder).instances
 
         #step 4
         features = uofa_params.pop("features", {})

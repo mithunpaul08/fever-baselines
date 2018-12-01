@@ -51,40 +51,8 @@ class FEVERReaderUofa():
 
     def read(self, mithun_logger,data_folder):
         mithun_logger.info("got inside read in file reader_uofa.py and class FEVERReaderUofa" )
-
-
-        # nei_overlap_counter = 0
-        # nei_counter = 0
-        # supports_overlap_counter = 0
-        # supports_counter = 0
-        # refutes_overlap_counter = 0
-        # refutes_counter = 0
-
         instances = []
-
-        # counter=0
-
-        # objUOFADataReader = UOFADataReader()
-
-        # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etc.
-        # This takes along time. so almost always we do it only once, and load it from disk
-        # if(do_annotation_on_the_fly):
-        #     instances = self.annotation_on_the_fly(file_path, run_name, objUOFADataReader)
-
-        # replacing hypothesis with the annotated one-either load pre-annotated data
-        # from disk
-        #else:
-
-        print("(do_annotation=false):going to load annotated data from the disk. ")
-
-        #
         objUofaTrainTest = UofaTrainTest()
-
-        # folders = {"dev": objUofaTrainTest.data_folder_dev, "train": objUofaTrainTest.data_folder_train,
-        #            "test": objUofaTrainTest.data_folder_test,  "small": objUofaTrainTest. data_folder_train_small100}
-        #
-        # data_folder = folders[run_name]
-        # print(f"Run name: {run_name}")
         mithun_logger.debug(f"data_folder: {data_folder}")
 
         bf = data_folder + objUofaTrainTest.annotated_body_split_folder
