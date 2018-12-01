@@ -46,6 +46,7 @@ class FEVERReaderUofa(DatasetReader):
     """
 
     def __init__(self) -> None:
+        self._sentence_level = ""
 
 
 
