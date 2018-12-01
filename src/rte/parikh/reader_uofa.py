@@ -44,8 +44,22 @@ class FEVERReaderUofa():
         We similarly use this for both the premise and the hypothesis.  See :class:`TokenIndexer`.
     """
 
-    def __init__(self) -> None:
-        self._sentence_level = ""
+    def __init__(self,
+                 db: FeverDocDB,
+                 sentence_level=False,
+                 wiki_tokenizer: Tokenizer = None,
+                 claim_tokenizer: Tokenizer = None,
+                 token_indexers: Dict[str, TokenIndexer] = None,
+                 filtering: str = None) -> None:
+        self._sentence_level = sentence_level
+        self._wiki_tokenizer = wiki_tokenizer or WordTokenizer()
+        self._claim_tokenizer = claim_tokenizer or WordTokenizer()
+        self._token_indexers = token_indexers or {'tokens': SingleIdTokenIndexer()}
+
+        self.db = db
+
+        self.formatter = FEVERGoldFormatter(set(self.db.get_doc_ids()), FEVERLabelSchema(), filtering=filtering)
+        self.reader = JSONLineReader()
 
 
 

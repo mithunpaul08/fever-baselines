@@ -79,7 +79,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
             #     hypothesis_ann=hypothesis_ann.lower()
             #     mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
             #     mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
-            
+
 
             instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
@@ -107,30 +107,30 @@ if __name__ == "__main__":
 
 
 
-
-
-    #if annotate:annotation_on_the_fly(self, file_path, run_name, objUOFADataReader):
-
-
     '''All of this must be done in this file run_fact_verify.py
     1.1  Get list of data sets
     1.2 get list of runs (eg: train,dev)
     1.3 for zip (eacha of data-run combination)
-    2.0 decide what kinda data it is eg: fnc or ever
-    2.1 extract corresponding data related details from config file Eg: path to annotated folder
     
-    2.1.1 create a logger
+    Step2:
     
+    - decide what kinda data it is eg: fnc or ever
+    - extract corresponding data related details from config file Eg: path to annotated folder
+    - find is it dev or train that must be run
+    - if dev, extract trained model path
+    - if train , nothing
+    - create a logger
+    
+    
+   
+   - what kinda classifier to run?
+   
     3. read data (with input/data folder path from 2.1)
     4. create features
     4.1 get corresponding details for features from config file
     4.2 create features (based on output from 4.1)
      
-    5. find is it dev or train that must be run
-    6. if dev, extract trained model path
-    7. if train , nothing
-   
-    8. what kinda classifier to run?
+    
     8.1 call the corresponding function with input (features) and trained model (if applicable)- return results
     9. print results
     '''
@@ -148,20 +148,17 @@ if __name__ == "__main__":
     assert type(cuda_device) is not Params
     assert type(random_seed) is not Params
 
-    # step 2.1.1
-    logger_details = uofa_params.pop('logger_details', {})
-    # print(f"value of logger_details is {logger_details}")
-    # print(type(logger_details))
-    assert type(logger_details) is Params
-    logger_mode = logger_details.pop('logger_mode', {})
-    assert type(logger_mode) is not Params
-
-    mithun_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
-
-
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
-        mithun_logger.debug(dataset)
-        #Step 2
+        # step 2.1- create a logger
+        logger_details = uofa_params.pop('logger_details', {})
+        # print(f"value of logger_details is {logger_details}")
+        # print(type(logger_details))
+        assert type(logger_details) is Params
+        logger_mode = logger_details.pop('logger_mode', {})
+        assert type(logger_mode) is not Params
+        mithun_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
+
+        #Step 2.2- get relevant config details from config file
         fds= dataset + "_dataset_details"
         mithun_logger.debug(fds)
         dataset_details = uofa_params.pop(fds, {})
@@ -172,13 +169,34 @@ if __name__ == "__main__":
         path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
         assert type(path_to_pyproc_annotated_data_folder) is not Params
 
+
+
+
+
+        # Step 2.6 - find is it dev or train that must be run
+        # - if dev, extract trained model path
+        # - if train , nothing
+
+        name_of_trained_model_to_use = ""
+
+        if (run_name == "dev"):
+            frn = run_name + "_partition_details"
+            data_partition_details = dataset_details.pop(frn, {})
+            assert type(data_partition_details) is not Params
+            name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
+            assert type(name_of_trained_model_to_use) is not Params
+
+
+
+
+
+
+        #step 3 -read data
         # todo: this is a hack where we are reading the labels of fnc data from a separate labels only file.
         # However, this should have been written along with the pyproc annotated data, so that it can be r
         # ead back inside the generate features function, just like we do for fever data.
-
         all_labels=None
         objUofaTrainTest = UofaTrainTest()
-
         if (dataset == "fnc"):
             label_dev_file = data_partition_details.pop('label_dev_file', {})
             mithun_logger.debug(f"value of label_dev_file is:{label_dev_file}")
@@ -192,45 +210,40 @@ if __name__ == "__main__":
             assert type(lbl_file) is str
             all_labels = objUofaTrainTest.read_csv_list(lbl_file)
 
+        archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
+        config = archive.config
+        ds_params = config["dataset_reader"]
 
+        model = archive.model
+        model.eval()
+        fever_reader = FEVERReaderUofa(db,
+                             sentence_level=ds_params.pop("sentence_level", False),
+                             wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
+                             claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
+                             token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
-
-
-
-        #step 3
-        reader = FEVERReaderUofa()
         cwd=os.getcwd()
-        zipped_annotated_data = reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder,all_labels)
+        zipped_annotated_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder,all_labels)
 
-        #step 4
+
+
+        #step 4 - generate features
         features = uofa_params.pop("features", {})
         assert type(features) is not Params
 
-
-
-
-
-        #todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
         data = None
         for feature in features:
+            # todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
             fdl= feature + "_details"
             mithun_logger.debug(f"value of fdl is:{fdl}")
             mithun_logger.debug(f"value of feature is:{feature}")
             feature_details=uofa_params.pop("fdl", {})
 
-            data=generate_features(zipped_annotated_data, feature, feature_details,reader,mithun_logger,objUofaTrainTest).instances
+            data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest).instances
 
 
 
-        name_of_trained_model_to_use=""
 
-        #step 5
-        if (run_name == "dev"):
-            frn = run_name + "_partition_details"
-            data_partition_details = dataset_details.pop(frn, {})
-            assert type(data_partition_details) is not Params
-            name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use',{})
-            assert type(name_of_trained_model_to_use) is not Params
 
 
 
