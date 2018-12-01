@@ -226,7 +226,7 @@ if __name__ == "__main__":
         cwd=os.getcwd()
         zipped_annotated_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder,all_labels)
 
-
+        mithun_logger.debug(f"done with reading data. going to generate features")
 
         #step 4 - generate features
         features = uofa_params.pop("features", {})

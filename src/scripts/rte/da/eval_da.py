@@ -38,12 +38,7 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
 
 
     actual = []
-
     predicted = []
-    #
-    # if args.log is not None:
-    #     f = open(args.log,"w+")
-    #
     pred_dict = defaultdict(int)
 
     for item in tqdm(data):
@@ -51,7 +46,7 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
             # Handles some edge case we presume, never really gets used
             cls = "NOT ENOUGH INFO"
         else:
-            prediction = model.forward_on_instance(item, args.cuda_device)
+            prediction = model.forward_on_instance(item, cuda_device)
             cls = model.vocab._index_to_token["labels"][np.argmax(prediction["label_probs"])]
 
 
