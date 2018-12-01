@@ -64,18 +64,6 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader):
                                  "Is the path correct?".format(file_path))
     return Dataset(instances)
 
-def text_to_instance(premise: str,
-                     hypothesis: str,
-                     label: str = None) -> Instance:
-
-    fields : Dict[str, Field] = {}
-    premise_tokens = self._wiki_tokenizer.tokenize(premise) if premise is not None else None
-    hypothesis_tokens = self._claim_tokenizer.tokenize(hypothesis)
-    fields['premise'] = TextField(premise_tokens, self._token_indexers) if premise is not None else None
-    fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
-    if label is not None:
-        fields['label'] = LabelField(label)
-    return Instance(fields)
 
 
 if __name__ == "__main__":
