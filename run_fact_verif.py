@@ -181,7 +181,7 @@ if __name__ == "__main__":
         all_labels=None
         if (dataset == "fnc"):
             data_partition_details = dataset_details.pop(frn, {})
-            assert type(data_partition_details) is not Params
+            assert type(data_partition_details) is  Params
             label_dev_file = data_partition_details.pop('label_dev_file', {})
             assert type(label_dev_file) is not Params
             label_folder = data_partition_details.pop('label_folder', {})
