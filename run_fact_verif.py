@@ -23,7 +23,7 @@ Parameters
 def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,mithun_logger,objUofaTrainTest):
     mithun_logger.debug(f"got inside generate_features")
     instances = []
-    for he, be, hl, bl, hw, bw, ht, hd,label in zipped_annotated_data:
+    for he, be, hl, bl, hw, bw, ht, hd,hfc,label in zipped_annotated_data:
             #tqdm(,total=len(he), desc="reading annotated data"):
 
 
