@@ -89,13 +89,6 @@ class FEVERReaderUofa():
 
 
 
-
-
-        print(f"after reading and converting training data to  ner format. The length of the number of training data is:{len(data)}")
-
-
-
-
         return data
 
 
