@@ -183,7 +183,7 @@ if __name__ == "__main__":
             assert type(label_folder) is str
             mithun_logger.debug(f"value of label_folder is:{label_folder}")
             assert type(label_dev_file) is str
-            lbl_file = label_folder + label_dev_file
+            lbl_file = os.getcwd()+label_folder + label_dev_file
             mithun_logger.debug(f"value of lbl_file is:{lbl_file}")
             assert type(lbl_file) is str
             all_labels = objUofaTrainTest.read_csv_list(lbl_file)
