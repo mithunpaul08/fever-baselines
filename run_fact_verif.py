@@ -26,7 +26,7 @@ Parameters
 def generate_features(zipped_annotated_data,feature,feature_details,reader,mithun_logger,objUofaTrainTest):
     mithun_logger.debug(f"got inside generate_features")
     instances = []
-    for he, be, hl, bl, hw, bw, ht, hd,hfc,label in zipped_annotated_data:
+    for index, (he, be, hl, bl, hw, bw, ht, hd,hfc,label) in enumerate(zipped_annotated_data):
             #tqdm(,total=len(he), desc="reading annotated data"):
 
         new_label =""
@@ -67,9 +67,12 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                                                                                                                           bl_split,
                                                                                                                           hw_split,
                                                                                                                           bw_split)
-            mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
-            mithun_logger.debug(f"value of hypothesis_ann is:{hypothesis_ann}")
+            if(index %100):
+                mithun_logger.info(f"value of premise_ann is:{premise_ann}")
+                mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
 
+
+            #todo: fixe me. not able to cleanly retrieve boolean values from the config file
             # person_c1 = feature_details.pop('person_c1', {})
             # lower_case_tokens= feature_details.pop('lower_case_tokens', {})
             # update_embeddings= feature_details.pop('update_embeddings', {})
