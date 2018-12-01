@@ -180,7 +180,10 @@ if __name__ == "__main__":
 
         all_labels=None
         if (dataset == "fnc"):
+            fds = dataset + "_dataset_details"
             mithun_logger.debug(f"value of dataset is:{dataset}")
+            mithun_logger.debug(f"value of fdsfds is:{fds}")
+            dataset_details = uofa_params.pop(fds, {})
             mithun_logger.debug(f"value of frn is:{frn}")
             data_partition_details = dataset_details.pop(frn, {})
             mithun_logger.debug(f"value of data_partition_details is:{data_partition_details}")
