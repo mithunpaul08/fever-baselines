@@ -26,7 +26,8 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
     for he, be, hl, bl, hw, bw, ht, hd,hfc,label in zipped_annotated_data:
             #tqdm(,total=len(he), desc="reading annotated data"):
 
-        new_label=label = str(label)
+        new_label =""
+        label = str(label)
         mithun_logger.debug(f"value of label is:{label}")
 
         he_split = he.split(" ")
@@ -45,6 +46,8 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
             if (label == 'disagree'):
                 new_label = "REFUTES"
 
+            mithun_logger.debug(f"value of new_label is:{new_label}")
+
             premise_ann=""
             hypothesis_ann=""
 
@@ -62,12 +65,12 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
                                                                                                                           hw_split,
                                                                                                                           bw_split)
             mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
-            mithun_logger.debug(f"value of label is:{hypothesis_ann}")
+            mithun_logger.debug(f"value of hypothesis_ann is:{hypothesis_ann}")
 
             person_c1 = feature_detail_dict.pop('person_c1', {})
             lower_case_tokens= feature_detail_dict.pop('lower_case_tokens', {})
             update_embeddings= feature_detail_dict.pop('update_embeddings', {})
-            assert type(person_c1) is bool
+            assert type(person_c1) is str
             assert type(lower_case_tokens) is bool
             assert type(update_embeddings) is bool
 
@@ -211,7 +214,17 @@ if __name__ == "__main__":
         data = None
         for feature in features:
             fdl= feature + "_details"
+            mithun_logger.debug(f"value of fdl is:{fdl}")
+            mithun_logger.debug(f"value of feature is:{feature}")
             feature_details=uofa_params.pop("fdl", {})
+            mithun_logger.debug(f"value of feature_details is:{feature_details}")
+            assert type(feature_details) is  Params
+            person_c1 = feature_details.pop('person_c1', {})
+            lower_case_tokens = feature_details.pop('lower_case_tokens', {})
+            update_embeddings = feature_details.pop('update_embeddings', {})
+            assert type(person_c1) is str
+            assert type(lower_case_tokens) is bool
+            assert type(update_embeddings) is bool
             data=generate_features(zipped_annotated_data, feature, feature_details,reader,mithun_logger,objUofaTrainTest).instances
 
 
