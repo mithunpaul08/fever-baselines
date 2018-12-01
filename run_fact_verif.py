@@ -20,7 +20,7 @@ Parameters
 
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
-def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,mithun_logger):
+def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,mithun_logger,objUofaTrainTest):
     mithun_logger.debug(f"got inside generate_features")
     instances = []
     for he, be, hl, bl, hw, bw, ht, hd,label in zipped_annotated_data:
@@ -49,7 +49,6 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
         premise_ann=""
         hypothesis_ann=""
 
-        objUofaTrainTest = UofaTrainTest()
 
 
         if (feature=="plain_NER"):
@@ -174,7 +173,7 @@ if __name__ == "__main__":
         # ead back inside the generate features function, just like we do for fever data.
 
         all_labels=None
-
+        objUofaTrainTest = UofaTrainTest()
 
         if (dataset == "fnc"):
             label_dev_file = data_partition_details.pop('label_dev_file', {})
@@ -212,7 +211,7 @@ if __name__ == "__main__":
         for feature in features:
             fdl= feature + "_details"
             feature_details=uofa_params.pop("fdl", {})
-            data=generate_features(zipped_annotated_data, feature, feature_details,reader,mithun_logger).instances
+            data=generate_features(zipped_annotated_data, feature, feature_details,reader,mithun_logger,objUofaTrainTest).instances
 
 
 
