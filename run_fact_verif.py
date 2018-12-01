@@ -136,10 +136,10 @@ if __name__ == "__main__":
 
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
-        general_logger.debug(dataset)
+        mithun_logger.debug(dataset)
         #Step 2
         fds= dataset + "_dataset_details"
-        general_logger.debug(fds)
+        mithun_logger.debug(fds)
         dataset_details = uofa_params.pop(fds, {})
         assert type(dataset_details) is  Params
         frn= run_name + "_partition_details"
@@ -171,7 +171,8 @@ if __name__ == "__main__":
             feature_details=uofa_params.pop("fdl", {})
             data=generate_features(zipped_annotated_data, feature, feature_details,reader)
 
-
+        name_of_trained_model_to_use=""
+        
         #step 5
         if (run_name == "dev"):
             frn = run_name + "_partition_details"
@@ -185,8 +186,9 @@ if __name__ == "__main__":
 
         if(type_of_classifier=="decomp_attention"):
             if(run_name== "train"):
-                train_da(general_log, ds, operation, logger_mode)
+                train_da( ds, operation, logger_mode)
             if(run_name== "dev"):
-                eval_model(data,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
+                eval_model(data,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use,cuda_device)
+
 
 
