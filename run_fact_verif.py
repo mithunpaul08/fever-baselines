@@ -19,6 +19,7 @@ Parameters
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
 def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,mithun_logger):
+    mithun_logger.debug(f"got inside generate_features")
     instances = []
     for he, be, hl, bl, hw, bw, ht, hd, hfc in zipped_annotated_data:
             #tqdm(,total=len(he), desc="reading annotated data"):
@@ -54,7 +55,7 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
         mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
         mithun_logger.debug(f"value of label is:{hypothesis_ann}")
 
-            person_c1 = feature_detail_dict.pop('person_c1', {})
+        person_c1 = feature_detail_dict.pop('person_c1', {})
         lower_case_tokens= feature_detail_dict.pop('lower_case_tokens', {})
         update_embeddings= feature_detail_dict.pop('update_embeddings', {})
         assert type(person_c1) is not Params
