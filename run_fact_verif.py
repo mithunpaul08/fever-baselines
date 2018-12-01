@@ -7,6 +7,8 @@ from src.scripts.rte.da.train_da import train_da
 from src.scripts.rte.da.eval_da import eval_model
 from rte.parikh.reader_uofa import FEVERReaderUofa
 from tqdm import tqdm
+from rte.mithun.trainer import UofaTrainTest
+
 
 """takes a data set and a dictionary of features and generate features based on the requirement. 
 EG: take claim evidence and create smartner based replaced text
@@ -39,6 +41,8 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
         #         new_label = "REFUTES"
         premise_ann=""
         hypothesis_ann=""
+
+        objUofaTrainTest = UofaTrainTest()
 
 
         if (feature=="plain_NER"):

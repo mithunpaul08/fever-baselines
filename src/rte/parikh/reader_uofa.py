@@ -52,7 +52,7 @@ class FEVERReaderUofa():
     def read(self, mithun_logger,data_folder):
         mithun_logger.info("got inside read in file reader_uofa.py and class FEVERReaderUofa" )
         objUofaTrainTest = UofaTrainTest()
-        mithun_logger.debug(f"data_folder: {data_folder}")
+        mithun_logger.debug(f"data_folder: {data_folder}. Going to read data")
 
         bf = data_folder + objUofaTrainTest.annotated_body_split_folder
         bfl = bf + objUofaTrainTest.annotated_only_lemmas
