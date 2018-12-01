@@ -188,17 +188,17 @@ if __name__ == "__main__":
             mithun_logger.debug(f"value of frn is:{frn}")
             data_partition_details = dataset_details.pop(frn, {})
             mithun_logger.debug(f"value of data_partition_details is:{data_partition_details}")
-            assert type(data_partition_details) is  Params
+            #assert type(data_partition_details) is  Params
             path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder',
                                                                               {})
-            assert type(path_to_pyproc_annotated_data_folder) is not Params
+            #assert type(path_to_pyproc_annotated_data_folder) is not Params
 
             label_dev_file = data_partition_details.pop('label_dev_file', {})
             mithun_logger.debug(f"value of label_dev_file is:{label_dev_file}")
-            assert type(label_dev_file) is not Params
+            #assert type(label_dev_file) is not Params
             label_folder = data_partition_details.pop('label_folder', {})
             mithun_logger.debug(f"value of label_folder is:{label_folder}")
-            assert type(label_folder) is not Params
+            #assert type(label_folder) is not Params
             lbl_file = label_folder + label_dev_file
             mithun_logger.debug(f"value of lbl_file is:{lbl_file}")
             all_labels = objUofaTrainTest.read_csv_list(lbl_file)
