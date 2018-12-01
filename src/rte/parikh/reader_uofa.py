@@ -51,7 +51,6 @@ class FEVERReaderUofa():
 
     def read(self, mithun_logger,data_folder):
         mithun_logger.info("got inside read in file reader_uofa.py and class FEVERReaderUofa" )
-        instances = []
         objUofaTrainTest = UofaTrainTest()
         mithun_logger.debug(f"data_folder: {data_folder}")
 
@@ -82,7 +81,6 @@ class FEVERReaderUofa():
 
         mithun_logger.debug(f"length of bodies_words:{len(bodies_words)}")
 
-        counter=0
 
         data=zip(heads_entities, bodies_entities, heads_lemmas,
                                                     bodies_lemmas,
@@ -93,16 +91,12 @@ class FEVERReaderUofa():
 
 
 
-        print(f"after reading and converting training data to  ner format. The length of the number of training data is:{len(instances)}")
-
-        if not instances:
-            raise ConfigurationError("No instances were read from the given filepath {}. "
-                                     "Is the path correct?".format(file_path))
+        print(f"after reading and converting training data to  ner format. The length of the number of training data is:{len(data)}")
 
 
 
 
-        return Dataset(instances)
+        return data
 
 
     def text_to_instance(self,  # type: ignore
