@@ -79,7 +79,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
             #     hypothesis_ann=hypothesis_ann.lower()
             #     mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
             #     mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
-            sys.exit(1)
+            
 
             instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
