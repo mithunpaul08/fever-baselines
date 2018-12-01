@@ -67,7 +67,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                                                                                                                           bl_split,
                                                                                                                           hw_split,
                                                                                                                           bw_split)
-            if(index %100):
+            if (index%100) == 0:
                 mithun_logger.info(f"value of premise_ann is:{premise_ann}")
                 mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
 
