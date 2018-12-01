@@ -26,8 +26,7 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
     for he, be, hl, bl, hw, bw, ht, hd,hfc,label in zipped_annotated_data:
             #tqdm(,total=len(he), desc="reading annotated data"):
 
-
-        label = str(label)
+        new_label=label = str(label)
         mithun_logger.debug(f"value of label is:{label}")
 
         he_split = he.split(" ")
@@ -37,51 +36,53 @@ def generate_features(zipped_annotated_data,feature,feature_detail_dict,reader,m
         hw_split = hw.split(" ")
         bw_split = bw.split(" ")
 
-        #
-        # if not (label == "unrelated"):
-        #
-        #     if (label == 'discuss'):
-        #         new_label = "NOT ENOUGH INFO"
-        #     if (label == 'agree'):
-        #         new_label = "SUPPORTS"
-        #     if (label == 'disagree'):
-        #         new_label = "REFUTES"
-        premise_ann=""
-        hypothesis_ann=""
+        if not (label == "unrelated"):
+
+            if (label == 'discuss'):
+                new_label = "NOT ENOUGH INFO"
+            if (label == 'agree'):
+                new_label = "SUPPORTS"
+            if (label == 'disagree'):
+                new_label = "REFUTES"
+
+            premise_ann=""
+            hypothesis_ann=""
 
 
 
-        if (feature=="plain_NER"):
-            premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split, hl_split,
-                                                                                               bl_split, hw_split, bw_split)
-        else:
-            if (feature == "smart_NER"):
-                premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
-                                                                                                                      be_split,
-                                                                                                                      hl_split,
-                                                                                                                      bl_split,
-                                                                                                                      hw_split,
-                                                                                                                      bw_split)
-        mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
-        mithun_logger.debug(f"value of label is:{hypothesis_ann}")
+            if (feature=="plain_NER"):
+                premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split, hl_split,
+                                                                                                   bl_split, hw_split, bw_split)
+            else:
+                if (feature == "smart_NER"):
+                    premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
+                                                                                                                          be_split,
+                                                                                                                          hl_split,
+                                                                                                                          bl_split,
+                                                                                                                          hw_split,
+                                                                                                                          bw_split)
+            mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
+            mithun_logger.debug(f"value of label is:{hypothesis_ann}")
 
-        person_c1 = feature_detail_dict.pop('person_c1', {})
-        lower_case_tokens= feature_detail_dict.pop('lower_case_tokens', {})
-        update_embeddings= feature_detail_dict.pop('update_embeddings', {})
-        assert type(person_c1) is not Params
-        assert type(lower_case_tokens) is not Params
-        assert type(update_embeddings) is not Params
+            person_c1 = feature_detail_dict.pop('person_c1', {})
+            lower_case_tokens= feature_detail_dict.pop('lower_case_tokens', {})
+            update_embeddings= feature_detail_dict.pop('update_embeddings', {})
+            assert type(person_c1) is bool
+            assert type(lower_case_tokens) is bool
+            assert type(update_embeddings) is bool
 
-        if(lower_case_tokens):
-            premise_ann=premise_ann.lower(),
-            hypothesis_ann=hypothesis_ann.lower()
+            if(lower_case_tokens):
+                premise_ann=premise_ann.lower(),
+                hypothesis_ann=hypothesis_ann.lower()
+                mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
+                mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
+            sys.exit(1)
 
-
-        instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
+            instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
     if len(instances)==0:
         raise ConfigurationError("No instances were read from the given filepath {}. "
-                                 "Is the path correct?".format(file_path))
+                                 "Is the path correct?")
     return Dataset(instances)
 
 
