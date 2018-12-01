@@ -1,4 +1,5 @@
 from allennlp.common import Params
+from allennlp.models import Model, archive_model, load_archive
 import argparse
 import sys,os
 from src.rte.mithun.log import setup_custom_logger
