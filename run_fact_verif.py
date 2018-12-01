@@ -208,10 +208,11 @@ if __name__ == "__main__":
             assert type(lbl_file) is str
             all_labels = objUofaTrainTest.read_csv_list(lbl_file)
 
+        path_to_saved_db = uofa_params.pop("path_to_saved_db")
+        db = FeverDocDB(path_to_saved_db)
         archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
         config = archive.config
         ds_params = config["dataset_reader"]
-
         model = archive.model
         model.eval()
         fever_reader = FEVERReaderUofa(db,
