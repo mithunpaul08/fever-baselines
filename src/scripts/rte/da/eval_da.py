@@ -29,30 +29,13 @@ from collections import defaultdict
 
 logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 
-def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use) -> Model:
+def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use,cuda_device) -> Model:
 
     mithun_logger.info("got inside eval_model ")
-    archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device=args.cuda_device)
-    config = archive.config
-    ds_params = config["dataset_reader"]
-
+    archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
     model = archive.model
     model.eval()
 
-    reader = FEVERReader(db,
-                                 sentence_level=ds_params.pop("sentence_level",False),
-                                 wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
-                                 claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
-                                 token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
-
-    mithun_logger.info("Reading  data from %s", args.in_file)
-
-
-    # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etcThis takes along time.
-    #  so almost always we do it only once, and load it from disk . Hence do_annotation_live = False
-    do_annotation_live = False
-    data = reader.read(args.in_file,"dev",do_annotation_live,mithun_logger).instances
-    joblib.dump(data, "fever_dev_dataset_format.pkl")
 
     actual = []
 
@@ -69,12 +52,9 @@ def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folde
         else:
             prediction = model.forward_on_instance(item, args.cuda_device)
             cls = model.vocab._index_to_token["labels"][np.argmax(prediction["label_probs"])]
-            #print(f'np.argmax(prediction[label_probs]) = {np.argmax(prediction["label_probs"])}')
-            #print(f"cls: {cls}")
 
 
         if "label" in item.fields:
-            #print(item.fields["label"].label)
             actual.append(item.fields["label"].label)
         predicted.append(cls)
         pred_dict[cls] += 1
@@ -84,9 +64,7 @@ def eval_model(db: FeverDocDB, args, mithun_logger, path_to_trained_models_folde
                 f.write(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
             else:
                 f.write(json.dumps({"predicted":cls})+"\n")
-    # print(f'if_ctr = {if_ctr}')
-    # print(f'else_ctr = {else_ctr}')
-    # print(f'pred_dict = {pred_dict}')
+
 
 
     if args.log is not None:
@@ -248,7 +226,7 @@ def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
 
 
 
-def eval_da(dataset_to_work_on,args,operation):
+def eval_da(dataset_to_work_on,args,operation,mithun_logger):
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
     LogHelper.get_logger(__name__)
@@ -263,21 +241,6 @@ def eval_da(dataset_to_work_on,args,operation):
 
 
 
-    read_random_seed_from_commandline = uofa_params.pop('read_random_seed_from_commandline', {})
-    cuda_device = uofa_params.pop('cuda_device', {})
-
-    slice = ""
-    random_seed = ""
-
-    if (read_random_seed_from_commandline):
-        slice = args.slice
-        random_seed = args.randomseed
-    else:
-        slice = uofa_params.pop('training_slice_percent', {})
-        random_seed = uofa_params.pop('random_seed', {})
-
-    # log_file_name = "dev_feverlog.txt" + str(slice) + "_" + str(random_seed)
-    # mithun_logger = setup_custom_logger('root', debug_mode,log_file_name)
 
 
     mithun_logger.info("inside main function going to call eval on " + str(dataset_to_work_on))

@@ -3,10 +3,8 @@
      "logger_details": {
        "logger_mode": "DEBUG",
        "log_file_base_name": "log_rte",
-       "log_folder":"logs/"
+       "log_folder": "logs/"
      },
-
-
      "data_annotation": {
        "do_annotation": false
      },
@@ -25,12 +23,11 @@
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train/",
          "slice_percent": 100
        },
-
        "dev_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",
          "slice_percent": 100,
          "name_of_trained_model_to_use": "log_plainner-fever_98467_100.tar.gz",
-         "in_file_to_read_fever_dev_data":"data/fever/dev.ns.pages.p1.jsonl"
+         "in_file_to_read_fever_dev_data": "data/fever/dev.ns.pages.p1.jsonl"
        },
        "test_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/test/",
@@ -65,25 +62,29 @@
          "slice_percent": 100
        }
      },
-     "cuda_device":0,
-     "path_to_saved_db":"data/fever/fever.db",
+     "cuda_device": 0,
+     "path_to_saved_db": "data/fever/fever.db",
      "read_random_seed_from_commandline": false,
      "random_seed": 98467,
      "path_to_trained_models_folder": "data/models/",
-     "features": {
-       "run_hand_crafted_features": false,
-       "run_NER_based_features": true,
-       "hand_crafted_features_details": {
-         "lowercase_tokens": false,
-         "person-c1": true,
-         "update-embeddings": true
-       },
-       "NER_features_details": {
-         "use_plain_NER": true,
-         "lowercase_tokens": false,
-         "person-c1": true,
-         "update-embeddings": true
-       }
+     "type_of_classifier": "decomp_attention",
+     "features": [
+       "plain_NER"
+     ],
+     "plain_NER_details": {
+       "person_c1": false,
+       "lower_case_tokens": false,
+       "update_embeddings": false
+     },
+     "smart_NER_details": {
+       "person_c1": false,
+       "lower_case_tokens": false,
+       "update_embeddings": false
+     },
+     "word_overlap_details": {
+       "person_c1": false,
+       "lower_case_tokens": false,
+       "update_embeddings": false
      }
    },
    "dataset_reader":{

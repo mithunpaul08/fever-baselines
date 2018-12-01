@@ -296,23 +296,6 @@ class FEVERReader(DatasetReader):
 
         params = Params.from_file(args.param_path, args.overrides)
         uofa_params = params.pop('uofa_params', {})
-        features = uofa_params.pop('features', {})
-        run_NER_based_features = features.pop('run_NER_based_features', {})
-
-        fnc_dataset_details = uofa_params.pop('fnc_dataset_details', {})
-
-
-
-        use_plain_NER= False;
-
-        if(run_NER_based_features):
-            NER_features_details = features.pop('NER_features_details', {})
-            use_plain_NER = NER_features_details.pop('use_plain_NER', {})
-
-
-        if (run_name == "dev"):
-            print("run_name == dev")
-            dev_partition_details = fnc_dataset_details.pop('dev_partition_details', {})
 
         data_folder = objUofaTrainTest.data_root + str(path_to_fnc_annotated_data)
 

@@ -4,11 +4,78 @@ import sys
 from src.rte.mithun.log import setup_custom_logger
 from types import *
 from src.scripts.rte.da.train_da import train_da
-from src.scripts.rte.da.eval_da import eval_da
+from src.scripts.rte.da.eval_da import eval_model
 from rte.parikh.reader_uofa import FEVERReaderUofa
 
 
+"""takes a data set and a dictionary of features and generate features based on the requirement. 
+EG: take claim evidence and create smartner based replaced text
+Eg: take claim evidence and create feature vectors for word overlap
+Parameters
+    ----------   
 
+        """
+
+#todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
+
+def generate_features(zipped_annotated_data,feature,feature_detail_dict):
+    instances = []
+    for he, be, hl, bl, hw, bw, ht, hd, hfc in \
+            tq(zipped_annotated_data,total=len(heads_complete_annotation), desc="reading annotated data"):
+
+        premise = heads_words
+        hypothesis = bodies_words
+
+        label = str(hfc)
+
+        instances.append(self.text_to_instance(premise, hypothesis, label))
+
+        premise_ann=""
+        hypothesis_ann=""
+
+
+        if (feature=="plain_NER"):
+            premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split, hl_split,
+                                                                                               bl_split, hw_split, bw_split)
+        else:
+            if (feature == "smart_NER"):
+                premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
+                                                                                                                      be_split,
+                                                                                                                      hl_split,
+                                                                                                                      bl_split,
+                                                                                                                      hw_split,
+                                                                                                                      bw_split)
+        person_c1 = feature_detail_dict.pop('person_c1', {})
+        lower_case_tokens= feature_detail_dict.pop('lower_case_tokens', {})
+        update_embeddings= feature_detail_dict.pop('update_embeddings', {})
+        assert type(person_c1) is not Params
+        assert type(lower_case_tokens) is not Params
+        assert type(update_embeddings) is not Params
+
+        if(lower_case_tokens):
+            premise_ann=premise_ann.lower(),
+            hypothesis_ann=hypothesis_ann.lower()
+
+
+        instances.append(text_to_instance(premise_ann, hypothesis_ann, new_label))
+
+    if len(instances)==0:
+        raise ConfigurationError("No instances were read from the given filepath {}. "
+                                 "Is the path correct?".format(file_path))
+    return Dataset(instances)
+
+def text_to_instance(premise: str,
+                     hypothesis: str,
+                     label: str = None) -> Instance:
+
+    fields : Dict[str, Field] = {}
+    premise_tokens = self._wiki_tokenizer.tokenize(premise) if premise is not None else None
+    hypothesis_tokens = self._claim_tokenizer.tokenize(hypothesis)
+    fields['premise'] = TextField(premise_tokens, self._token_indexers) if premise is not None else None
+    fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
+    if label is not None:
+        fields['label'] = LabelField(label)
+    return Instance(fields)
 
 
 if __name__ == "__main__":
@@ -50,8 +117,9 @@ if __name__ == "__main__":
     5. find is it dev or train that must be run
     6. if dev, extract trained model path
     7. if train , nothing
+   
     8. what kinda classifier to run?
-    8.1 call the corresponding function with input  (features) and data model (if applicable)- return results
+    8.1 call the corresponding function with input (features) and trained model (if applicable)- return results
     9. print results
     '''
 
@@ -64,6 +132,9 @@ if __name__ == "__main__":
     path_to_trained_models_folder = uofa_params.pop('path_to_trained_models_folder', {})
     cuda_device = uofa_params.pop('cuda_device', {})
     random_seed = uofa_params.pop('random_seed', {})
+    assert type(path_to_trained_models_folder) is not Params
+    assert type(cuda_device) is not Params
+    assert type(random_seed) is not Params
 
 
 
@@ -73,13 +144,19 @@ if __name__ == "__main__":
         #Step 2
         fds=d+"_dataset_details"
         dataset_details = uofa_params.pop(fds, {})
+        assert type(dataset_details) is not Params
         frn=r+"_partition_details"
         data_partition_details = dataset_details.pop(frn, {})
+        assert type(data_partition_details) is not Params
         path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+        assert type(path_to_pyproc_annotated_data_folder) is not Params
 
         #step 2.1.1
         logger_details = uofa_params.pop('logger_details', {})
+        assert type(logger_details) is not Params
         logger_mode = logger_details.pop('logger_mode', {})
+        assert type(logger_mode) is not Params
+
         log_file_base_name = logger_details.pop('log_file_base_name', {})
         assert type(log_file_base_name) is not Params
         log_file_name = d+"_"+r+"_feverlog.txt" +  "_" + str(random_seed)
@@ -87,49 +164,35 @@ if __name__ == "__main__":
 
         #step 3
         reader = FEVERReaderUofa()
-        data = reader.read(mithun_logger, path_to_pyproc_annotated_data_folder).instances
+        zipped_annotated_data = reader.read(mithun_logger, path_to_pyproc_annotated_data_folder).instances
+
+        #step 4
+        features = uofa_params.pop("features", {})
+        assert type(features) is not Params
+
+        #todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
+        data = None
+        for feature in features:
+            fdl= feature + "_details"
+            feature_details=uofa_params.pop("fdl", {})
+            data=generate_features(zipped_annotated_data, feature, feature_details)
 
 
-    #     name_of_trained_model_to_use = dev_partition_details.pop('name_of_trained_model_to_use', {})
-    #     path_to_pyproc_annotated_data_folder = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
-    #     debug_mode = uofa_params.pop('debug_mode', {})
-    #
-    #     path_to_fnc_annotated_data = dev_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
-    #
-    #     dev_partition_details = fever_dataset_details.pop('dev_partition_details', {})
-    #     name_of_trained_model_to_use = dev_partition_details.pop('name_of_trained_model_to_use', {})
-    #
-    #
-    #     print(f"value of dataset_to_work_on:{datasets_to_work_on}")
-    #     print(f"value of name_of_trained_model_to_use:{name_of_trained_model_to_use}")
-    #     print(f"value of list_of_runs:{list_of_runs}")
-    #
-    #     print(path_to_pyproc_annotated_data_folder)
-    #
-    #
-    #
-    #
-    #
-    # fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
-    #
-    #
-    #
-    # operation = list_of_runs[index]
-    #
-    # #for each of this data set, what should we doing in it, eg: train, dev-i.e take the first data set, run train on it, and  take the second data set and run dev on it.
-    # for index,ds in enumerate(datasets_to_work_on):
-    #
-    #     logfile_full_name=log_file_base_name+"_"+ds+"_"+operation+".log"
-    #     print(f"value of logfile_full_name:{logfile_full_name}")
-    #     general_log = setup_custom_logger('root', logger_mode, logfile_full_name)
-    #     general_log.debug(f"going to run {operation} on dataset {ds}")
-    #
-    #     if()
-    #
-    #     if operation=="train" :
-    #         train_da(general_log, ds, operation,logger_mode)
-    #     else:
-    #         if operation == "dev":
-    #             eval_da(ds,args,operation)
+        #step 5
+        if (r == "dev"):
+            frn = r + "_partition_details"
+            data_partition_details = dataset_details.pop(frn, {})
+            assert type(data_partition_details) is not Params
+            name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use',{})
+            assert type(name_of_trained_model_to_use) is not Params
+
+
+        type_of_classifier = uofa_params.pop("type_of_classifier", {})
+
+        if(type_of_classifier=="decomp_attention"):
+            if(r=="train"):
+                train_da(general_log, ds, operation, logger_mode)
+            if(r=="dev"):
+                eval_model(data,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use)
 
 

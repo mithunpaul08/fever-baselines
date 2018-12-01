@@ -101,9 +101,7 @@ class FEVERReaderUofa(DatasetReader):
         hfe = hf + objUofaTrainTest.annotated_only_entities
         hfcomplete = hf + objUofaTrainTest.annotated_whole_data_head
 
-        #print(f"hfl:{hfl}")
-        #print(f"bfl:{bfl}")
-        #print("going to read annotated data from disk:")
+
 
         heads_lemmas = objUofaTrainTest.read_json(hfl)
         bodies_lemmas = objUofaTrainTest.read_json(bfl)
@@ -119,77 +117,13 @@ class FEVERReaderUofa(DatasetReader):
 
         counter=0
 
-
-        for he, be, hl, bl, hw, bw,ht,hd,hfc in\
-                tq(zip(heads_entities, bodies_entities, heads_lemmas,
+        data=zip(heads_entities, bodies_entities, heads_lemmas,
                                                     bodies_lemmas,
                                                       heads_words,
-                                                      bodies_words,heads_tags,heads_deps,heads_complete_annotation),
-                   total=len(heads_complete_annotation),desc="reading annotated data"):
-
-            counter=counter+1
+                                                      bodies_words,heads_tags,heads_deps,heads_complete_annotation)
 
 
 
-            he_split=  he.split(" ")
-            be_split = be.split(" ")
-            hl_split = hl.split(" ")
-            bl_split = bl.split(" ")
-            hw_split = hw.split(" ")
-            bw_split = bw.split(" ")
-
-            # hypothesis == = claim = headline
-            # premise == = evidence = body
-
-
-            #premise_ann, hypothesis_ann,found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split, be_split, hl_split, bl_split, hw_split, bw_split)
-
-            premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split,hl_split, bl_split,hw_split, bw_split)
-
-            # print(f"hypothesis before annotation: {hw}")
-            # print(f"premise before annotation: {bw}")
-            #
-            # print("value of the first premise and hypothesis after  ner replacement is")
-            # print(premise_ann)
-            # print(hypothesis_ann)
-            # sys.exit(1)
-            #
-
-
-
-
-
-            label=str(hfc)
-
-
-            # # This is for the analysis of the NEI over-predicting
-            # if(label=="NOT ENOUGH INFO"):
-            #     nei_counter=nei_counter+1
-            #     if(found_intersection):
-            #
-            #         # print("\n")
-            #         # print(f"hw: {hw}")
-            #         # print(f"bw: {bw}")
-            #         # print(f"hypothesis_ann: {hypothesis_ann}")
-            #         # print(f"premise_ann: {premise_ann}")
-            #         #
-            #         # print(f"label: {label}")
-            #
-            #         nei_overlap_counter=nei_overlap_counter+1
-            #
-            # if (label == "SUPPORTS"):
-            #     supports_counter = supports_counter + 1
-            #     if (found_intersection):
-            #         supports_overlap_counter=supports_overlap_counter+1
-            #
-            # if (label == "REFUTES"):
-            #     refutes_counter = refutes_counter + 1
-            #     if (found_intersection):
-            #         refutes_overlap_counter = refutes_overlap_counter + 1
-
-
-
-            instances.append(self.text_to_instance(premise_ann.lower(), hypothesis_ann.lower(), label))
 
 
         print(f"after reading and converting training data to  ner format. The length of the number of training data is:{len(instances)}")
@@ -197,12 +131,6 @@ class FEVERReaderUofa(DatasetReader):
         if not instances:
             raise ConfigurationError("No instances were read from the given filepath {}. "
                                      "Is the path correct?".format(file_path))
-        # print(f"nei_overlap_counter: {nei_counter}")
-        # print(f"nei_overlap_counter: {nei_overlap_counter}")
-        # print(f"supports_counter: {supports_counter}")
-        # print(f"supports_overlap_counter: {supports_overlap_counter}")
-        # print(f"refutes_counter: {refutes_counter}")
-        # print(f"refutes_overlap_counter: {refutes_overlap_counter}")
 
 
 
