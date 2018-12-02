@@ -48,8 +48,8 @@ class load_fever_DataSet():
 
         API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
-        ann_head_tr = "ann_head_tr.json"
-        ann_body_tr = "ann_body_tr.json"
+        ann_head_tr = "split_head/ann_head_tr.json"
+        ann_body_tr = "split_body/ann_body_tr.json"
         labels_file = "label_id.csv"
 
         try:
