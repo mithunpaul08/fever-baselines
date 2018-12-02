@@ -1,7 +1,7 @@
 from common.util.log_helper import LogHelper
 from rte.mithun.ds import indiv_headline_body
 from pathlib import Path
-
+import os
 import processors
 # print the recommended processors-server version
 from processors import *
@@ -266,7 +266,8 @@ class UOFADataReader():
         logger.debug(f"body:{body}")
         doc1 = API.fastnlp.annotate(headline)
         doc1.id = label
-        with open(folder_to_write_output+json_file_tr_annotated_headline, "a") as out:
+
+        with open(os.getcwd()+folder_to_write_output+json_file_tr_annotated_headline, "a") as out:
             out.write(doc1.to_JSON())
             out.write("\n")
 
@@ -274,7 +275,7 @@ class UOFADataReader():
         logger.debug(doc2)
         doc2.id = label
 
-        with open(folder_to_write_output+json_file_tr_annotated_body, "a") as out:
+        with open(os.getcwd()+folder_to_write_output+json_file_tr_annotated_body, "a") as out:
             out.write(doc2.to_JSON())
             out.write("\n")
 
