@@ -186,11 +186,11 @@ if __name__ == "__main__":
         # - if dev, extract trained model path
         # - if train , nothing
 
-        name_of_trained_model_to_use = ""
+        #name_of_trained_model_to_use = ""
 
-        if (run_name == "dev"):
-            name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
-            assert type(name_of_trained_model_to_use) is str
+        #if (run_name == "dev"):
+        name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
+        assert type(name_of_trained_model_to_use) is str
 
 
 
@@ -216,8 +216,9 @@ if __name__ == "__main__":
         #     assert type(lbl_file) is str
         #     all_labels = objUofaTrainTest.read_csv_list(lbl_file)
         if (run_name == "annotation" and dataset == "fnc"):
-            convert_fnc_to_fever_and_annotate(FeverDocDB,path_to_trained_models_folder + name_of_trained_model_to_use,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
-            
+            path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
+            convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
+
 
         path_to_saved_db = uofa_params.pop("path_to_saved_db")
         db = FeverDocDB(path_to_saved_db)
