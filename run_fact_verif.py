@@ -203,18 +203,20 @@ if __name__ == "__main__":
         # ead back inside the generate features function, just like we do for fever data.
         all_labels=None
         objUofaTrainTest = UofaTrainTest()
-        if (dataset == "fnc"):
-            label_dev_file = data_partition_details.pop('label_dev_file', {})
-            mithun_logger.debug(f"value of label_dev_file is:{label_dev_file}")
-            assert type(label_dev_file) is not Params
-            label_folder = data_partition_details.pop('label_folder', {})
-            assert type(label_folder) is str
-            mithun_logger.debug(f"value of label_folder is:{label_folder}")
-            assert type(label_dev_file) is str
-            lbl_file = os.getcwd()+label_folder + label_dev_file
-            mithun_logger.debug(f"value of lbl_file is:{lbl_file}")
-            assert type(lbl_file) is str
-            all_labels = objUofaTrainTest.read_csv_list(lbl_file)
+        # if (dataset == "fnc"):
+        #     label_dev_file = data_partition_details.pop('label_dev_file', {})
+        #     mithun_logger.debug(f"value of label_dev_file is:{label_dev_file}")
+        #     assert type(label_dev_file) is not Params
+        #     label_folder = data_partition_details.pop('label_folder', {})
+        #     assert type(label_folder) is str
+        #     mithun_logger.debug(f"value of label_folder is:{label_folder}")
+        #     assert type(label_dev_file) is str
+        #     lbl_file = os.getcwd()+label_folder + label_dev_file
+        #     mithun_logger.debug(f"value of lbl_file is:{lbl_file}")
+        #     assert type(lbl_file) is str
+        #     all_labels = objUofaTrainTest.read_csv_list(lbl_file)
+        if (run_name == "annotation" and dataset == "fnc"):
+            convert_fnc_to_fever_and_annotate(FeverDocDB,path_to_trained_models_folder + name_of_trained_model_to_use,  mithun_logger,cuda_device)
 
 
         path_to_saved_db = uofa_params.pop("path_to_saved_db")
@@ -235,8 +237,6 @@ if __name__ == "__main__":
 
         mithun_logger.debug(f"done with reading data. going to generate features")
 
-        if (run_name == "annotation" and dataset == "fnc"):
-            convert_fnc_to_fever_and_annotate(FeverDocDB,path_to_trained_models_folder + name_of_trained_model_to_use,  mithun_logger,cuda_device)
 
 
             #step 4 - generate features
