@@ -42,3 +42,25 @@ note that :the IR part is in oracle mode.-i.e there is no Information retrieval 
 
 
 ## version tracker is kept [here](https://github.com/mithunpaul08/fever-baselines/blob/master/versions.md)
+
+## details of config file entries
+
+`
+"datasets_to_work_on": [
+"fnc"
+],
+`
+
+#### other options include: fever. Can add more than one like this: "fnc,fever" 
+    
+ `
+"list_of_runs": [
+"dev"
+],
+`       
+### here other options include: "test/train/dev/annotation". 
+- Can add more than one like this: "dev,annotation". 
+- Note that it means, corresponding data set and corresponding runs. i.e if you add "fever,fnc" in datasets and "train,dev" on runs, it means, it will run train on fever and dev on fnc.
+- Whenever you run dev, make sure you have `name_of_trained_model_to_use` filled up under `dev_partition_details` in the corresponding dataset details tag. Eg: `fever_dataset_details`
+ 
+    
