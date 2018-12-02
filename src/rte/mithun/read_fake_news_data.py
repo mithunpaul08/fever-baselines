@@ -83,7 +83,8 @@ class load_fever_DataSet():
             # print(f"label{label}")
 
 
-            objUOFADataReader.annotate_and_save_doc_with_label_as_id(hypothesis, premise,bodyid,API, ann_head_tr, ann_body_tr, logger,label,path_to_pyproc_annotated_data_folder)
+            objUOFADataReader.annotate_and_save_doc_with_label_as_id(hypothesis, premise, label, API, ann_head_tr, ann_body_tr, logger, path_to_pyproc_annotated_data_folder)
+
             objUOFADataReader.write_label_to_disk(bodyid,label,labels_file)
 
 
