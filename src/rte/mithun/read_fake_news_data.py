@@ -44,9 +44,7 @@ class load_fever_DataSet():
         return rows
 
 
-    def annotate_fnc(self, stances,articles,logger):
-
-
+    def annotate_fnc(self, stances,articles,logger,path_to_pyproc_annotated_data_folder):
 
         API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
@@ -85,7 +83,7 @@ class load_fever_DataSet():
             # print(f"label{label}")
 
 
-            objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid,API, ann_head_tr, ann_body_tr, logger,label)
+            objUOFADataReader.annotate_and_save_doc_with_label_as_id(hypothesis, premise,bodyid,API, ann_head_tr, ann_body_tr, logger,label,path_to_pyproc_annotated_data_folder)
             objUOFADataReader.write_label_to_disk(bodyid,label,labels_file)
 
 

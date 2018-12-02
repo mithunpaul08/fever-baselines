@@ -1114,8 +1114,6 @@ class UofaTrainTest():
         labels = []
 
         for row in reader:
-            # print(row)
-            # sys.exit(1)
             k, v = row
             labels.append(v)
         return labels

@@ -7,6 +7,7 @@ from src.rte.mithun.log import setup_custom_logger
 from types import *
 from src.scripts.rte.da.train_da import train_da
 from src.scripts.rte.da.eval_da import eval_model
+from src.scripts.rte.da.eval_da import convert_fnc_to_fever_and_annotate
 from rte.parikh.reader_uofa import FEVERReaderUofa
 from tqdm import tqdm
 from rte.mithun.trainer import UofaTrainTest
@@ -155,6 +156,8 @@ if __name__ == "__main__":
     assert type(random_seed) is not Params
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
+
+
         # step 2.1- create a logger
         logger_details = uofa_params.pop('logger_details', {})
         # print(f"value of logger_details is {logger_details}")
@@ -213,6 +216,7 @@ if __name__ == "__main__":
             assert type(lbl_file) is str
             all_labels = objUofaTrainTest.read_csv_list(lbl_file)
 
+
         path_to_saved_db = uofa_params.pop("path_to_saved_db")
         db = FeverDocDB(path_to_saved_db)
         archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
@@ -231,7 +235,11 @@ if __name__ == "__main__":
 
         mithun_logger.debug(f"done with reading data. going to generate features")
 
-        #step 4 - generate features
+        if (run_name == "annotation" and dataset == "fnc"):
+            convert_fnc_to_fever_and_annotate(FeverDocDB,path_to_trained_models_folder + name_of_trained_model_to_use,  mithun_logger,cuda_device)
+
+
+            #step 4 - generate features
         features = uofa_params.pop("features", {})
         assert type(features) is not Params
 

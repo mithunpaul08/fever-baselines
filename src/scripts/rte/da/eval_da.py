@@ -163,8 +163,8 @@ def eval_model_fnc_data(db: FeverDocDB, args,mithun_logger,name_of_trained_model
     return model
 
 
-def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
-    archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
+def convert_fnc_to_fever_and_annotate(db: FeverDocDB, path_to_trained_models, logger, cuda_device,path_to_pyproc_annotated_data_folder) -> Model:
+    archive = load_archive(path_to_trained_models, cuda_device=cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
     model = archive.model
@@ -175,16 +175,16 @@ def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
     fnc_data_set = load_fever_DataSet()
 
     #to annotate with pyprocessors- comment this part out if you are doing just evaluation
-    # stances,articles= fnc_data_set.read_parent(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
-    #
-    # dict_articles = {}
-    # # copy all bodies into a dictionary
-    # for article in articles:
-    #     dict_articles[int(article['Body ID'])] = article['articleBody']
-    #
-    # load_fever_DataSet.annotate_fnc(cwd, stances,dict_articles,logger)
-    # print("done with annotation. going to exit")
-    # sys.exit(1)
+    stances,articles= fnc_data_set.read_parent(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
+
+    dict_articles = {}
+    # copy all bodies into a dictionary
+    for article in articles:
+        dict_articles[int(article['Body ID'])] = article['articleBody']
+
+    load_fever_DataSet.annotate_fnc(cwd, stances,dict_articles,logger,path_to_pyproc_annotated_data_folder)
+    print("done with annotation. going to exit")
+    sys.exit(1)
 
     ###########end of pyprocessors annotation
 

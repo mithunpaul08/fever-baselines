@@ -93,7 +93,7 @@ class FEVERReaderUofa():
         heads_deps = objUofaTrainTest.read_json_deps(hfd)
         heads_complete_annotation=objUofaTrainTest.read_id_field_json(hfcomplete)
 
-        mithun_logger.debug(f"length of bodies_words:{len(bodies_words)}")
+        mithun_logger.info(f"length of bodies_words:{len(bodies_words)}")
 
         assert len(all_labels) == len(heads_entities)
 
@@ -101,8 +101,6 @@ class FEVERReaderUofa():
                                                     bodies_lemmas,
                                                       heads_words,
                                                       bodies_words,heads_tags,heads_deps,heads_complete_annotation,all_labels)
-
-
 
         return data
 
