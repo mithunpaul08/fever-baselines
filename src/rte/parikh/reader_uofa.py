@@ -63,7 +63,7 @@ class FEVERReaderUofa():
 
 
 
-    def read(self, mithun_logger,data_folder,all_labels):
+    def read(self, mithun_logger,data_folder):
         mithun_logger.info("got inside read in file reader_uofa.py and class FEVERReaderUofa" )
         objUofaTrainTest = UofaTrainTest()
         mithun_logger.debug(f"data_folder: {data_folder}. Going to read data")
@@ -95,12 +95,11 @@ class FEVERReaderUofa():
 
         mithun_logger.info(f"length of bodies_words:{len(bodies_words)}")
 
-        assert len(all_labels) == len(heads_entities)
 
         data=zip(heads_entities, bodies_entities, heads_lemmas,
                                                     bodies_lemmas,
                                                       heads_words,
-                                                      bodies_words,heads_tags,heads_deps,heads_complete_annotation,all_labels)
+                                                      bodies_words,heads_tags,heads_deps,heads_complete_annotation)
 
         return data
 

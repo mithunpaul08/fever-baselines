@@ -27,12 +27,14 @@ Parameters
 def generate_features(zipped_annotated_data,feature,feature_details,reader,mithun_logger,objUofaTrainTest):
     mithun_logger.debug(f"got inside generate_features")
     instances = []
-    for index, (he, be, hl, bl, hw, bw, ht, hd,hfc,label) in enumerate(zipped_annotated_data):
+    for index, (he, be, hl, bl, hw, bw, ht, hd,hfc) in enumerate(zipped_annotated_data):
             #tqdm(,total=len(he), desc="reading annotated data"):
 
         new_label =""
-        label = str(label)
+        label = hfc(id)
         mithun_logger.debug(f"value of label is:{label}")
+        import sys
+        sys.exit(1)
 
         he_split = he.split(" ")
         be_split = be.split(" ")
@@ -201,7 +203,6 @@ if __name__ == "__main__":
         # todo: this is a hack where we are reading the labels of fnc data from a separate labels only file.
         # However, this should have been written along with the pyproc annotated data, so that it can be r
         # ead back inside the generate features function, just like we do for fever data.
-        all_labels=None
         objUofaTrainTest = UofaTrainTest()
         # if (dataset == "fnc"):
         #     label_dev_file = data_partition_details.pop('label_dev_file', {})
@@ -234,7 +235,7 @@ if __name__ == "__main__":
                              token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
         cwd=os.getcwd()
-        zipped_annotated_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder,all_labels)
+        zipped_annotated_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder)
 
         mithun_logger.debug(f"done with reading data. going to generate features")
 
