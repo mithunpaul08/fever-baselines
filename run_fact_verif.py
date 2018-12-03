@@ -31,7 +31,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
             #tqdm(,total=len(he), desc="reading annotated data"):
 
         new_label =""
-        label = hfc(id)
+        label = hfc
         mithun_logger.debug(f"value of label is:{label}")
         import sys
         sys.exit(1)
