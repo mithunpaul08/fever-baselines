@@ -33,8 +33,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         new_label =""
         label = hfc
         mithun_logger.debug(f"value of label is:{label}")
-        import sys
-        sys.exit(1)
+      
 
         he_split = he.split(" ")
         be_split = be.split(" ")
