@@ -43,53 +43,54 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         bw_split = bw.split(" ")
 
         if not (label == "unrelated"):
+                mithun_logger.debug(f"value of old label is:{label}")
+                mithun_logger.info(f"value of claim before annotation is:{hw}")
+                mithun_logger.info(f"value of evidence before anntoation is is:{bw}")
+                mithun_logger.info(f"value of premise_ann is:{premise_ann}")
+                mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
+                sys.exit(1)
 
 
-            if (label == 'discuss'):
-                new_label = "NOT ENOUGH INFO"
-            if (label == 'agree'):
-                new_label = "SUPPORTS"
-            if (label == 'disagree'):
-                new_label = "REFUTES"
-            mithun_logger.debug(f"value of old label is:{label}")
-            mithun_logger.debug(f"value of new_label is:{new_label}")
-            mithun_logger.info(f"value of claim before annotation is:{hw}")
-            mithun_logger.info(f"value of evidence before anntoation is is:{bw}")
-            mithun_logger.info(f"value of premise_ann is:{premise_ann}")
-            mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
-            sys.exit(1)
-
-            premise_ann=""
-            hypothesis_ann=""
-
-            if (feature=="plain_NER"):
-                premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split, hl_split,
-                                                                                                   bl_split, hw_split, bw_split)
-            else:
-                if (feature == "smart_NER"):
-                    premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
-                                                                                                                          be_split,
-                                                                                                                          hl_split,
-                                                                                                                          bl_split,
-    
+                if (label == 'discuss'):
+                    new_label = "NOT ENOUGH INFO"
+                if (label == 'agree'):
+                    new_label = "SUPPORTS"
+                if (label == 'disagree'):
+                    new_label = "REFUTES"
 
 
-            #todo: fixe me. not able to cleanly retrieve boolean values from the config file
-            # person_c1 = feature_details.pop('person_c1', {})
-            # lower_case_tokens= feature_details.pop('lower_case_tokens', {})
-            # update_embeddings= feature_details.pop('update_embeddings', {})
-            # assert type(person_c1) is str
-            # assert type(lower_case_tokens) is bool
-            # assert type(update_embeddings) is bool
-            #
-            # if(lower_case_tokens):
-            #     premise_ann=premise_ann.lower(),
-            #     hypothesis_ann=hypothesis_ann.lower()
-            #     mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
-            #     mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
+
+                premise_ann=""
+                hypothesis_ann=""
+
+                if (feature=="plain_NER"):
+                    premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split, hl_split,
+                                                                                                       bl_split, hw_split, bw_split)
+                else:
+                    if (feature == "smart_NER"):
+                        premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
+                                                                                                                              be_split,
+                                                                                                                              hl_split,
+                                                                                                                              bl_split,hw_split, bw_split)
 
 
-            instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
+
+                #todo: fixe me. not able to cleanly retrieve boolean values from the config file
+                # person_c1 = feature_details.pop('person_c1', {})
+                # lower_case_tokens= feature_details.pop('lower_case_tokens', {})
+                # update_embeddings= feature_details.pop('update_embeddings', {})
+                # assert type(person_c1) is str
+                # assert type(lower_case_tokens) is bool
+                # assert type(update_embeddings) is bool
+                #
+                # if(lower_case_tokens):
+                #     premise_ann=premise_ann.lower(),
+                #     hypothesis_ann=hypothesis_ann.lower()
+                #     mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
+                #     mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
+
+
+                instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
     if len(instances)==0:
         raise ConfigurationError("No instances were read from the given filepath {}. "
