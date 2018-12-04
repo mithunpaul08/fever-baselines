@@ -162,22 +162,29 @@ if __name__ == "__main__":
 
         # step 2.1- create a logger
         logger_details = uofa_params.pop('logger_details', {})
-        # print(f"value of logger_details is {logger_details}")
-        # print(type(logger_details))
+        print(f"value of logger_details is {logger_details}")
+        print(type(logger_details))
         assert type(logger_details) is Params
         logger_mode = logger_details.pop('logger_mode', {})
         assert type(logger_mode) is not Params
         mithun_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
 
         #Step 2.2- get relevant config details from config file
+        mithun_logger.debug((f"value of dataset is: {dataset}"))
+        mithun_logger.debug((f"value of run_name is: {run_name}"))
         fds= dataset + "_dataset_details"
-        mithun_logger.debug(fds)
+        mithun_logger.debug((f"value of fds is: {fds}"))
         dataset_details = uofa_params.pop(fds, {})
+        mithun_logger.debug((f"value of dataset_details is: {dataset_details}") )
         assert type(dataset_details) is  Params
         frn= run_name + "_partition_details"
+        mithun_logger.debug((f"value of frn is: {frn}"))
         data_partition_details = dataset_details.pop(frn, {})
+        mithun_logger.debug((f"value of data_partition_details is: {data_partition_details}"))
         assert type(data_partition_details) is  Params
         path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
+        mithun_logger.debug(
+            (f"value of path_to_pyproc_annotated_data_folder is: {path_to_pyproc_annotated_data_folder}"))
         assert type(path_to_pyproc_annotated_data_folder) is not Params
 
 
