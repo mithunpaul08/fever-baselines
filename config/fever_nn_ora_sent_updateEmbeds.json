@@ -7,10 +7,10 @@
      },
 
      "datasets_to_work_on": [
-       "fnc"
+       "fever,fnc"
      ],
      "list_of_runs": [
-       "dev"
+       "dev,dev"
      ],
      "fever_dataset_details": {
        "small_partition_details": {
