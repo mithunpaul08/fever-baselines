@@ -70,10 +70,12 @@ So if you want to run just dev on fake news data set this is how your config wil
 Instead if you want to first train the code on fever and then test on fnc,  your config will look like:
 ```
 "datasets_to_work_on": [
-       "fever,fnc"
+       "fever",
+       "fnc"
      ],
      "list_of_runs": [
-       "train,test"
+       "train",
+       "dev"
      ],
 ```
 
