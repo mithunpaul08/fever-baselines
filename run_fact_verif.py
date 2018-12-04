@@ -71,10 +71,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                                                                                                                           be_split,
                                                                                                                           hl_split,
                                                                                                                           bl_split,
-                                                                                                                          hw_split,
-                                                                                                                          bw_split)
-            if (index%100) == 0:
-
+    
 
 
             #todo: fixe me. not able to cleanly retrieve boolean values from the config file
