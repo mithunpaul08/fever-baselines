@@ -33,7 +33,8 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         new_label =""
         label = hfc
 
-
+        if index > 30:
+            sys.exit(1)
 
         he_split = he.split(" ")
         be_split = be.split(" ")
@@ -48,7 +49,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                 mithun_logger.info(f"value of evidence before anntoation is is:{bw}")
                 # mithun_logger.info(f"value of premise_ann is:{premise_ann}")
                 # mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
-                sys.exit(1)
+
 
 
                 if (label == 'discuss'):
