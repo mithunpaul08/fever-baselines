@@ -33,7 +33,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         new_label =""
         label = hfc
 
-        if index > 30:
+        if index > 100:
             sys.exit(1)
 
         he_split = he.split(" ")
