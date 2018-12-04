@@ -39,7 +39,7 @@ class load_fever_DataSet():
             reader = csv.DictReader(f)
             rows = [r for r in reader]
 
-        #shuffle(rows)
+        shuffle(rows)
 
         return rows
 
