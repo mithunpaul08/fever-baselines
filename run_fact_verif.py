@@ -32,8 +32,8 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
 
         new_label =""
         label = hfc
-        mithun_logger.debug(f"value of label is:{label}")
-      
+
+
 
         he_split = he.split(" ")
         be_split = be.split(" ")
@@ -44,19 +44,23 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
 
         if not (label == "unrelated"):
 
+
             if (label == 'discuss'):
                 new_label = "NOT ENOUGH INFO"
             if (label == 'agree'):
                 new_label = "SUPPORTS"
             if (label == 'disagree'):
                 new_label = "REFUTES"
-
+            mithun_logger.debug(f"value of old label is:{label}")
             mithun_logger.debug(f"value of new_label is:{new_label}")
+            mithun_logger.info(f"value of claim before annotation is:{hw}")
+            mithun_logger.info(f"value of evidence before anntoation is is:{bw}")
+            mithun_logger.info(f"value of premise_ann is:{premise_ann}")
+            mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
+            sys.exit(1)
 
             premise_ann=""
             hypothesis_ann=""
-
-
 
             if (feature=="plain_NER"):
                 premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split, hl_split,
@@ -70,8 +74,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                                                                                                                           hw_split,
                                                                                                                           bw_split)
             if (index%100) == 0:
-                mithun_logger.info(f"value of premise_ann is:{premise_ann}")
-                mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
+
 
 
             #todo: fixe me. not able to cleanly retrieve boolean values from the config file

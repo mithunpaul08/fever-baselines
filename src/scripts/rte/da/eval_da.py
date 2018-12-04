@@ -57,9 +57,9 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
 
 
         if "label" in item.fields:
-            mithun_logger.info(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
+            mithun_logger.debug(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
         else:
-            mithun_logger.info(json.dumps({"predicted":cls})+"\n")
+            mithun_logger.debug(json.dumps({"predicted":cls})+"\n")
 
 
 
