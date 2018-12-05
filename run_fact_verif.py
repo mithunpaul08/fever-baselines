@@ -179,7 +179,7 @@ if __name__ == "__main__":
     path_to_saved_db = uofa_params.pop("path_to_saved_db")
     # step 4 - generate features
     features = uofa_params.pop("features", {})
-    assert type(features) is not
+    assert type(features) is not Params
     type_of_classifier = uofa_params.pop("type_of_classifier", {})
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
@@ -277,6 +277,7 @@ if __name__ == "__main__":
             feature_details=uofa_params.pop("fdl", {})
 
             data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset).instances
+
 
 
 
