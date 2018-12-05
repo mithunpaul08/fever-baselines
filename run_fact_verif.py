@@ -27,6 +27,7 @@ Parameters
 def generate_features(zipped_annotated_data,feature,feature_details,reader,mithun_logger,objUofaTrainTest,dataset):
     mithun_logger.info(f"got inside generate_features")
     mithun_logger.info(f"value of feature  is:{feature}")
+    mithun_logger.info(f"value of dataset  is:{dataset}")
     instances = []
     for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate(zipped_annotated_data):
             #tqdm(,total=len(he), desc="reading annotated data"):
