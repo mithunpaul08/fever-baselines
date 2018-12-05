@@ -1333,11 +1333,6 @@ class UofaTrainTest():
 
             neutered_headline = []
             neutered_body = []
-            mithun_logger.debug(f"he:{he}")
-            mithun_logger.debug(f"be:{be}")
-            mithun_logger.debug(f"hl:{hl}")
-            mithun_logger.debug(f"bl:{bl}")
-            mithun_logger.debug(f"hw:{hw}")
 
 
 
@@ -1362,9 +1357,15 @@ class UofaTrainTest():
             premise = " ".join(neutered_headline)
             hypothesis = " ".join(neutered_body)
 
-            mithun_logger.debug(f"premise:{premise}")
-            mithun_logger.debug(f"hypothesis:{hypothesis}")
-            sys.exit(1)
+
+            if("chugging" in he):
+                mithun_logger.debug(f"hw:{hw}")
+                mithun_logger.debug(f"bw:{bw}")
+                mithun_logger.debug(f"he:{he}")
+                mithun_logger.debug(f"be:{be}")
+                mithun_logger.debug(f"premise:{premise}")
+                mithun_logger.debug(f"hypothesis:{hypothesis}")
+                sys.exit(1)
 
 
 
