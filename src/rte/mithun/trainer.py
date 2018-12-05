@@ -1358,14 +1358,21 @@ class UofaTrainTest():
             hypothesis = " ".join(neutered_body)
 
 
-            if("chugging" in he):
-                mithun_logger.debug(f"hw:{hw}")
-                mithun_logger.debug(f"bw:{bw}")
-                mithun_logger.debug(f"he:{he}")
-                mithun_logger.debug(f"be:{be}")
-                mithun_logger.debug(f"premise:{premise}")
-                mithun_logger.debug(f"hypothesis:{hypothesis}")
-                sys.exit(1)
+            l="Chugging eggnog sends Utah man to hospital"
+            ls=l.split(" ")
+            lss=set(ls)
+            hws=set(hw)
+
+            if(len(lss.intersection(hws)) > 0) :
+                mithun_logger.info(f"found eggnog")
+
+                mithun_logger.info(f"hw:{hw}")
+                mithun_logger.info(f"bw:{bw}")
+                mithun_logger.info(f"he:{he}")
+                mithun_logger.info(f"be:{be}")
+                mithun_logger.info(f"premise:{premise}")
+                mithun_logger.info(f"hypothesis:{hypothesis}")
+
 
 
 
