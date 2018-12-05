@@ -34,7 +34,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         new_label =""
         label = hfc
 
-        if(dataset--"fnc"):
+        if(dataset == "fnc"):
 
             if  (label == "unrelated"):
                 break
