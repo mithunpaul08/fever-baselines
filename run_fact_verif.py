@@ -24,13 +24,12 @@ Parameters
 
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
-def generate_features(zipped_annotated_data,feature,feature_details,reader,mithun_logger,objUofaTrainTest,dataset):
+def generate_features(zipped_annotated_data,feature,feature_details,reader,mithun_logger,objUofaTrainTest,dataset,length_data):
     mithun_logger.info(f"got inside generate_features")
     mithun_logger.info(f"value of feature  is:{feature}")
     mithun_logger.info(f"value of dataset  is:{dataset}")
     instances = []
-    for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate(zipped_annotated_data):
-            #tqdm(,total=len(he), desc="reading annotated data"):
+    for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate (tqdm(zipped_annotated_data),total=length_data, desc="feature_gen:"):
 
         new_label =""
         label = hfc
@@ -248,9 +247,9 @@ if __name__ == "__main__":
                              token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
         cwd=os.getcwd()
-        zipped_annotated_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder)
+        zipped_annotated_data,length_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder)
 
-        mithun_logger.info(f"done with reading data. going to generate features")
+        mithun_logger.info(f"done with reading data. going to generate features.")
 
 
 
@@ -264,7 +263,7 @@ if __name__ == "__main__":
             mithun_logger.info(f"value of feature is:{feature}")
             feature_details=uofa_params.pop("fdl", {})
 
-            data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset).instances
+            data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data).instances
 
 
 

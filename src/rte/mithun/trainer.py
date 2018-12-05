@@ -1363,7 +1363,7 @@ class UofaTrainTest():
             lss=set(ls)
             hws=set(hw)
 
-            if(len(lss.intersection(hws)) > 0) :
+            if(len(lss.issubset(hws)) > 0) :
                 mithun_logger.info(f"found eggnog")
 
                 mithun_logger.info(f"hw:{hw}")
@@ -1372,6 +1372,7 @@ class UofaTrainTest():
                 mithun_logger.info(f"be:{be}")
                 mithun_logger.info(f"premise:{premise}")
                 mithun_logger.info(f"hypothesis:{hypothesis}")
+                sys.exit(1)
 
 
 

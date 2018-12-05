@@ -93,7 +93,9 @@ class FEVERReaderUofa():
         heads_deps = objUofaTrainTest.read_json_deps(hfd)
         heads_complete_annotation=objUofaTrainTest.read_id_field_json(hfcomplete)
 
-        mithun_logger.info(f"length of bodies_words:{len(bodies_words)}")
+        length_data=len(bodies_words)
+
+        mithun_logger.info(f"length of bodies_words:{length_data}")
 
 
         data=zip(heads_entities, bodies_entities, heads_lemmas,
@@ -101,7 +103,7 @@ class FEVERReaderUofa():
                                                       heads_words,
                                                       bodies_words,heads_tags,heads_deps,heads_complete_annotation)
 
-        return data
+        return data,length_data
 
 
     def text_to_instance(self,  # type: ignore
