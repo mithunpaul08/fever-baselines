@@ -1363,16 +1363,16 @@ class UofaTrainTest():
             lss=set(ls)
             hws=set(hw)
 
-            if(len(lss.issubset(hws)) > 0) :
-                mithun_logger.info(f"found eggnog")
+            # if(len(lss.issubset(hws)) > 0) :
+            #     mithun_logger.info(f"found eggnog")
 
-                mithun_logger.info(f"hw:{hw}")
-                mithun_logger.info(f"bw:{bw}")
-                mithun_logger.info(f"he:{he}")
-                mithun_logger.info(f"be:{be}")
-                mithun_logger.info(f"premise:{premise}")
-                mithun_logger.info(f"hypothesis:{hypothesis}")
-                sys.exit(1)
+            mithun_logger.info(f"hw:{hw}")
+            mithun_logger.info(f"bw:{bw}")
+            mithun_logger.info(f"he:{he}")
+            mithun_logger.info(f"be:{be}")
+            mithun_logger.info(f"premise:{premise}")
+            mithun_logger.info(f"hypothesis:{hypothesis}")
+      
 
 
 
