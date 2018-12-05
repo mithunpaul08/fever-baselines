@@ -38,7 +38,7 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
     mithun_logger.info(f"value of path_to_trained_models_folder is:{path_to_trained_models_folder} ")
     mithun_logger.info(f"value of path_to_trained_models_folder is:{path_to_trained_models_folder} ")
 
-    archive = load_archive(os.getcwd()+path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
+    archive = load_archive(os.getcwd()+"/"+path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
     model = archive.model
     model.eval()
 
