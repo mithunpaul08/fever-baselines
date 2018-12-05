@@ -32,7 +32,13 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use,cuda_device) -> Model:
 
     mithun_logger.info("got inside eval_model ")
-    archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
+    mithun_logger.info(f"value of path_to_trained_models_folder is:{path_to_trained_models_folder} ")
+    mithun_logger.info(f"value of name_of_trained_model_to_use is:{name_of_trained_model_to_use} ")
+    mithun_logger.info(f"value of cuda_device is:{cuda_device} ")
+    mithun_logger.info(f"value of path_to_trained_models_folder is:{path_to_trained_models_folder} ")
+    mithun_logger.info(f"value of path_to_trained_models_folder is:{path_to_trained_models_folder} ")
+
+    archive = load_archive(os.getcwd()+path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
     model = archive.model
     model.eval()
 

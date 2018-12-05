@@ -1,7 +1,7 @@
 {
    "uofa_params": {
      "logger_details": {
-       "logger_mode": "DEBUG",
+       "logger_mode": "INFO",
        "log_file_base_name": "log_rte",
        "log_folder": "logs/"
      },

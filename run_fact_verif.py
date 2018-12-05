@@ -24,16 +24,27 @@ Parameters
 
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
-def generate_features(zipped_annotated_data,feature,feature_details,reader,mithun_logger,objUofaTrainTest):
-    mithun_logger.debug(f"got inside generate_features")
+def generate_features(zipped_annotated_data,feature,feature_details,reader,mithun_logger,objUofaTrainTest,dataset):
+    mithun_logger.info(f"got inside generate_features")
+    mithun_logger.info(f"value of feature  is:{feature}")
     instances = []
-    for index, (he, be, hl, bl, hw, bw, ht, hd,hfc) in enumerate(zipped_annotated_data):
+    for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate(zipped_annotated_data):
             #tqdm(,total=len(he), desc="reading annotated data"):
 
         new_label =""
         label = hfc
 
+        if(dataset--"fnc"):
 
+            if  (label == "unrelated"):
+                break
+            else:
+                if (label == 'discuss'):
+                    new_label = "NOT ENOUGH INFO"
+                if (label == 'agree'):
+                    new_label = "SUPPORTS"
+                if (label == 'disagree'):
+                    new_label = "REFUTES"
 
         he_split = he.split(" ")
         be_split = be.split(" ")
@@ -42,55 +53,48 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         hw_split = hw.split(" ")
         bw_split = bw.split(" ")
 
-        if not (label == "unrelated"):
-                mithun_logger.debug(f"value of old label is:{label}")
-                mithun_logger.debug(f"value of claim before annotation is:{hw}")
-                mithun_logger.debug(f"value of evidence before anntoation is is:{bw}")
-                # mithun_logger.info(f"value of premise_ann is:{premise_ann}")
-                # mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
+        premise_ann=""
+        hypothesis_ann=""
+
+        if (feature=="plain_NER"):
+            premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split, hl_split,
+                                                                                               bl_split, hw_split, bw_split)
+        else:
+            if (feature == "smart_NER"):
+                premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
+                                                                                                                      be_split,
+                                                                                                                      hl_split,
+                                                                                                                      bl_split,hw_split, bw_split)
+        if(index %100==0):
+            mithun_logger.info(f"value of old label is:{label}")
+            mithun_logger.info(f"value of new label is:{label}")
+            mithun_logger.info(f"value of claim before annotation is:{hw}")
+            mithun_logger.info(f"value of evidence before anntoation is is:{bw}")
+            mithun_logger.info(f"value of premise_ann is:{premise_ann}")
+            mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
+
+        mithun_logger.debug(f"value of old label is:{label}")
+        mithun_logger.debug(f"value of claim before annotation is:{hw}")
+        mithun_logger.debug(f"value of evidence before anntoation is is:{bw}")
+        mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
+        mithun_logger.debug(f"value of hypothesis_ann is:{hypothesis_ann}")
+
+        #todo: fixe me. not able to cleanly retrieve boolean values from the config file
+        # person_c1 = feature_details.pop('person_c1', {})
+        # lower_case_tokens= feature_details.pop('lower_case_tokens', {})
+        # update_embeddings= feature_details.pop('update_embeddings', {})
+        # assert type(person_c1) is str
+        # assert type(lower_case_tokens) is bool
+        # assert type(update_embeddings) is bool
+        #
+        # if(lower_case_tokens):
+        #     premise_ann=premise_ann.lower(),
+        #     hypothesis_ann=hypothesis_ann.lower()
+        #     mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
+        #     mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
 
 
-
-                if (label == 'discuss'):
-                    new_label = "NOT ENOUGH INFO"
-                if (label == 'agree'):
-                    new_label = "SUPPORTS"
-                if (label == 'disagree'):
-                    new_label = "REFUTES"
-
-
-
-                premise_ann=""
-                hypothesis_ann=""
-
-                if (feature=="plain_NER"):
-                    premise_ann, hypothesis_ann = objUofaTrainTest.convert_NER_form_per_sent_plain_NER(he_split, be_split, hl_split,
-                                                                                                       bl_split, hw_split, bw_split)
-                else:
-                    if (feature == "smart_NER"):
-                        premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
-                                                                                                                              be_split,
-                                                                                                                              hl_split,
-                                                                                                                              bl_split,hw_split, bw_split)
-
-
-
-                #todo: fixe me. not able to cleanly retrieve boolean values from the config file
-                # person_c1 = feature_details.pop('person_c1', {})
-                # lower_case_tokens= feature_details.pop('lower_case_tokens', {})
-                # update_embeddings= feature_details.pop('update_embeddings', {})
-                # assert type(person_c1) is str
-                # assert type(lower_case_tokens) is bool
-                # assert type(update_embeddings) is bool
-                #
-                # if(lower_case_tokens):
-                #     premise_ann=premise_ann.lower(),
-                #     hypothesis_ann=hypothesis_ann.lower()
-                #     mithun_logger.debug(f"value of premise_ann after lower case token is:{premise_ann}")
-                #     mithun_logger.debug(f"value of label after lower case token  is:{hypothesis_ann}")
-
-
-                instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
+        instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
     if len(instances)==0:
         raise ConfigurationError("No instances were read from the given filepath {}. "
@@ -195,7 +199,7 @@ if __name__ == "__main__":
         # - if dev, extract trained model path
         # - if train , nothing
 
-        #name_of_trained_model_to_use = ""
+
 
         #if (run_name == "dev"):
         name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
@@ -260,7 +264,7 @@ if __name__ == "__main__":
             mithun_logger.debug(f"value of feature is:{feature}")
             feature_details=uofa_params.pop("fdl", {})
 
-            data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest).instances
+            data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset).instances
 
 
 
