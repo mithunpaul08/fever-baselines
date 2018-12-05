@@ -38,7 +38,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         if(dataset == "fnc"):
 
             if  (label == "unrelated"):
-                break
+                continue
             else:
                 if (label == 'discuss'):
                     new_label = "NOT ENOUGH INFO"
