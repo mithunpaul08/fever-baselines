@@ -46,6 +46,10 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                 if (label == 'disagree'):
                     new_label = "REFUTES"
 
+        else :
+            new_label=label
+
+
         he_split = he.split(" ")
         be_split = be.split(" ")
         hl_split = hl.split(" ")
@@ -67,13 +71,14 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                                                                                                                       bl_split,hw_split, bw_split)
         if(index %100==0):
             mithun_logger.info(f"value of old label is:{label}")
-            mithun_logger.info(f"value of new label is:{label}")
+            mithun_logger.info(f"value of new label is:{new_label}")
             mithun_logger.info(f"value of claim before annotation is:{hw}")
             mithun_logger.info(f"value of evidence before anntoation is is:{bw}")
             mithun_logger.info(f"value of premise_ann is:{premise_ann}")
             mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
 
         mithun_logger.debug(f"value of old label is:{label}")
+        mithun_logger.debug(f"value of new label is:{new_label}")
         mithun_logger.debug(f"value of claim before annotation is:{hw}")
         mithun_logger.debug(f"value of evidence before anntoation is is:{bw}")
         mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
