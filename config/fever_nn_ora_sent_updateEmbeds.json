@@ -7,9 +7,11 @@
      },
 
      "datasets_to_work_on": [
+       "fever",
        "fnc"
      ],
      "list_of_runs": [
+       "dev",
        "dev"
      ],
      "fever_dataset_details": {
