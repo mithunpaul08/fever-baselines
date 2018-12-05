@@ -1328,18 +1328,18 @@ class UofaTrainTest():
             return (premise, hypothesis,found_intersection)
 
 
-    def convert_NER_form_per_sent_plain_NER(self,he, be, hl, bl, hw, bw):
+    def convert_NER_form_per_sent_plain_NER(self,he, be, hl, bl, hw, bw,mithun_logger):
 
 
             neutered_headline = []
             neutered_body = []
-            # print(f"he:{he}")
-            # print(f"be:{be}")
-            # print(f"hl:{hl}")
-            # print(f"bl:{bl}")
-            # print(f"hw:{hw}")
+            mithun_logger.debug(f"he:{he}")
+            mithun_logger.debug(f"be:{be}")
+            mithun_logger.debug(f"hl:{hl}")
+            mithun_logger.debug(f"bl:{bl}")
+            mithun_logger.debug(f"hw:{hw}")
 
-            #print(f"he is of type {type(he)}")
+
 
             for hee, hll, hww in zip(he, hl, hw):
 
@@ -1361,6 +1361,12 @@ class UofaTrainTest():
 
             premise = " ".join(neutered_headline)
             hypothesis = " ".join(neutered_body)
+
+            mithun_logger.debug(f"premise:{premise}")
+            mithun_logger.debug(f"hypothesis:{hypothesis}")
+            sys.exit(1)
+
+
 
 
             return (premise, hypothesis)
