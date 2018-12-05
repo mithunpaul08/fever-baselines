@@ -72,7 +72,7 @@
      "path_to_saved_db": "data/fever/fever.db",
      "read_random_seed_from_commandline": false,
      "random_seed": 98467,
-     "path_to_trained_models_folder": "data/models/",
+     "path_to_trained_models_folder": "/data/models/",
      "type_of_classifier": "decomp_attention",
      "features": [
        "plain_NER"
