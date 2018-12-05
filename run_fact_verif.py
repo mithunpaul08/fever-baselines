@@ -102,8 +102,8 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
     if len(instances)==0:
-        raise ConfigurationError("No instances were read from the given filepath {}. "
-                                 "Is the path correct?")
+        mithun_logger.error("No instances were read from the given filepath {}. ""Is the path correct?")
+        sys.exit(1)
     return Dataset(instances)
 
 
@@ -188,20 +188,20 @@ if __name__ == "__main__":
 
 
         #Step 2.2- get relevant config details from config file
-        mithun_logger.debug((f"value of dataset is: {dataset}"))
-        mithun_logger.debug((f"value of run_name is: {run_name}"))
+        mithun_logger.info((f"value of dataset is: {dataset}"))
+        mithun_logger.info((f"value of run_name is: {run_name}"))
         fds= dataset + "_dataset_details"
-        mithun_logger.debug((f"value of fds is: {fds}"))
+        mithun_logger.info((f"value of fds is: {fds}"))
         dataset_details = uofa_params.pop(fds, {})
-        mithun_logger.debug((f"value of dataset_details is: {dataset_details}") )
+        mithun_logger.info((f"value of dataset_details is: {dataset_details}") )
         assert type(dataset_details) is  Params
         frn= run_name + "_partition_details"
-        mithun_logger.debug((f"value of frn is: {frn}"))
+        mithun_logger.info((f"value of frn is: {frn}"))
         data_partition_details = dataset_details.pop(frn, {})
-        mithun_logger.debug((f"value of data_partition_details is: {data_partition_details}"))
+        mithun_logger.info((f"value of data_partition_details is: {data_partition_details}"))
         assert type(data_partition_details) is  Params
         path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
-        mithun_logger.debug(
+        mithun_logger.info(
             (f"value of path_to_pyproc_annotated_data_folder is: {path_to_pyproc_annotated_data_folder}"))
         assert type(path_to_pyproc_annotated_data_folder) is not Params
 
@@ -225,22 +225,9 @@ if __name__ == "__main__":
 
 
         #step 3 -read data
-        # todo: this is a hack where we are reading the labels of fnc data from a separate labels only file.
-        # However, this should have been written along with the pyproc annotated data, so that it can be r
-        # ead back inside the generate features function, just like we do for fever data.
+
         objUofaTrainTest = UofaTrainTest()
-        # if (dataset == "fnc"):
-        #     label_dev_file = data_partition_details.pop('label_dev_file', {})
-        #     mithun_logger.debug(f"value of label_dev_file is:{label_dev_file}")
-        #     assert type(label_dev_file) is not Params
-        #     label_folder = data_partition_details.pop('label_folder', {})
-        #     assert type(label_folder) is str
-        #     mithun_logger.debug(f"value of label_folder is:{label_folder}")
-        #     assert type(label_dev_file) is str
-        #     lbl_file = os.getcwd()+label_folder + label_dev_file
-        #     mithun_logger.debug(f"value of lbl_file is:{lbl_file}")
-        #     assert type(lbl_file) is str
-        #     all_labels = objUofaTrainTest.read_csv_list(lbl_file)
+
         if (run_name == "annotation" and dataset == "fnc"):
             path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
             convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
@@ -262,7 +249,7 @@ if __name__ == "__main__":
         cwd=os.getcwd()
         zipped_annotated_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder)
 
-        mithun_logger.debug(f"done with reading data. going to generate features")
+        mithun_logger.info(f"done with reading data. going to generate features")
 
 
 
@@ -272,8 +259,8 @@ if __name__ == "__main__":
         for feature in features:
             # todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
             fdl= feature + "_details"
-            mithun_logger.debug(f"value of fdl is:{fdl}")
-            mithun_logger.debug(f"value of feature is:{feature}")
+            mithun_logger.info(f"value of fdl is:{fdl}")
+            mithun_logger.info(f"value of feature is:{feature}")
             feature_details=uofa_params.pop("fdl", {})
 
             data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset).instances
