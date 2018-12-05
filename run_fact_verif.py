@@ -166,17 +166,19 @@ if __name__ == "__main__":
     assert type(cuda_device) is not Params
     assert type(random_seed) is not Params
 
+    # step 2.1- create a logger
+    logger_details = uofa_params.pop('logger_details', {})
+    print(f"value of logger_details is {logger_details}")
+    print(type(logger_details))
+    assert type(logger_details) is Params
+    logger_mode = logger_details.pop('logger_mode', {})
+    assert type(logger_mode) is not Params
+    mithun_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
+
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
 
 
-        # step 2.1- create a logger
-        logger_details = uofa_params.pop('logger_details', {})
-        print(f"value of logger_details is {logger_details}")
-        print(type(logger_details))
-        assert type(logger_details) is Params
-        logger_mode = logger_details.pop('logger_mode', {})
-        assert type(logger_mode) is not Params
-        mithun_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
+
 
         #Step 2.2- get relevant config details from config file
         mithun_logger.debug((f"value of dataset is: {dataset}"))
