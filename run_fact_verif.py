@@ -29,7 +29,8 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
     mithun_logger.info(f"value of feature  is:{feature}")
     mithun_logger.info(f"value of dataset  is:{dataset}")
     instances = []
-    for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate (tqdm(zipped_annotated_data),total=length_data, desc="feature_gen:"):
+    #for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate (tqdm(zipped_annotated_data),total=length_data, desc="feature_gen:"):
+    for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate(zipped_annotated_data):
 
         new_label =""
         label = hfc
