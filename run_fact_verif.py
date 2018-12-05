@@ -175,6 +175,13 @@ if __name__ == "__main__":
     assert type(logger_mode) is not Params
     mithun_logger = setup_custom_logger('root', logger_mode, "general_log.txt")
 
+    #all one time used config values move outside for loop. This has to be done because the allennlp pop function clears out the dictionary if its read once.
+    path_to_saved_db = uofa_params.pop("path_to_saved_db")
+    # step 4 - generate features
+    features = uofa_params.pop("features", {})
+    assert type(features) is not
+    type_of_classifier = uofa_params.pop("type_of_classifier", {})
+
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
 
 
@@ -239,7 +246,7 @@ if __name__ == "__main__":
             convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
 
 
-        path_to_saved_db = uofa_params.pop("path_to_saved_db")
+
         db = FeverDocDB(path_to_saved_db)
         archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
         config = archive.config
@@ -259,9 +266,7 @@ if __name__ == "__main__":
 
 
 
-            #step 4 - generate features
-        features = uofa_params.pop("features", {})
-        assert type(features) is not Params
+
 
         data = None
         for feature in features:
@@ -279,7 +284,7 @@ if __name__ == "__main__":
 
 
 
-        type_of_classifier = uofa_params.pop("type_of_classifier", {})
+
 
         if(type_of_classifier=="decomp_attention"):
             if(run_name== "train"):
