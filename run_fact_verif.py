@@ -182,6 +182,10 @@ if __name__ == "__main__":
     features = uofa_params.pop("features", {})
     assert type(features) is not Params
     type_of_classifier = uofa_params.pop("type_of_classifier", {})
+    assert type(type_of_classifier) is not str
+    name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
+    mithun_logger.info((f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}"))
+    assert type(name_of_trained_model_to_use) is str
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
 
@@ -213,12 +217,9 @@ if __name__ == "__main__":
         # Step 2.6 - find is it dev or train that must be run
         # - if dev, extract trained model path
         # - if train , nothing
+        # update: the feverdatareader we are using from the fever code needs the name of trained model. EVen for training. wtf..
 
-        if (run_name == "dev"):
-            name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
-            mithun_logger.info(
-            (f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}"))
-            assert type(name_of_trained_model_to_use) is str
+
 
 
 
