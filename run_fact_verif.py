@@ -182,7 +182,7 @@ if __name__ == "__main__":
     features = uofa_params.pop("features", {})
     assert type(features) is not Params
     type_of_classifier = uofa_params.pop("type_of_classifier", {})
-    assert type(type_of_classifier) is not str
+    assert type(type_of_classifier) is  str
     name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
     mithun_logger.info((f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}"))
     assert type(name_of_trained_model_to_use) is str
