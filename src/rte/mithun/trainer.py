@@ -1372,7 +1372,7 @@ class UofaTrainTest():
             mithun_logger.info(f"be:{be}")
             mithun_logger.info(f"premise:{premise}")
             mithun_logger.info(f"hypothesis:{hypothesis}")
-      
+
 
 
 
