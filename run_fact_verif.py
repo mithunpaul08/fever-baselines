@@ -218,6 +218,7 @@ if __name__ == "__main__":
         # - if dev, extract trained model path
         # - if train , nothing
         # update: the feverdatareader we are using from the fever code needs the name of trained model. EVen for training. wtf..
+        # update: so moved it to outside this for loop, since we are accessing it only once using uofa_params.pop anyway
 
 
 
@@ -242,6 +243,7 @@ if __name__ == "__main__":
         ds_params = config["dataset_reader"]
         model = archive.model
         model.eval()
+        mithun_logger.info(f"going to initiate FEVERReaderUofa.")
         fever_reader = FEVERReaderUofa(db,
                              sentence_level=ds_params.pop("sentence_level", False),
                              wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
