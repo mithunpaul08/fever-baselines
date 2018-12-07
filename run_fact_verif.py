@@ -214,13 +214,11 @@ if __name__ == "__main__":
         # - if dev, extract trained model path
         # - if train , nothing
 
-
-
-        #if (run_name == "dev"):
-        name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
-        mithun_logger.info(
+        if (run_name == "dev"):
+            name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
+            mithun_logger.info(
             (f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}"))
-        assert type(name_of_trained_model_to_use) is str
+            assert type(name_of_trained_model_to_use) is str
 
 
 
