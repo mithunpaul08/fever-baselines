@@ -51,7 +51,7 @@
        "dev_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fnc-data-ann/dev/",
          "slice_percent": 100,
-         "name_of_trained_model_to_use": "log_plainner-fever_98467_100.tar.gz",
+         "name_of_trained_model_to_use": "smartner_tr-fever_12459_100.tar.gz",
          "label_dev_file": "fnc_dev_labels.csv",
          "label_folder": "/data/labels/"
        },

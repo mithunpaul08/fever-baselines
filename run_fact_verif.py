@@ -218,6 +218,8 @@ if __name__ == "__main__":
 
         #if (run_name == "dev"):
         name_of_trained_model_to_use = data_partition_details.pop('name_of_trained_model_to_use', {})
+        mithun_logger.info(
+            (f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}"))
         assert type(name_of_trained_model_to_use) is str
 
 
@@ -248,6 +250,7 @@ if __name__ == "__main__":
                              token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
 
         cwd=os.getcwd()
+        mithun_logger.info(f"going to start reading data.")
         zipped_annotated_data,length_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder)
 
         mithun_logger.info(f"done with reading data. going to generate features.")
