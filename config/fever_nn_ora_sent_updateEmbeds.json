@@ -10,7 +10,7 @@
        "fnc"
      ],
      "list_of_runs": [
-       "dev"
+       "train"
      ],
      "fever_dataset_details": {
        "small_partition_details": {
