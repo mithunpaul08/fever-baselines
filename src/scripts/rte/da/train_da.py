@@ -171,6 +171,20 @@ def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device
     mithun_logger.info(f"length of the new slice is is {len(train_data)}")
     mithun_logger.info(f"value of the first entry in the new slice is is {(train_data[0])}")
 
+
+
+    os.makedirs(serialization_dir, exist_ok=True)
+    sys.stdout = TeeLogger(os.path.join(serialization_dir, "stdout.log"), sys.stdout)  # type: ignore
+    sys.stderr = TeeLogger(os.path.join(serialization_dir, "stderr.log"), sys.stderr)  # type: ignore
+    handler = logging.FileHandler(os.path.join(serialization_dir, "python_logging.log"))
+    handler.setLevel(logging.INFO)
+    handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
+    logging.getLogger().addHandler(handler)
+    serialization_params = deepcopy(params).as_dict(quiet=True)
+
+    with open(os.path.join(serialization_dir, "model_params.json"), "w") as param_file:
+        json.dump(serialization_params, param_file, indent=4)
+
     train_data=Dataset(train_data)
     all_datasets=[train_data]
     datasets_in_vocab = ["train"]

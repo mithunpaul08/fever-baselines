@@ -13,7 +13,7 @@ from rte.parikh.reader_uofa import FEVERReaderUofa
 from tqdm import tqdm
 from rte.mithun.trainer import UofaTrainTest
 from retrieval.fever_doc_db import FeverDocDB
-
+from subprocess import call
 
 """takes a data set and a dictionary of features and generate features based on the requirement. 
 EG: take claim evidence and create smartner based replaced text
@@ -188,7 +188,7 @@ if __name__ == "__main__":
     name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
     mithun_logger.info((f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}"))
     assert type(name_of_trained_model_to_use) is str
-    serialization_dir = uofa_params.pop("serialization_dir", {})
+    serialization_dir_base = uofa_params.pop("serialization_dir", {})
     assert type(name_of_trained_model_to_use) is str
 
 
@@ -215,6 +215,12 @@ if __name__ == "__main__":
         mithun_logger.info(
             (f"value of slice_percent is: {slice_percent}"))
         assert type(slice_percent) is int
+
+
+
+        serialization_dir= serialization_dir_base+ "_"+dataset+"_"+run_name + slice_percent
+        call(['mkdir -p',str(serialization_dir)])
+        sys.exit(1)
 
         # Step 2.6 - find is it dev or train that must be run
         # - if dev, extract trained model path
