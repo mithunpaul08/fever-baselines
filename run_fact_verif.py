@@ -218,7 +218,7 @@ if __name__ == "__main__":
 
 
 
-        serialization_dir= serialization_dir_base+ "_"+dataset+"_"+run_name + slice_percent
+        serialization_dir= serialization_dir_base+ "_"+dataset+"_"+run_name + str(slice_percent)
         call(['mkdir -p',str(serialization_dir)])
         sys.exit(1)
 
