@@ -7,8 +7,9 @@
      },
 
      "datasets_to_work_on": [
-       "small"
+       "fever"
      ],
+
      "list_of_runs": [
        "train"
      ],
@@ -19,7 +20,7 @@
        },
        "train_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train/",
-         "slice_percent": 100
+         "slice_percent": 1
        },
        "dev_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",

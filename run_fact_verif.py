@@ -194,9 +194,6 @@ if __name__ == "__main__":
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
 
-
-
-
         #Step 2.2- get relevant config details from config file
         mithun_logger.info((f"value of dataset is: {dataset}"))
         mithun_logger.info((f"value of run_name is: {run_name}"))
