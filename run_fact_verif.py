@@ -223,7 +223,7 @@ if __name__ == "__main__":
         os.system(bashCommand)
         mithun_logger.info(
             (f"just finished creating a serialization_dir with path:{serialization_dir}"))
-        
+
 
         # Step 2.6 - find is it dev or train that must be run
         # - if dev, extract trained model path
