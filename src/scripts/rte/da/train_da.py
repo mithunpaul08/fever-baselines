@@ -6,7 +6,7 @@ from allennlp.commands.train import prepare_environment
 from typing import List, Union, Dict, Any
 from allennlp.common import Params
 from allennlp.common.tee_logger import TeeLogger
-from allennlp.data import Vocabulary, DataIterator, DatasetReader, Tokenizer, TokenIndexer
+from allennlp.data import Vocabulary, DataIterator, DatasetReader, Tokenizer, TokenIndexer,Dataset
 from allennlp.models import Model, archive_model
 from allennlp.training import Trainer
 from common.util.log_helper import LogHelper
