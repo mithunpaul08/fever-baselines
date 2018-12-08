@@ -61,7 +61,7 @@
        }
      },
      "serialization_dir": "logs/",
-     "name_of_trained_model_to_use": "smartner_tr-fever_98467_100_from_config_file.tar.gz",
+     "name_of_trained_model_to_use": "log_plainner-fever_98467_100.tar.gz",
      "cuda_device": 0,
      "path_to_saved_db": "data/fever/fever.db",
      "read_random_seed_from_commandline": false,
