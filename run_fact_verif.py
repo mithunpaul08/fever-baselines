@@ -218,7 +218,7 @@ if __name__ == "__main__":
 
 
 
-        serialization_dir= serialization_dir_base+ "_"+dataset+"_"+run_name + str(slice_percent)
+        serialization_dir= serialization_dir_base+dataset+"_"+run_name + "_"+str(slice_percent)
         bashCommand = "mkdir -p " + serialization_dir
         os.system(bashCommand)
         mithun_logger.info(
