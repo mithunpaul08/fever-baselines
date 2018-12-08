@@ -22,7 +22,7 @@ import sys
 import json
 
 logger = logging.getLogger(__name__)  # pylint:    disable=invalid-name
-mithun_logger2 = setup_custom_logger('root', "INFO", "general_log.txt")
+
 
 def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_device:int,
                 serialization_dir: str, filtering: str, randomseed:int, slice:int,mithun_logger,train_data_instances) -> Model:
@@ -159,15 +159,15 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device: int,
                 serialization_dir: str, slice: int, mithun_logger,
                 train_data_instances) -> Model:
-    mithun_logger2.info(f"got inside train_model_uofa_version")
+    mithun_logger.info(f"got inside train_model_uofa_version")
     training_slice_percent = slice
     total_training_data = len(train_data_instances.instances)
     training_slice_count = int(total_training_data * training_slice_percent / 100)
     train_data_slice = (train_data_instances.instances[0:(training_slice_count-1)])
     train_data = train_data_slice
 
-    mithun_logger2.info(f"value of total_training_data is {total_training_data}")
-    mithun_logger2.info(f"value of training_slice_count is {training_slice_count}")
+    mithun_logger.info(f"value of total_training_data is {total_training_data}")
+    mithun_logger.info(f"value of training_slice_count is {training_slice_count}")
     mithun_logger.info(f"length of the new slice is is {len(train_data)}")
     mithun_logger.info(f"value of the first entry in the new slice is is {(train_data[0])}")
 
