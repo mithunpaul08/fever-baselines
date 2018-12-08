@@ -160,16 +160,15 @@ def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device
 
 
     training_slice_percent = slice
-
     total_training_data = len(train_data_instances)
-
-    print(total_training_data)
-
     training_slice_count = int(total_training_data * training_slice_percent / 100)
-    print(training_slice_count)
-
-    train_data_slice = (train_data_instances[0:training_slice_count]).instances
+    train_data_slice = (train_data_instances[0:(training_slice_count-1)])
     train_data = train_data_slice
+
+    mithun_logger.info(f"value of total_training_data" is {total_training_data})
+    mithun_logger.info(f"value of training_slice_count" is {training_slice_count})
+    mithun_logger.info(f"length of the new slice is" is {len(train_data)})
+    mithun_logger.info(f"value of the first entry in the new slice is" is {len(train_data[0])})
 
     all_datasets = [train_data]
     datasets_in_vocab = ["train"]
