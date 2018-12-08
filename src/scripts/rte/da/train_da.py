@@ -175,8 +175,7 @@ def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device
 
     mithun_logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
     vocab = Vocabulary.from_params(params.pop("vocabulary", {}),
-                                   ([instance for dataset in all_datasets
-                                     for instance in dataset.instances]))
+                                   ([instance for instance in all_datasets]))
     vocab.save_to_files(os.path.join(serialization_dir, "vocabulary"))
 
     model = Model.from_params(vocab, params.pop('model'))
