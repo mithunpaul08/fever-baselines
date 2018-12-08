@@ -7,7 +7,7 @@ from src.rte.mithun.log import setup_custom_logger
 from types import *
 from src.scripts.rte.da.train_da import train_da
 from src.scripts.rte.da.eval_da import eval_model
-from src.scripts.rte.da.train_da.py import train_model_uofa_version
+from src.scripts.rte.da.train_da import train_model_uofa_version
 from src.scripts.rte.da.eval_da import convert_fnc_to_fever_and_annotate
 from rte.parikh.reader_uofa import FEVERReaderUofa
 from tqdm import tqdm
