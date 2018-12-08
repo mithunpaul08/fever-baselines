@@ -216,7 +216,7 @@ if __name__ == "__main__":
         slice_percent = dataset_details.pop("slice_percent", {})
         mithun_logger.info(
             (f"value of slice_percent is: {slice_percent}"))
-        assert type(slice_percent) is str
+        assert type(slice_percent) is int
 
         # Step 2.6 - find is it dev or train that must be run
         # - if dev, extract trained model path
