@@ -275,7 +275,9 @@ if __name__ == "__main__":
             data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data).instances
 
         if(type_of_classifier=="decomp_attention"):
+            mithun_logger.info(f"found that the type_of_classifier is decomp attention")
             if(run_name== "train"):
+                mithun_logger.info(f"found that the run_name is train. Going to get into  is train_model_uofa_version attention")
                 train_model_uofa_version(params, cuda_device, serialization_dir, slice_percent , mithun_logger,data)
             else:
                 if(run_name== "dev"):
