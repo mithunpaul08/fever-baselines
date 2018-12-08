@@ -219,8 +219,13 @@ if __name__ == "__main__":
 
 
         serialization_dir= serialization_dir_base+dataset+"_"+run_name + "_"+str(slice_percent)
-        bashCommand = "mkdir -p " + serialization_dir
-        os.system(bashCommand)
+
+        #remove the log folder if it exists.
+        remove = "rm -rf " + serialization_dir
+        os.system(remove)
+        #create the folder.
+        create = "mkdir -p " + serialization_dir
+        os.system(create)
         mithun_logger.info(
             (f"just finished creating a serialization_dir with path:{serialization_dir}"))
 
