@@ -172,7 +172,7 @@ def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device
     mithun_logger.info(f"value of the first entry in the new slice is is {(train_data[0])}")
 
     train_data=Dataset(train_data)
-    all_datasets = [Dataset(train_data)]
+    all_datasets=[train_data]
     datasets_in_vocab = ["train"]
 
     mithun_logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
