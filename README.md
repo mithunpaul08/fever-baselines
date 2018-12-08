@@ -92,5 +92,20 @@ If you want to annotated the fever data set with pyprocessors your config will l
 
 ```
 
+
+### Example:
+
+If you are developing code and don't want to train on the whole training dataset of fever
+ which is 145k entries you can use small:
+```
+"datasets_to_work_on": [
+       "small"
+     ],
+     "list_of_runs": [
+       "annotation"
+     ],
+
+```
+
 ## version tracker is kept [here](https://github.com/mithunpaul08/fever-baselines/blob/master/versions.md)
 

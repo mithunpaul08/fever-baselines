@@ -7,7 +7,7 @@
      },
 
      "datasets_to_work_on": [
-       "fever"
+       "small"
      ],
      "list_of_runs": [
        "train"
