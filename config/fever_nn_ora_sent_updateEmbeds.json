@@ -16,7 +16,7 @@
      "fever_dataset_details": {
        "train_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train/",
-         "slice_percent": 1
+         "slice_percent": 100
        },
        "dev_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",
