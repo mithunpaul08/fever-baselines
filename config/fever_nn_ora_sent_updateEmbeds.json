@@ -59,6 +59,7 @@
          "slice_percent": 100
        }
      },
+     "serialization_dir": "logs/",
      "name_of_trained_model_to_use": "log_plainner-fever_98467_100.tar.gz",
      "cuda_device": 0,
      "path_to_saved_db": "data/fever/fever.db",

@@ -7,6 +7,7 @@ from src.rte.mithun.log import setup_custom_logger
 from types import *
 from src.scripts.rte.da.train_da import train_da
 from src.scripts.rte.da.eval_da import eval_model
+from src.scripts.rte.da.train_da.py import train_model_uofa_version
 from src.scripts.rte.da.eval_da import convert_fnc_to_fever_and_annotate
 from rte.parikh.reader_uofa import FEVERReaderUofa
 from tqdm import tqdm
@@ -186,6 +187,9 @@ if __name__ == "__main__":
     name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
     mithun_logger.info((f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}"))
     assert type(name_of_trained_model_to_use) is str
+    serialization_dir = uofa_params.pop("serialization_dir", {})
+    assert type(name_of_trained_model_to_use) is str
+
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
 
@@ -209,10 +213,10 @@ if __name__ == "__main__":
         mithun_logger.info(
             (f"value of path_to_pyproc_annotated_data_folder is: {path_to_pyproc_annotated_data_folder}"))
         assert type(path_to_pyproc_annotated_data_folder) is not Params
-
-
-
-
+        slice_percent = dataset_details.pop("slice_percent", {})
+        mithun_logger.info(
+            (f"value of slice_percent is: {slice_percent}"))
+        assert type(slice_percent) is str
 
         # Step 2.6 - find is it dev or train that must be run
         # - if dev, extract trained model path
@@ -270,20 +274,12 @@ if __name__ == "__main__":
 
             data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data).instances
 
-
-
-
-
-
-
-
-
-
         if(type_of_classifier=="decomp_attention"):
             if(run_name== "train"):
-                train_da( ds, operation, logger_mode)
-            if(run_name== "dev"):
-                eval_model(data,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use,cuda_device)
+                train_model_uofa_version(params, cuda_device, serialization_dir, slice_percent , mithun_logger,data)
+            else:
+                if(run_name== "dev"):
+                    eval_model(data,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use,cuda_device)
 
 
 

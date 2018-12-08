@@ -69,10 +69,6 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
 
 
 
-    # if args.log is not None:
-    #     f.close()
-
-
     if len(actual) > 0:
         print(accuracy_score(actual, predicted))
         print(classification_report(actual, predicted))
