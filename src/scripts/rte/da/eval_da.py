@@ -47,7 +47,7 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
     predicted = []
     pred_dict = defaultdict(int)
 
-    for item in tqdm(data):
+    for item in tqdm(data.instances):
         if item.fields["premise"] is None or item.fields["premise"].sequence_length() == 0:
             # Handles some edge case we presume, never really gets used
             cls = "NOT ENOUGH INFO"

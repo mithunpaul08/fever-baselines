@@ -165,17 +165,17 @@ def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device
     train_data_slice = (train_data_instances[0:(training_slice_count-1)])
     train_data = train_data_slice
 
-    mithun_logger.info(f"value of total_training_data" is {total_training_data})
-    mithun_logger.info(f"value of training_slice_count" is {training_slice_count})
-    mithun_logger.info(f"length of the new slice is" is {len(train_data)})
-    mithun_logger.info(f"value of the first entry in the new slice is" is {(train_data[0])})
+    mithun_logger.info(f"value of total_training_data is {total_training_data}")
+    mithun_logger.info(f"value of training_slice_count is {training_slice_count}")
+    mithun_logger.info(f"length of the new slice is is {len(train_data)}")
+    mithun_logger.info(f"value of the first entry in the new slice is is {(train_data[0])}")
 
     all_datasets = [train_data]
     datasets_in_vocab = ["train"]
 
     mithun_logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
     vocab = Vocabulary.from_params(params.pop("vocabulary", {}),
-                                   ([instance for instance in all_datasets]))
+                                   ([instance for dataset in all_datasets for instance in dataset.instances]))
     vocab.save_to_files(os.path.join(serialization_dir, "vocabulary"))
 
     model = Model.from_params(vocab, params.pop('model'))

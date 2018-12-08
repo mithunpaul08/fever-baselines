@@ -272,7 +272,7 @@ if __name__ == "__main__":
             mithun_logger.info(f"value of feature is:{feature}")
             feature_details=uofa_params.pop("fdl", {})
 
-            data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data).instances
+            data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data)
 
         if(type_of_classifier=="decomp_attention"):
             mithun_logger.info(f"found that the type_of_classifier is decomp attention")
