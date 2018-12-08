@@ -30,7 +30,6 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
     mithun_logger.info(f"value of feature  is:{feature}")
     mithun_logger.info(f"value of dataset  is:{dataset}")
     instances = []
-    #for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate (tqdm(zipped_annotated_data),total=length_data, desc="feature_gen:"):
     for index, (he, be, hl, bl, hw, bw, ht, hd, hfc) in enumerate(zipped_annotated_data):
 
         new_label =""
@@ -103,9 +102,11 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
 
         instances.append(reader.text_to_instance(premise_ann, hypothesis_ann, new_label))
 
+
     if len(instances)==0:
         mithun_logger.error("No instances were read from the given filepath {}. ""Is the path correct?")
         sys.exit(1)
+    mithun_logger.info(f"type of instances is :{type(instances)}")
     return Dataset(instances)
 
 
