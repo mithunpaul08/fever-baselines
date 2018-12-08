@@ -192,7 +192,7 @@ def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device
                                   serialization_dir,
                                   iterator,
                                   train_data,
-                                  validation_data,
+                                  None,
                                   trainer_params)
     print("going to start training")
     trainer.train()
