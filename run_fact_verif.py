@@ -219,7 +219,10 @@ if __name__ == "__main__":
 
 
         serialization_dir= serialization_dir_base+ "_"+dataset+"_"+run_name + str(slice_percent)
-        call(['mkdir -p',str(serialization_dir)])
+        bashCommand = "mkdir -p " + serialization_dir
+        os.system(bashCommand)
+        mithun_logger.info(
+            (f"just finished creating a serialization_dir with path:{serialization_dir}"))
         sys.exit(1)
 
         # Step 2.6 - find is it dev or train that must be run
