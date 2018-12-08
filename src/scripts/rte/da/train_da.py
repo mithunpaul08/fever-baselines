@@ -158,8 +158,7 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device: int,
                 serialization_dir: str, slice: int, mithun_logger,
                 train_data_instances) -> Model:
-
-
+    mithun_logger.info(f"got inside train_model_uofa_version")
     training_slice_percent = slice
     total_training_data = len(train_data_instances.instances)
     training_slice_count = int(total_training_data * training_slice_percent / 100)
@@ -175,8 +174,8 @@ def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device
     datasets_in_vocab = ["train"]
 
     mithun_logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
-    vocab = Vocabulary.from_params(params.pop("vocabulary", {}),
-                                   ([instance for dataset in all_datasets for instance in dataset.instances]))
+    vocab = Vocabulary.from_params(params.pop("vocabulary", {}),Dataset([instance for dataset in all_datasets
+                                            for instance in dataset.instances]))
     vocab.save_to_files(os.path.join(serialization_dir, "vocabulary"))
 
     model = Model.from_params(vocab, params.pop('model'))
