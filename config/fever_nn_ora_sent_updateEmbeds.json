@@ -14,13 +14,9 @@
        "train"
      ],
      "fever_dataset_details": {
-       "small_partition_details": {
-         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train_small/",
-         "slice_percent": 100
-       },
        "train_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train/",
-         "slice_percent": 100
+         "slice_percent": 1
        },
        "dev_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",
@@ -37,10 +33,7 @@
        }
      },
      "fnc_dataset_details": {
-       "small_partition_details": {
-         "path_to_pyproc_annotated_data_folder": "/data/fnc-data-ann/train_small/",
-         "slice_percent": 100
-       },
+
        "train_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fnc-data-ann/train/",
          "slice_percent": 100
