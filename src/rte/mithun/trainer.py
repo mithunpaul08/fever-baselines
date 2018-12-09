@@ -1455,22 +1455,27 @@ class UofaTrainTest():
 
         found_intersection = False
 
+
+        for k,v in dict_tokenner_newner_claims:
+            mithun_logger.debug(f"key:{k}")
+            mithun_logger.debug(f"value:{v}")
+
+        mithun_logger.debug(f"length of dict_tokenner_newner_claims:{len(dict_tokenner_newner_claims.keys())}")
+
         #for every token (irrespective of NER or not) in evidence
         for ev_new_ner_value in new_ev_sent_after_collapse:
 
             #check if its an ner
             if ev_new_ner_value in dict_newner_token_ev.keys():
 
-                #if thats true find its corresponding string value Eg: "tolkein"
+                #if thats true find its corresponding string/lemma value Eg: "tolkein" from dict_newner_token_ev which maps PERSON-E1 ->tolkein
                 token=dict_newner_token_ev[ev_new_ner_value]
-
-
-
                 token_split=set(token.split(" "))
 
                 mithun_logger.debug(f"token:{token}")
                 mithun_logger.debug(f"token_split:{token_split}")
 
+                #now go to through the keys in the dictionary that maps token to new ner Eg: tolkein:PERSON
                 for tup in dict_tokenner_newner_claims.keys():
                     name_cl = tup[0]
                     ner_cl=tup[1]
@@ -1480,9 +1485,7 @@ class UofaTrainTest():
                     mithun_logger.debug(f"name_cl:{name_cl}")
                     mithun_logger.debug(f"name_cl_split:{name_cl_split}")
 
-
-
-
+                    #check if any of the names have an intersection with what you just got. Eg: tolkein
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
                         found_intersection = True
                         mithun_logger.debug
