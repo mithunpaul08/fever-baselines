@@ -1290,7 +1290,7 @@ class UofaTrainTest():
 
 
     #EXPECTS ALL THESE TO BE AN ARRAY. SPLIT ON SPACE IF YOU HAVENT he, be, hl, bl, hw, bw
-    def convert_SMARTNER_form_per_sent(self, claims_ner_list, evidence_ner_list, hl, bl, claims_words_list, evidence_words_list):
+    def convert_SMARTNER_form_per_sent(self, claims_ner_list, evidence_ner_list, hl, bl, claims_words_list, evidence_words_list,mithun_logger):
 
             
 
@@ -1312,6 +1312,8 @@ class UofaTrainTest():
                                                                                                     claims_ner_list,
                                                                                                     ev_claim)
 
+            mithun_logger.debug(neutered_headline)
+
             ev_claim = "e"
             new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev = self.collapse_both(
                 evidence_words_list, evidence_ner_list, ev_claim)
@@ -1319,6 +1321,7 @@ class UofaTrainTest():
             neutered_body,found_intersection= self.check_exists_in_claim(new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev,
                                   dict_tokenner_newner_claims)
 
+            mithun_logger.debug(neutered_body)
 
             premise = " ".join(neutered_body)
             hypothesis = " ".join(neutered_headline)

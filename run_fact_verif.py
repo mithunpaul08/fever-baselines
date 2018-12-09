@@ -69,8 +69,8 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                 premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
                                                                                                                       be_split,
                                                                                                                       hl_split,
-                                                                                                                      bl_split,hw_split, bw_split)
-        if(index==0):
+                                                                                                                      bl_split,hw_split, bw_split,mithun_logger)
+        if(index==20):
             sys.exit()
         #     mithun_logger.info(f"value of old label is:{label}")
         #     mithun_logger.info(f"value of new label is:{new_label}")
