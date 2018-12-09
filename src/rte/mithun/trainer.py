@@ -1292,19 +1292,14 @@ class UofaTrainTest():
     #EXPECTS ALL THESE TO BE AN ARRAY. SPLIT ON SPACE IF YOU HAVENT he, be, hl, bl, hw, bw
     def convert_SMARTNER_form_per_sent(self, claims_ner_list, evidence_ner_list, hl, bl, claims_words_list, evidence_words_list,mithun_logger):
 
-            
-
-            neutered_headline = []
-            neutered_body = []
-            #print(f"he:{claims_ner_list}")
-
-            # print(f"be:{evidence_ner_list}")
-            # print(f"hl:{hl}")
-            # print(f"bl:{bl}")
-
 
 
             ev_claim = "c"
+
+            mithun_logger.debug(f"value of claims_words_list is: {claims_words_list}")
+            mithun_logger.debug(f"value of claims_ner_list is: {claims_ner_list}")
+
+
 
             ''' #replace both headline/claims with NER tags. note that collapsing means, 
             # taking an entity like JRR Tolkein, and creating a single NER tag out of it, instead of 3 different NER tags, which the NER tagger usually does'''
@@ -1312,16 +1307,22 @@ class UofaTrainTest():
                                                                                                     claims_ner_list,
                                                                                                     ev_claim)
 
-            mithun_logger.debug(neutered_headline)
+            mithun_logger.debug(f"value of neutered_headline is: {neutered_headline}")
+            mithun_logger.debug(f"value of neutered_headline is: {neutered_headline}")
 
             ev_claim = "e"
             new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev = self.collapse_both(
                 evidence_words_list, evidence_ner_list, ev_claim)
 
+            mithun_logger.debug(f"value of evidence_ner_list is: {evidence_ner_list}")
+            mithun_logger.debug(f"value of evidence_words_list is: {evidence_words_list}")
+
+            mithun_logger.debug(f"value of evidence after collapse is: {new_sent_after_collapse}")
+
             neutered_body,found_intersection= self.check_exists_in_claim(new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev,
                                   dict_tokenner_newner_claims)
 
-            mithun_logger.debug(neutered_body)
+
 
             premise = " ".join(neutered_body)
             hypothesis = " ".join(neutered_headline)
