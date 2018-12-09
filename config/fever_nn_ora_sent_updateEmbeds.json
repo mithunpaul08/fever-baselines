@@ -1,19 +1,19 @@
 {
    "uofa_params": {
      "logger_details": {
-       "logger_mode": "INFO",
+       "logger_mode": "DEBUG",
        "log_file_base_name": "log_rte",
        "log_folder": "logs/"
      },
 
      "datasets_to_work_on": [
-       "fever",
-       "fnc"
+       "fever"
+
      ],
 
      "list_of_runs": [
-       "train",
-       "dev"
+       "train"
+
      ],
      "fever_dataset_details": {
        "train_partition_details": {
@@ -57,14 +57,14 @@
      },
      "serialization_dir": "logs/",
      "name_of_trained_model_to_use": "plain_ner_1percent_data_noupdatesEmb.tar.gz",
-     "cuda_device": 0,
+     "cuda_device": -1,
      "path_to_saved_db": "data/fever/fever.db",
      "read_random_seed_from_commandline": false,
      "random_seed": 98467,
      "path_to_trained_models_folder": "data/models/",
      "type_of_classifier": "decomp_attention",
      "features": [
-       "plain_NER"
+       "smart_NER"
      ],
      "plain_NER_details": {
        "person_c1": false,

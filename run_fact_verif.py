@@ -69,8 +69,9 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                 premise_ann, hypothesis_ann, found_intersection = objUofaTrainTest.convert_SMARTNER_form_per_sent(he_split,
                                                                                                                       be_split,
                                                                                                                       hl_split,
-                                                                                                                      bl_split,hw_split, bw_split)
-        # if(index %100==0):
+                                                                                                                      bl_split,hw_split, bw_split,mithun_logger)
+        if(index==20):
+            sys.exit()
         #     mithun_logger.info(f"value of old label is:{label}")
         #     mithun_logger.info(f"value of new label is:{new_label}")
         #     mithun_logger.info(f"value of claim before annotation is:{hw}")
@@ -78,12 +79,12 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         #     mithun_logger.info(f"value of premise_ann is:{premise_ann}")
         #     mithun_logger.info(f"value of hypothesis_ann is:{hypothesis_ann}")
 
-        mithun_logger.debug(f"value of old label is:{label}")
-        mithun_logger.debug(f"value of new label is:{new_label}")
-        mithun_logger.debug(f"value of claim before annotation is:{hw}")
-        mithun_logger.debug(f"value of evidence before anntoation is is:{bw}")
-        mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
-        mithun_logger.debug(f"value of hypothesis_ann is:{hypothesis_ann}")
+        # mithun_logger.debug(f"value of old label is:{label}")
+        # mithun_logger.debug(f"value of new label is:{new_label}")
+        # mithun_logger.debug(f"value of claim before annotation is:{hw}")
+        # mithun_logger.debug(f"value of evidence before anntoation is is:{bw}")
+        # mithun_logger.debug(f"value of premise_ann is:{premise_ann}")
+        # mithun_logger.debug(f"value of hypothesis_ann is:{hypothesis_ann}")
 
         #todo: fixe me. not able to cleanly retrieve boolean values from the config file
         # person_c1 = feature_details.pop('person_c1', {})
