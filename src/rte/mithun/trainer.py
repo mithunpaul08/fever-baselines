@@ -1465,6 +1465,8 @@ class UofaTrainTest():
         #for every token (irrespective of NER or not) in evidence
         for ev_new_ner_value in new_ev_sent_after_collapse:
 
+            found_intersection=False
+
             #check if its an ner
             if ev_new_ner_value in dict_newner_token_ev.keys():
 
