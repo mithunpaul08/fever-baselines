@@ -57,7 +57,7 @@
      },
      "serialization_dir": "logs/",
      "name_of_trained_model_to_use": "plain_ner_1percent_data_noupdatesEmb.tar.gz",
-     "cuda_device": 1,
+     "cuda_device": -1,
      "path_to_saved_db": "data/fever/fever.db",
      "read_random_seed_from_commandline": false,
      "random_seed": 98467,
