@@ -7,16 +7,18 @@
      },
 
      "datasets_to_work_on": [
+       "fever",
        "fnc"
      ],
 
      "list_of_runs": [
+       "train",
        "dev"
      ],
      "fever_dataset_details": {
        "train_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train/",
-         "slice_percent": 100
+         "slice_percent": 1
        },
        "dev_partition_details": {
          "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",
@@ -62,7 +64,7 @@
      "path_to_trained_models_folder": "data/models/",
      "type_of_classifier": "decomp_attention",
      "features": [
-       "smart_NER"
+       "plain_NER"
      ],
      "plain_NER_details": {
        "person_c1": false,
