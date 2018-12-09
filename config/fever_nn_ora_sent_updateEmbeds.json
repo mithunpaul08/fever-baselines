@@ -1,19 +1,19 @@
 {
    "uofa_params": {
      "logger_details": {
-       "logger_mode": "INFO",
+       "logger_mode": "DEBUG",
        "log_file_base_name": "log_rte",
        "log_folder": "logs/"
      },
 
      "datasets_to_work_on": [
-       "fever",
-       "fnc"
+       "fever"
+
      ],
 
      "list_of_runs": [
-       "train",
-       "dev"
+       "train"
+
      ],
      "fever_dataset_details": {
        "train_partition_details": {
