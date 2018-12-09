@@ -1319,7 +1319,7 @@ class UofaTrainTest():
             mithun_logger.debug(f"value of evidence after collapse is: {new_sent_after_collapse}")
 
             neutered_body,found_intersection= self.check_exists_in_claim(new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev,
-                                  dict_tokenner_newner_claims)
+                                  dict_tokenner_newner_claims,mithun_logger)
 
             mithun_logger.debug(f"value of claim after replacement is: {neutered_headline}")
             mithun_logger.debug(f"value of evidence after replacement is: {neutered_body}")
@@ -1447,7 +1447,7 @@ class UofaTrainTest():
         replace its current NER tag with the one in the claim. Essentially we are pointing out overlaps to the classifier
         '''
 
-    def check_exists_in_claim(self,new_ev_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev, dict_tokenner_newner_claims):
+    def check_exists_in_claim(self,new_ev_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev, dict_tokenner_newner_claims,mithun_logger):
 
 
         combined_sent=[]
@@ -1455,56 +1455,71 @@ class UofaTrainTest():
 
         found_intersection = False
 
+        #for every token (irrespective of NER or not) in evidence
         for ev_new_ner_value in new_ev_sent_after_collapse:
 
+            #check if its an ner
             if ev_new_ner_value in dict_newner_token_ev.keys():
 
                 #if thats true find its corresponding string value Eg: "tolkein"
                 token=dict_newner_token_ev[ev_new_ner_value]
 
+
+
                 token_split=set(token.split(" "))
+
+                mithun_logger.debug(f"token:{token}")
+                mithun_logger.debug(f"token_split:{token_split}")
 
                 for tup in dict_tokenner_newner_claims.keys():
                     name_cl = tup[0]
                     ner_cl=tup[1]
                     name_cl_split = set(name_cl.split(" "))
 
-                    # print(f"tup:{tup}")
-                    # print(f"name_cl:{name_cl}")
-                    # print(f"name_cl_split:{name_cl_split}")
+                    mithun_logger.debug(f"tup:{tup}")
+                    mithun_logger.debug(f"name_cl:{name_cl}")
+                    mithun_logger.debug(f"name_cl_split:{name_cl_split}")
 
 
 
 
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
                         found_intersection = True
-                        #print("overlap exists between the token in claim and evidence ")
-                        # print(f"token_split:{token_split}")
-                        # print(f"name_cl_split:{name_cl_split}")
+                        mithun_logger.debug
+                        ("overlap exists between the token in claim and evidence ")
+                        mithun_logger.debug
+                        (f"token_split:{token_split}")
+                        mithun_logger.debug
+                        (f"name_cl_split:{name_cl_split}")
 
 
-                        # also confirm that NER value also matches. This is to avoid john amsterdam PER overlapping with AMSTERDAM LOC
+                        # also confirm that NER value of the thing you found just now in evidence also matches the corresponding NER value in claim. This is to avoid john amsterdam PER overlapping with AMSTERDAM LOC
                         actual_ner_tag=""
                         for k, v in dict_tokenner_newner_evidence.items():
 
                             if (ev_new_ner_value == v):
                                 actual_ner_tag=k[1]
-                                # print(f"ev_new_ner_value:{ev_new_ner_value}")
-                                # print(f"actual_ner_tag:{actual_ner_tag}")
-
+                                mithun_logger.debug(f"ev_new_ner_value:{ev_new_ner_value}")
+                                mithun_logger.debug(f"actual_ner_tag:{actual_ner_tag}")
                                 break
 
                         #now check if this NER tag in evidence also matches with that in claims
                         if(actual_ner_tag==ner_cl):
                             val_claim = dict_tokenner_newner_claims[tup]
                             combined_sent.append(val_claim)
+                            mithun_logger.debug(f"val_claim:{val_claim}")
+                            mithun_logger.debug(f"combined_sent:{combined_sent}")
 
 
 
                 #if there is no intersection/common NER entities between headline and body
                 if not (found_intersection):
+                    mithun_logger.debug(f"found no intersection")
                     combined_sent.append(ev_new_ner_value)
                     new_ner=""
+
+                    mithun_logger.debug(f"combined_sent:{combined_sent}")
+
                     #get the evidence's PER-E1 like value
                     for k,v in dict_tokenner_newner_evidence.items():
                         #print(k,v)
@@ -1512,6 +1527,7 @@ class UofaTrainTest():
                             new_ner=k[1]
 
                     dict_tokenner_newner_claims[token, new_ner] = ev_new_ner_value
+                    mithun_logger.debug(f"ev_new_ner_value:{ev_new_ner_value}")
 
 
 
