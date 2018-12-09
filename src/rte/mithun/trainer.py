@@ -1515,6 +1515,9 @@ class UofaTrainTest():
                             mithun_logger.debug(f"val_claim:{val_claim}")
                             mithun_logger.debug(f"combined_sent:{combined_sent}")
 
+                        #now that you found that there is an overlap between your evidence token and the claim token, no need to go through the claims dictionary which maps tokens to ner
+                        break;
+
                 #if the token you are looking at in evidence i.e ev_new_ner_value doesnt have an intersection/common NER with claim, add its NER value (Eg:person-E1) to the final sentence
                 mithun_logger.debug(f"value of  no found_intersection after for tup is {found_intersection}")
 
