@@ -1475,6 +1475,8 @@ class UofaTrainTest():
                 mithun_logger.debug(f"token:{token}")
                 mithun_logger.debug(f"token_split:{token_split}")
 
+                mithun_logger.debug(f"value of  no found_intersection before for tup is {found_intersection}")
+
                 #now go to through the keys in the dictionary that maps tokens in claim to its new ner Eg: tolkein:PERSON
                 for tup in dict_tokenner_newner_claims.keys():
                     name_cl = tup[0]
@@ -1485,15 +1487,13 @@ class UofaTrainTest():
                     mithun_logger.debug(f"name_cl:{name_cl}")
                     mithun_logger.debug(f"name_cl_split:{name_cl_split}")
 
-                    #check if any of the names have an intersection with what you just got. Eg: tolkein
+                    #check if any of the names/tokens in claim have an intersection with what you just got from evidence ev_new_ner_value. Eg: tolkein
                     if (token_split.issubset(name_cl_split) or name_cl_split.issubset(token_split)):
                         found_intersection = True
-                        mithun_logger.debug
-                        ("overlap exists between the token in claim and evidence ")
-                        mithun_logger.debug
-                        (f"token_split:{token_split}")
-                        mithun_logger.debug
-                        (f"name_cl_split:{name_cl_split}")
+                        mithun_logger.debug("found that overlap exists between the token in claim and evidence ")
+                        mithun_logger.debug(f"value of  no found_intersection before for tup is {found_intersection}")
+                        mithun_logger.debug(f"token_split:{token_split}")
+                        mithun_logger.debug(f"name_cl_split:{name_cl_split}")
 
 
                         # also confirm that NER value of the thing you found just now in evidence also matches the corresponding NER value in claim. This is to avoid john amsterdam PER overlapping with AMSTERDAM LOC
@@ -1514,6 +1514,7 @@ class UofaTrainTest():
                             mithun_logger.debug(f"combined_sent:{combined_sent}")
 
                 #if the token you are looking at in evidence i.e ev_new_ner_value doesnt have an intersection/common NER with claim, add its NER value (Eg:person-E1) to the final sentence
+                mithun_logger.debug(f"value of  no found_intersection after for tup is {found_intersection}")
 
                 if not (found_intersection):
                     mithun_logger.debug(f"found no intersection")
