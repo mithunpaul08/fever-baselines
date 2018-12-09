@@ -1,7 +1,7 @@
 from common.util.log_helper import LogHelper
 from rte.mithun.ds import indiv_headline_body
 from pathlib import Path
-
+import os
 import processors
 # print the recommended processors-server version
 from processors import *
@@ -260,13 +260,14 @@ class UOFADataReader():
                 out_file.write(json.dumps(x)+"\n")
         return final_predictions
 
-    def annotate_and_save_doc_with_label_as_id(self,headline, body, label, API , json_file_tr_annotated_headline, json_file_tr_annotated_body,logger):
+    def annotate_and_save_doc_with_label_as_id(self,headline, body, label, API , json_file_tr_annotated_headline, json_file_tr_annotated_body,logger,folder_to_write_output):
         logger.debug(f"got inside annotate_and_save_doc")
         logger.debug(f"headline:{headline}")
         logger.debug(f"body:{body}")
         doc1 = API.fastnlp.annotate(headline)
         doc1.id = label
-        with open(json_file_tr_annotated_headline, "a") as out:
+
+        with open(os.getcwd()+folder_to_write_output+json_file_tr_annotated_headline, "a") as out:
             out.write(doc1.to_JSON())
             out.write("\n")
 
@@ -274,7 +275,7 @@ class UOFADataReader():
         logger.debug(doc2)
         doc2.id = label
 
-        with open(json_file_tr_annotated_body, "a") as out:
+        with open(os.getcwd()+folder_to_write_output+json_file_tr_annotated_body, "a") as out:
             out.write(doc2.to_JSON())
             out.write("\n")
 

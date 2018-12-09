@@ -44,48 +44,35 @@ class load_fever_DataSet():
         return rows
 
 
-    def annotate_fnc(self, stances,articles,logger):
-
-
+    def annotate_fnc(self, stances,articles,logger,path_to_pyproc_annotated_data_folder):
 
         API = ProcessorsBaseAPI(hostname="127.0.0.1", port=8886, keep_alive=True)
 
-        ann_head_tr = "ann_head_tr.json"
-        ann_body_tr = "ann_body_tr.json"
+        ann_head = "split_head/ann_head.json"
+        ann_body = "split_body/ann_body.json"
         labels_file = "label_id.csv"
 
         try:
-            os.remove(ann_head_tr)
-            os.remove(ann_body_tr)
+            os.remove(ann_head)
+            os.remove(ann_body)
             os.remove(labels_file)
 
         except OSError:
             print("not able to find file")
         objUOFADataReader = UOFADataReader()
 
-        for index,s in enumerate(tqdm(stances,total=len(stances),desc="for each stance:")):
+        for index,s in enumerate(tqdm(stances,total=len(stances),desc="for_each_stance:")):
 
             headline = s['Headline']
             bodyid = int(s['Body ID'])
-
-            # print(f"index:{index}")
-            # print(f"Headline:{headline}")
-            # print(f"bodyid:{bodyid}")
-
             actualBody = articles[bodyid]
             hypothesis = headline
             premise = actualBody
 
-            # print(f"actualBody:{actualBody}")
-
             # get the label/original class and write it to disk
             label = s['Stance']
-            # print(f"hypothesis:{hypothesis}")
-            # print(f"premise:{premise}")
-            # print(f"label{label}")
 
-
-            objUOFADataReader.annotate_and_save_doc(hypothesis, premise,bodyid,API, ann_head_tr, ann_body_tr, logger,label)
+            objUOFADataReader.annotate_and_save_doc_with_label_as_id(hypothesis, premise, label, API, ann_head, ann_body, logger, path_to_pyproc_annotated_data_folder)
             objUOFADataReader.write_label_to_disk(bodyid,label,labels_file)
 
 

@@ -136,8 +136,8 @@ class FEVERReader(DatasetReader):
 
         # do annotation on the fly  using pyprocessors. i.e creating NER tags, POS Tags etc.
         # This takes along time. so almost always we do it only once, and load it from disk
-        # if(do_annotation_on_the_fly):
-        #     instances = self.annotation_on_the_fly(file_path, run_name, objUOFADataReader)
+        if(do_annotation_on_the_fly):
+            instances = self.annotation_on_the_fly(file_path, run_name, objUOFADataReader)
 
         # replacing hypothesis with the annotated one-either load pre-annotated data
         # from disk

@@ -1114,8 +1114,6 @@ class UofaTrainTest():
         labels = []
 
         for row in reader:
-            # print(row)
-            # sys.exit(1)
             k, v = row
             labels.append(v)
         return labels
@@ -1330,18 +1328,13 @@ class UofaTrainTest():
             return (premise, hypothesis,found_intersection)
 
 
-    def convert_NER_form_per_sent_plain_NER(self,he, be, hl, bl, hw, bw):
+    def convert_NER_form_per_sent_plain_NER(self,he, be, hl, bl, hw, bw,mithun_logger):
 
 
             neutered_headline = []
             neutered_body = []
-            # print(f"he:{he}")
-            # print(f"be:{be}")
-            # print(f"hl:{hl}")
-            # print(f"bl:{bl}")
-            # print(f"hw:{hw}")
 
-            #print(f"he is of type {type(he)}")
+
 
             for hee, hll, hww in zip(he, hl, hw):
 
@@ -1363,6 +1356,26 @@ class UofaTrainTest():
 
             premise = " ".join(neutered_headline)
             hypothesis = " ".join(neutered_body)
+
+
+            l="Chugging eggnog sends Utah man to hospital"
+            ls=l.split(" ")
+            lss=set(ls)
+            hws=set(hw)
+
+            # if(len(lss.issubset(hws)) > 0) :
+            #     mithun_logger.info(f"found eggnog")
+
+            mithun_logger.debug(f"hw:{hw}")
+            mithun_logger.debug(f"bw:{bw}")
+            mithun_logger.debug(f"he:{he}")
+            mithun_logger.debug(f"be:{be}")
+            mithun_logger.debug(f"premise:{premise}")
+            mithun_logger.debug(f"hypothesis:{hypothesis}")
+
+
+
+
 
 
             return (premise, hypothesis)

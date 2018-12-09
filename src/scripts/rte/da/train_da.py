@@ -6,7 +6,7 @@ from allennlp.commands.train import prepare_environment
 from typing import List, Union, Dict, Any
 from allennlp.common import Params
 from allennlp.common.tee_logger import TeeLogger
-from allennlp.data import Vocabulary, DataIterator, DatasetReader, Tokenizer, TokenIndexer
+from allennlp.data import Vocabulary, DataIterator, DatasetReader, Tokenizer, TokenIndexer,Dataset
 from allennlp.models import Model, archive_model
 from allennlp.training import Trainer
 from common.util.log_helper import LogHelper
@@ -23,8 +23,9 @@ import json
 
 logger = logging.getLogger(__name__)  # pylint:    disable=invalid-name
 
+
 def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_device:int,
-                serialization_dir: str, filtering: str, randomseed:int, slice:int,mithun_logger) -> Model:
+                serialization_dir: str, filtering: str, randomseed:int, slice:int,mithun_logger,train_data_instances) -> Model:
     """
     This function can be used as an entry point to running models in AllenNLP
     directly from a JSON specification using a :class:`Driver`. Note that if
@@ -80,13 +81,11 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
     train_data_path = params.pop('train_data_path')
     logger.info("Reading training data from %s", train_data_path)
-    run_name=args.mode
-    do_annotation_on_the_fly=False
 
 
 
 
-    train_data_instances = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly,mithun_logger).instances
+    #train_data_instances = dataset_reader.read(train_data_path,run_name,do_annotation_on_the_fly,mithun_logger).instances
     #joblib.dump(train_data, "fever_tr_dataset_format.pkl")
 
     #if you want to train on a smaller slice
@@ -126,8 +125,9 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
 
     logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
     vocab = Vocabulary.from_params(params.pop("vocabulary", {}),
-                                   ([instance for dataset in all_datasets
+                                   Dataset([instance for dataset in all_datasets
                                             for instance in dataset.instances]))
+
     vocab.save_to_files(os.path.join(serialization_dir, "vocabulary"))
 
 
@@ -156,6 +156,68 @@ def train_model(db: FeverDocDB, params: Union[Params, Dict[str, Any]], cuda_devi
     return model
 
 
+def train_model_uofa_version( params: Union[Params, Dict[str, Any]], cuda_device: int,
+                serialization_dir: str, slice: int, mithun_logger,
+                train_data_instances) -> Model:
+    mithun_logger.info(f"got inside train_model_uofa_version")
+    training_slice_percent = slice
+    total_training_data = len(train_data_instances.instances)
+    training_slice_count = int(total_training_data * training_slice_percent / 100)
+    train_data_slice = (train_data_instances.instances[0:(training_slice_count-1)])
+    train_data = train_data_slice
+
+    mithun_logger.info(f"value of total_training_data is {total_training_data}")
+    mithun_logger.info(f"value of training_slice_count is {training_slice_count}")
+    mithun_logger.info(f"length of the new slice is is {len(train_data)}")
+    mithun_logger.info(f"value of the first entry in the new slice is is {(train_data[0])}")
+
+
+
+    os.makedirs(serialization_dir, exist_ok=True)
+    sys.stdout = TeeLogger(os.path.join(serialization_dir, "stdout.log"), sys.stdout)  # type: ignore
+    sys.stderr = TeeLogger(os.path.join(serialization_dir, "stderr.log"), sys.stderr)  # type: ignore
+    handler = logging.FileHandler(os.path.join(serialization_dir, "python_logging.log"))
+    handler.setLevel(logging.INFO)
+    handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(name)s - %(message)s'))
+    logging.getLogger().addHandler(handler)
+    serialization_params = deepcopy(params).as_dict(quiet=True)
+
+    with open(os.path.join(serialization_dir, "model_params.json"), "w") as param_file:
+        json.dump(serialization_params, param_file, indent=4)
+
+    train_data=Dataset(train_data)
+    all_datasets=[train_data]
+    datasets_in_vocab = ["train"]
+
+    mithun_logger.info("Creating a vocabulary using %s data.", ", ".join(datasets_in_vocab))
+    vocab = Vocabulary.from_params(params.pop("vocabulary", {}),Dataset([instance for dataset in all_datasets
+                                            for instance in dataset.instances]))
+    vocab.save_to_files(os.path.join(serialization_dir, "vocabulary"))
+
+    model = Model.from_params(vocab, params.pop('model'))
+    iterator = DataIterator.from_params(params.pop("iterator"))
+
+    train_data.index_instances(vocab)
+
+    trainer_params = params.pop("trainer")
+    if cuda_device is not None:
+        trainer_params["cuda_device"] = cuda_device
+    trainer = Trainer.from_params(model,
+                                  serialization_dir,
+                                  iterator,
+                                  train_data,
+                                  None,
+                                  trainer_params)
+    print("going to start training")
+    trainer.train()
+
+    # Now tar up results
+    archive_model(serialization_dir)
+
+    return model
+
+
+
 def train_da(ds,operation,logger_mode):
     LogHelper.setup()
     LogHelper.get_logger("allennlp.training.trainer")
@@ -179,15 +241,15 @@ def train_da(ds,operation,logger_mode):
     # slice = ""
     # random_seed = ""
     #
-    if(read_random_seed_from_commandline):
-        slice=args.slice
-        random_seed=args.randomseed
-    else:
-        if(ds=="fever" and operation=="train") :
-            fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
-            train_partition_details = fever_dataset_details.pop('train_partition_details', {})
-            slice = train_partition_details.pop('slice_percent', {})
-            random_seed = uofa_params.pop('random_seed', {})
+    # if(read_random_seed_from_commandline):
+    #     slice=args.slice
+    #     random_seed=args.randomseed
+    # else:
+    if(ds=="fever" and operation=="train") :
+        fever_dataset_details = uofa_params.pop('fever_dataset_details', {})
+        train_partition_details = fever_dataset_details.pop('train_partition_details', {})
+        slice = train_partition_details.pop('slice_percent', {})
+        random_seed = uofa_params.pop('random_seed', {})
 
 
 

@@ -32,7 +32,13 @@ logger = logging.getLogger(__name__)  # pylint: disable=invalid-name
 def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_trained_model_to_use,cuda_device) -> Model:
 
     mithun_logger.info("got inside eval_model ")
-    archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
+    mithun_logger.info(f"value of path_to_trained_models_folder is:{path_to_trained_models_folder} ")
+    mithun_logger.info(f"value of name_of_trained_model_to_use is:{name_of_trained_model_to_use} ")
+    mithun_logger.info(f"value of cuda_device is:{cuda_device} ")
+    mithun_logger.info(f"value of path_to_trained_models_folder is:{path_to_trained_models_folder} ")
+    mithun_logger.info(f"value of path_to_trained_models_folder is:{path_to_trained_models_folder} ")
+
+    archive = load_archive(os.getcwd()+"/"+path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
     model = archive.model
     model.eval()
 
@@ -41,7 +47,7 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
     predicted = []
     pred_dict = defaultdict(int)
 
-    for item in tqdm(data):
+    for item in tqdm(data.instances):
         if item.fields["premise"] is None or item.fields["premise"].sequence_length() == 0:
             # Handles some edge case we presume, never really gets used
             cls = "NOT ENOUGH INFO"
@@ -57,14 +63,10 @@ def eval_model(data, mithun_logger, path_to_trained_models_folder, name_of_train
 
 
         if "label" in item.fields:
-            mithun_logger.info(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
+            mithun_logger.debug(json.dumps({"actual":item.fields["label"].label,"predicted":cls})+"\n")
         else:
-            mithun_logger.info(json.dumps({"predicted":cls})+"\n")
+            mithun_logger.debug(json.dumps({"predicted":cls})+"\n")
 
-
-
-    # if args.log is not None:
-    #     f.close()
 
 
     if len(actual) > 0:
@@ -163,8 +165,8 @@ def eval_model_fnc_data(db: FeverDocDB, args,mithun_logger,name_of_trained_model
     return model
 
 
-def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
-    archive = load_archive(args.archive_file, cuda_device=args.cuda_device)
+def convert_fnc_to_fever_and_annotate(db: FeverDocDB, path_to_trained_models, logger, cuda_device,path_to_pyproc_annotated_data_folder) -> Model:
+    archive = load_archive(path_to_trained_models, cuda_device=cuda_device)
     config = archive.config
     ds_params = config["dataset_reader"]
     model = archive.model
@@ -175,16 +177,16 @@ def convert_fnc_to_fever_and_annotate(db: FeverDocDB, args, logger) -> Model:
     fnc_data_set = load_fever_DataSet()
 
     #to annotate with pyprocessors- comment this part out if you are doing just evaluation
-    # stances,articles= fnc_data_set.read_parent(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
-    #
-    # dict_articles = {}
-    # # copy all bodies into a dictionary
-    # for article in articles:
-    #     dict_articles[int(article['Body ID'])] = article['articleBody']
-    #
-    # load_fever_DataSet.annotate_fnc(cwd, stances,dict_articles,logger)
-    # print("done with annotation. going to exit")
-    # sys.exit(1)
+    stances,articles= fnc_data_set.read_parent(cwd, "train_bodies.csv", "train_stances_csc483583.csv")
+
+    dict_articles = {}
+    # copy all bodies into a dictionary
+    for article in articles:
+        dict_articles[int(article['Body ID'])] = article['articleBody']
+
+    load_fever_DataSet.annotate_fnc(cwd, stances,dict_articles,logger,path_to_pyproc_annotated_data_folder)
+    print("done with annotation. going to exit")
+    sys.exit(1)
 
     ###########end of pyprocessors annotation
 
