@@ -1,18 +1,20 @@
 {
    "uofa_params": {
      "logger_details": {
-       "logger_mode": "DEBUG",
+       "logger_mode": "INFO",
        "log_file_base_name": "log_rte",
        "log_folder": "logs/"
      },
 
      "datasets_to_work_on": [
-       "fever"
+       "fever",
+       "fnc"
 
      ],
 
      "list_of_runs": [
-       "train"
+       "train",
+       "dev"
 
      ],
      "fever_dataset_details": {
@@ -120,7 +122,7 @@
             "projection_dim":200,
             "pretrained_file":"data/glove/glove.6B.300d.txt.gz",
             "embedding_dim":300,
-            "trainable":false
+            "trainable":true
          }
       },
       "attend_feedforward":{
