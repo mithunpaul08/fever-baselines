@@ -1296,7 +1296,7 @@ class UofaTrainTest():
 
             ev_claim = "c"
 
-            mithun_logger.debug(f"value of claims_words_list is: {claims_words_list}")
+            mithun_logger.debug(f"value of claims_words_list is: { claims_words_list }")
             mithun_logger.debug(f"value of claims_ner_list is: {claims_ner_list}")
 
 
@@ -1321,10 +1321,12 @@ class UofaTrainTest():
             neutered_body,found_intersection= self.check_exists_in_claim(new_sent_after_collapse, dict_tokenner_newner_evidence, dict_newner_token_ev,
                                   dict_tokenner_newner_claims)
 
+            mithun_logger.debug(f"value of claim after replacement is: {neutered_headline}")
+            mithun_logger.debug(f"value of evidence after replacement is: {neutered_body}")
 
-
-            premise = " ".join(neutered_body)
             hypothesis = " ".join(neutered_headline)
+            premise = " ".join(neutered_body)
+
 
 
 
