@@ -1513,24 +1513,23 @@ class UofaTrainTest():
                             mithun_logger.debug(f"val_claim:{val_claim}")
                             mithun_logger.debug(f"combined_sent:{combined_sent}")
 
+                    #if the token you found just now in evidence (eg:tolkein) doesn't overlap with anything in claim, add its NER value (Eg:person-E1) to the final sentence
+                    #if there is no intersection/common NER entities between headline and body
+                    if not (found_intersection):
+                        mithun_logger.debug(f"found no intersection")
+                        combined_sent.append(ev_new_ner_value)
+                        new_ner=""
 
+                        mithun_logger.debug(f"combined_sent:{combined_sent}")
 
-                #if there is no intersection/common NER entities between headline and body
-                if not (found_intersection):
-                    mithun_logger.debug(f"found no intersection")
-                    combined_sent.append(ev_new_ner_value)
-                    new_ner=""
+                        #get the evidence's PER-E1 like value
+                        for k,v in dict_tokenner_newner_evidence.items():
+                            #print(k,v)
+                            if(ev_new_ner_value==v):
+                                new_ner=k[1]
 
-                    mithun_logger.debug(f"combined_sent:{combined_sent}")
-
-                    #get the evidence's PER-E1 like value
-                    for k,v in dict_tokenner_newner_evidence.items():
-                        #print(k,v)
-                        if(ev_new_ner_value==v):
-                            new_ner=k[1]
-
-                    dict_tokenner_newner_claims[token, new_ner] = ev_new_ner_value
-                    mithun_logger.debug(f"ev_new_ner_value:{ev_new_ner_value}")
+                        dict_tokenner_newner_claims[token, new_ner] = ev_new_ner_value
+                        mithun_logger.debug(f"ev_new_ner_value:{ev_new_ner_value}")
 
 
 
