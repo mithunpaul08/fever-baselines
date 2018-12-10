@@ -7,13 +7,11 @@
      },
 
      "datasets_to_work_on": [
-       "fever",
-       "fnc"
+       "fever"
 
      ],
 
      "list_of_runs": [
-       "train",
        "dev"
 
      ],
