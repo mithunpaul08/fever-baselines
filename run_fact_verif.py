@@ -72,12 +72,14 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                                                                                                                       bl_split,hw_split, bw_split,mithun_logger)
 
         if(index % 1000==0):
+            mithun_logger.info(f"\n\n")
             mithun_logger.info(f"value of old label is:{label}")
             mithun_logger.info(f"value of new label is:{new_label}")
             mithun_logger.info(f"value of claim before annotation is:{hw}")
             mithun_logger.info(f"value of evidence before anntoation is is:{bw}")
-            mithun_logger.info(f"value of claim after annotation is:{premise_ann}")
             mithun_logger.info(f"value of claim before annotation is:{hypothesis_ann}")
+            mithun_logger.info(f"value of evidence after annotation is:{premise_ann}")
+
 
 
 
