@@ -7,11 +7,11 @@
      },
 
      "datasets_to_work_on": [
-       "fnc"
+       "fever"
      ],
 
      "list_of_runs": [
-       "dev"
+       "train"
 
      ],
      "fever_dataset_details": {
@@ -63,7 +63,7 @@
      "path_to_trained_models_folder": "data/models/",
      "type_of_classifier": "decomp_attention",
      "features": [
-       "smart_NER"
+       "plain_NER"
      ],
      "plain_NER_details": {
        "person_c1": false,
