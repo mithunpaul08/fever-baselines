@@ -74,7 +74,7 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                                                                                                                       hl_split,
                                                                                                                       bl_split,hw_split, bw_split,mithun_logger)
 
-        if(index % 1000==0):
+        if(index % 10000==0):
             mithun_logger.info(f"\n\n")
             mithun_logger.info(f"value of old label is:{label}")
             mithun_logger.info(f"value of new label is:{new_label}")
