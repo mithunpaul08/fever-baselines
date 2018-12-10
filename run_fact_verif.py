@@ -21,7 +21,12 @@ Eg: take claim evidence and create feature vectors for word overlap
 Parameters
     ----------   
 
-        """
+        ""he= NER Entities in headlines a.k.a claims 
+        be= NER Entities in body a.k.a evidences 
+        hl= Lemmasin headlines a.k.a claims 
+        bl= Lemmas in body a.k.a evidences
+        hw= Actual words  in headlines a.k.a claims 
+        bw=Actual words  in body a.k.a evidences
 
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
@@ -36,7 +41,6 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
         label = hfc
 
         if(dataset == "fnc"):
-
             if  (label == "unrelated"):
                 continue
             else:
@@ -46,7 +50,6 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
                     new_label = "SUPPORTS"
                 if (label == 'disagree'):
                     new_label = "REFUTES"
-
         else :
             new_label=label
 
