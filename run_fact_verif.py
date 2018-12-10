@@ -15,18 +15,18 @@ from rte.mithun.trainer import UofaTrainTest
 from retrieval.fever_doc_db import FeverDocDB
 from subprocess import call
 
-"""takes a data set and a dictionary of features and generate features based on the requirement. 
+'''takes a data set and a dictionary of features and generate features based on the requirement. 
 EG: take claim evidence and create smartner based replaced text
 Eg: take claim evidence and create feature vectors for word overlap
 Parameters
     ----------   
 
-        ""he= NER Entities in headlines a.k.a claims 
+        he= NER Entities in headlines a.k.a claims 
         be= NER Entities in body a.k.a evidences 
         hl= Lemmasin headlines a.k.a claims 
         bl= Lemmas in body a.k.a evidences
         hw= Actual words  in headlines a.k.a claims 
-        bw=Actual words  in body a.k.a evidences
+        bw=Actual words  in body a.k.a evidences '''
 
 #todo: eventually when you merge hand crafted features + text based features, you will have to make both the functions return the same thing
 
