@@ -7,7 +7,7 @@
      },
 
      "datasets_to_work_on": [
-       "fnc"
+       "fever"
      ],
 
      "list_of_runs": [
