@@ -55,6 +55,10 @@
        }
      },
      "do_annotation": true,
+     "max_page ": 5,
+     "max_sent": 5,
+     "folder_where_files_to_annotate_is_kept": "data/fever-data/",
+
      "folder_where_files_to_annotate_is_kept": "data/fever-data/",
      "serialization_dir": "logs/",
      "name_of_trained_model_to_use": "smartner_afterbugfix_updatesEmb_100percentfeverdata_randomseed98467_gives0.68f1onfeverdev_0.59f1onfncdev.tar.gz",

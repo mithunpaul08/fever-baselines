@@ -197,9 +197,18 @@ if __name__ == "__main__":
     folder_where_files_to_annotate_is_kept = uofa_params.pop("folder_where_files_to_annotate_is_kept", {})
     assert type(folder_where_files_to_annotate_is_kept) is str
     do_annotation = uofa_params.pop("do_annotation", {})
+    max_page = uofa_params.pop("max_page", {})
+    assert type(max_page) is int
+    max_sent = uofa_params.pop("max_sent", {})
+    assert type(max_sent) is int
+
+
+
     mithun_logger.info(f"value of do_annotation is: {do_annotation}")
     mithun_logger.info(f"value of folder_where_files_to_annotate_is_kept is: {folder_where_files_to_annotate_is_kept}")
     mithun_logger.info(f"value of serialization_dir_base is: {serialization_dir_base}")
+    mithun_logger.info(f"value of max_page is: {max_page}")
+    mithun_logger.info(f"value of max_sent is: {max_sent}")
 
     #assert type(do_annotation) is str
 
@@ -297,13 +306,13 @@ if __name__ == "__main__":
                         head_file = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_test
                         out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_test
 
-            db = FeverDocDB(args.db)
+
             jlr = JSONLineReader()
-            method = TopNDocsTopNSents(db, args.max_page, args.max_sent, args.model)
+            method = TopNDocsTopNSents(db, max_page, max_sent, args.model)
             mithun_logger.info(f"going to annotate dataset  {dataset} with run name:{run_name}.")
             in_file_full_path=folder_where_files_to_annotate_is_kept+run_name+".jsonl"
             mithun_logger.info(f"going to annotate dataset  {dataset} with run name={run_name} and in_file_full_path={in_file_full_path} and out_file_head_full_path={out_file_head_full_path}and out_file_body_full_path={out_file_body_full_path} .")
-            fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
+            #fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
             objUOFADataReader.read_claims_annotate( in_file_full_path,out_file_head_full_path, out_file_body_full_path, jlr, mithun_logger, method)
 
 
