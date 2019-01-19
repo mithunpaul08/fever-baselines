@@ -11,7 +11,7 @@
      ],
 
      "list_of_runs": [
-       "dev"
+       "test"
 
      ],
      "fever_dataset_details": {
@@ -55,7 +55,7 @@
        }
      },
      "serialization_dir": "logs/",
-     "name_of_trained_model_to_use": "plain_NER_noembupdate_100percentfeverdata_randomseed98467.tar.gz",
+     "name_of_trained_model_to_use": "smartner_afterbugfix_updatesEmb_100percentfeverdata_randomseed98467_gives0.68f1onfeverdev_0.59f1onfncdev.tar.gz",
      "cuda_device": 0,
      "path_to_saved_db": "data/fever/fever.db",
      "read_random_seed_from_commandline": false,

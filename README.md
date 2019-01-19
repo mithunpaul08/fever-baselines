@@ -51,7 +51,7 @@ Eg:
 - here other options include: "test/train/dev/annotation". 
 - Can add more than one like this: "dev,test,annotation". 
 - Note that it means, corresponding data set and corresponding runs. i.e if you add "fever,fnc" in datasets and "train,dev" on runs, it means, it will run train on fever and dev on fnc.
-- Whenever you run dev, make sure you have `name_of_trained_model_to_use` filled up under `dev_partition_details` in the corresponding dataset details tag. Eg: `fever_dataset_details`
+- Whenever you run dev or test, make sure you copy the trained model to the home folder. Also paste the name of the model file to the variable `name_of_trained_model_to_use` .
  
 ### Example:
 
