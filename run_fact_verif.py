@@ -190,16 +190,16 @@ if __name__ == "__main__":
     type_of_classifier = uofa_params.pop("type_of_classifier", {})
     assert type(type_of_classifier) is  str
     name_of_trained_model_to_use = uofa_params.pop('name_of_trained_model_to_use', {})
-    mithun_logger.info((f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}"))
+    mithun_logger.info(f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}")
     assert type(name_of_trained_model_to_use) is str
     serialization_dir_base = uofa_params.pop("serialization_dir", {})
     assert type(name_of_trained_model_to_use) is str
     folder_where_files_to_annotate_is_kept = uofa_params.pop("folder_where_files_to_annotate_is_kept", {})
     assert type(folder_where_files_to_annotate_is_kept) is str
     do_annotation = uofa_params.pop("do_annotation", {})
-    mithun_logger.info((f"value of do_annotation is: {do_annotation}"))
-    mithun_logger.info((f"value of folder_where_files_to_annotate_is_kept is: {folder_where_files_to_annotate_is_kept}"))
-    mithun_logger.info((f"value of serialization_dir_base is: {serialization_dir_base}")
+    mithun_logger.info(f"value of do_annotation is: {do_annotation}")
+    mithun_logger.info(f"value of folder_where_files_to_annotate_is_kept is: {folder_where_files_to_annotate_is_kept}")
+    mithun_logger.info(f"value of serialization_dir_base is: {serialization_dir_base}")
 
     #assert type(do_annotation) is str
 
@@ -208,8 +208,8 @@ if __name__ == "__main__":
 
         #Step 2.2- get relevant config details from config file
 
-        mithun_logger.info((f"value of dataset is: {dataset}"))
-        mithun_logger.info((f"value of run_name is: {run_name}"))
+        mithun_logger.info(f"value of dataset is: {dataset}")
+        mithun_logger.info(f"value of run_name is: {run_name}")
         fds= dataset + "_dataset_details"
         mithun_logger.info((f"value of fds is: {fds}"))
         dataset_details = uofa_params.pop(fds, {})
