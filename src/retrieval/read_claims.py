@@ -28,6 +28,8 @@ class UOFADataReader():
         self.ann_body_tr = "ann_body_tr.json"
         self.ann_head_dev = "ann_head_dev.json"
         self.ann_body_dev = "ann_body_dev.json"
+        self.ann_head_test = "ann_head_test.json"
+        self.ann_body_test = "ann_body_test.json"
         self.logger = None
         self.load_ann_corpus = True
         self.predicted_results = "predicted_results.pkl"
@@ -144,14 +146,19 @@ class UOFADataReader():
         sys.exit(1)
 
 
+
+    # def uofa_annotate(self):
+    #
+    # # this code annotates the given file using pyprocessors. Run it only once in its lifetime.
+    # tr_data=self.read_claims_annotate(args,jlr,logger,method)
+    # logger.info(
+    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
+    # sys.exit(1)
+
     def uofa_training(self,args,jlr,method,logger):
         logger.warning("got inside uofatraining")
 
-        #this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-        # tr_data=self.read_claims_annotate(args,jlr,logger,method)
-        # logger.info(
-        #     "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
-        # sys.exit(1)
+
 
         gold_labels_tr =None
         if(args.mode =="small"):

@@ -14,6 +14,8 @@ from tqdm import tqdm
 from rte.mithun.trainer import UofaTrainTest
 from retrieval.fever_doc_db import FeverDocDB
 from subprocess import call
+from common.dataset.reader import JSONLineReader
+from retrieval.top_n import TopNDocsTopNSents
 
 '''takes a data set and a dictionary of features and generate features based on the requirement. 
 EG: take claim evidence and create smartner based replaced text
@@ -191,6 +193,8 @@ if __name__ == "__main__":
     assert type(name_of_trained_model_to_use) is str
     serialization_dir_base = uofa_params.pop("serialization_dir", {})
     assert type(name_of_trained_model_to_use) is str
+    folder_where_files_to_annotate_is_kept = uofa_params.pop("folder_where_files_to_annotate_is_kept", {})
+    assert type(folder_where_files_to_annotate_is_kept) is str
 
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
@@ -219,6 +223,7 @@ if __name__ == "__main__":
 
 
 
+
         serialization_dir= serialization_dir_base+dataset+"_"+run_name + "_"+str(slice_percent)
 
         #remove the log folder if it exists.
@@ -237,23 +242,6 @@ if __name__ == "__main__":
         # update: the feverdatareader we are using from the fever code needs the name of trained model. EVen for training. wtf..
         # update: so moved it to outside this for loop, since we are accessing it only once using uofa_params.pop anyway
 
-
-
-
-
-
-
-
-        #step 3 -read data
-
-        objUofaTrainTest = UofaTrainTest()
-
-        if (run_name == "annotation" and dataset == "fnc"):
-            path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
-            convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
-
-
-
         db = FeverDocDB(path_to_saved_db)
         archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
         config = archive.config
@@ -262,16 +250,39 @@ if __name__ == "__main__":
         model.eval()
         mithun_logger.info(f"going to initiate FEVERReaderUofa.")
         fever_reader = FEVERReaderUofa(db,
-                             sentence_level=ds_params.pop("sentence_level", False),
-                             wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
-                             claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
-                             token_indexers=TokenIndexer.dict_from_params(ds_params.pop('token_indexers', {})))
+                                       sentence_level=ds_params.pop("sentence_level", False),
+                                       wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
+                                       claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
+                                       token_indexers=TokenIndexer.dict_from_params(
+                                           ds_params.pop('token_indexers', {})))
 
-        cwd=os.getcwd()
+        cwd = os.getcwd()
         mithun_logger.info(f"going to start reading data.")
-        zipped_annotated_data,length_data = fever_reader.read(mithun_logger, cwd+path_to_pyproc_annotated_data_folder)
+        zipped_annotated_data, length_data = fever_reader.read(mithun_logger,
+                                                               cwd + path_to_pyproc_annotated_data_folder)
 
         mithun_logger.info(f"done with reading data. going to generate features.")
+
+
+
+
+        #step 3 -read data
+
+        objUofaTrainTest = UofaTrainTest()
+        objUOFADataReader = UOFADataReader()
+
+        if (run_name == "annotation" and dataset == "fnc"):
+            path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
+            convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
+
+
+        if (run_name == "annotation" and dataset == "fever"):
+            fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
+
+
+
+
+
 
 
 

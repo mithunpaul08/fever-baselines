@@ -47,8 +47,8 @@ Eg:
 "dev"
 ],
 `       
-- here other options include: "test/train/dev/annotation". 
-- Can add more than one like this: "dev,test,annotation". 
+- here other options include: "test/train/dev". 
+- Can add more than one of these options together comma separated like this: "dev,test". 
 - Note that it means, corresponding data set and corresponding runs. i.e if you add "fever,fnc" in datasets and "train,dev" on runs, it means, it will run train on fever and dev on fnc.
 - Whenever you run dev or test, make sure you copy the trained model to the home folder. Also paste the name of the model file to the variable `name_of_trained_model_to_use` .
 - note to self: In server the trained models are stored at: `mithunpaul@jenny:/data1/home/mithun/fever_fnc_all_pkl_json_files/fever/training/pickles`
@@ -79,20 +79,27 @@ Instead if you want to first train the code on fever and then test on fnc,  your
      ],
 ```
 
-### Example:
 
-If you want to annotated the fever data set with pyprocessors your config will look like:
+
+### Annotation means it will take a given data dump (eg:dev) and annotate it with `pyprocessors` to create lemmas, pos tags etc. This is inturn provided as input to the actual training code. Refer example below.
+#### Example:
+If you want to annotate the fever data set with pyprocessors your config will look like:
+
 ```
+do_annotation=true
+
 "datasets_to_work_on": [
        "fever"
      ],
      "list_of_runs": [
-       "annotation"
+       "test"
      ],
 
 ```
-
-
+Note: the input file to annotate must be in the fever-data folder
+For example:
+`/work/mithunpaul/fever/dev_branch/fever-baselines/data/fever-data/test.json` 
+The annotated file will be written to the path specified by the config file variable `path_to_pyproc_annotated_data_folder`
 ### Example:
 
 If you are developing code and don't want to train on the whole training dataset of fever

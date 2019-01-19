@@ -121,3 +121,55 @@ class FEVERReaderUofa():
         return Instance(fields)
 
 
+    def annotation_on_the_fly(self, file_path, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder):
+        print("do_annotation_on_the_fly == true")
+
+        # DELETE THE annotated file IF IT EXISTS every time before the loop
+        # self.delete_if_exists(head_file)
+        # self.delete_if_exists(body_file)
+        if (run_name == "train"):
+            print("run_name == train")
+            head_file = path_to_pyproc_annotated_data_folder+ objUOFADataReader.ann_head_tr
+            body_file = path_to_pyproc_annotated_data_folder+ objUOFADataReader.ann_body_tr
+        else:
+            if (run_name == "dev"):
+                print("run_name == dev")
+                head_file =path_to_pyproc_annotated_data_folder+  objUOFADataReader.ann_head_dev
+                body_file = path_to_pyproc_annotated_data_folder+ objUOFADataReader.ann_body_dev
+            else:
+                if (run_name == "test"):
+                    print("run_name == test")
+                    head_file = path_to_pyproc_annotated_data_folder+ objUOFADataReader.ann_head_test
+                    body_file = path_to_pyproc_annotated_data_folder+ objUOFADataReader.ann_body_test
+
+
+        total_file_path_for_file_to_be_annotated=file_path+"/"+run_name+".jsonl"
+        print(f"total_file_path_for_file_to_be_annotated={total_file_path_for_file_to_be_annotated}")
+        ds = FEVERDataSet(total_file_path_for_file_to_be_annotated, reader=self.reader, formatter=self.formatter)
+        ds.read()
+        instances = []
+
+
+        for instance in tqdm.tqdm(ds.data):
+            counter = counter + 1
+
+            if instance is None:
+                continue
+
+            if not self._sentence_level:
+                pages = set(ev[0] for ev in instance["evidence"])
+                premise = " ".join([self.db.get_doc_text(p) for p in pages])
+            else:
+                lines = set([self.get_doc_line(d[0], d[1]) for d in instance['evidence']])
+                premise = " ".join(lines)
+
+            if len(premise.strip()) == 0:
+                premise = ""
+
+            hypothesis = instance["claim"]
+            label = instance["label_text"]
+
+            premise_ann, hypothesis_ann = self.uofa_annotate(hypothesis, premise, counter, objUOFADataReader, head_file,
+                                                             body_file)
+            instances.append(self.text_to_instance(premise_ann, hypothesis_ann, label))
+        return instances
