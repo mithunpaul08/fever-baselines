@@ -143,7 +143,7 @@ class FEVERReaderUofa():
                     body_file = path_to_pyproc_annotated_data_folder+ objUOFADataReader.ann_body_test
 
 
-        total_file_path_for_file_to_be_annotated=file_path+"/"+run_name+".jsonl"
+        total_file_path_for_file_to_be_annotated=file_path+run_name+".jsonl"
         print(f"total_file_path_for_file_to_be_annotated={total_file_path_for_file_to_be_annotated}")
         ds = FEVERDataSet(total_file_path_for_file_to_be_annotated, reader=self.reader, formatter=self.formatter)
         ds.read()

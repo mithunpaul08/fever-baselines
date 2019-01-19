@@ -198,6 +198,9 @@ if __name__ == "__main__":
     assert type(folder_where_files_to_annotate_is_kept) is str
     do_annotation = uofa_params.pop("do_annotation", {})
     mithun_logger.info((f"value of do_annotation is: {do_annotation}"))
+    mithun_logger.info((f"value of folder_where_files_to_annotate_is_kept is: {folder_where_files_to_annotate_is_kept}"))
+    mithun_logger.info((f"value of serialization_dir_base is: {serialization_dir_base}")
+
     #assert type(do_annotation) is str
 
 
