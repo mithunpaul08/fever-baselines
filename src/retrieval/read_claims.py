@@ -39,7 +39,9 @@ class UOFADataReader():
 
 
 
-    def read_claims_annotate(self,args,jlr,logger,method):
+    def read_claims_annotate(self, in_file_full_path, out_file_head_full_path, out_file_body_full_path,jlr, logger, method):
+
+
         try:
             my_file = Path(self.ann_head_tr)
 
@@ -52,7 +54,7 @@ class UOFADataReader():
             logger.error("not able to find file")
 
         logger.debug("inside read_claims_annotate")
-        with open(args.in_file,"r") as f, open(args.out_file, "w+") as out_file:
+        with open(in_file_full_path, "r") as f:
             all_claims = jlr.process(f)
             obj_all_heads_bodies=[]
             ver_count=0
@@ -61,11 +63,14 @@ class UOFADataReader():
 
 
             #DELETE THE FILE IF IT EXISTS every time before the loop
-            if os.path.exists(self.snli_filename):
+            if os.path.exists(out_file_head_full_path):
                 append_write = 'w' # make a new file if not
-                with open(self.snli_filename, append_write) as outfile:
+                with open(out_file_head_full_path, append_write) as outfile:
                     outfile.write("")
-
+            if os.path.exists(out_file_body_full_path):
+                append_write = 'w' # make a new file if not
+                with open(out_file_body_full_path, append_write) as outfile:
+                    outfile.write("")
 
             for index,claim_full in tqdm(enumerate(all_claims),total=len(all_claims),desc="annotation:"):
 
@@ -128,9 +133,9 @@ class UOFADataReader():
 
 
                 #to annotate using pyprocessors
-                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, label, self.API, self.ann_head_tr, self.ann_body_tr, logger)
+                self.annotate_and_save_doc_with_label_as_id(claim, all_evidences, label, self.API, out_file_head_full_path, out_file_body_full_path, logger)
 
-        #this is convert data into a form to feed  into BIDAF attention model of allen nlp.
+            #this is convert data into a form to feed  into BIDAF attention model of allen nlp.
         #write_snli_format(claim, all_evidences,logger,label)
 
 
@@ -147,13 +152,13 @@ class UOFADataReader():
 
 
 
-    # def uofa_annotate(self):
-    #
-    # # this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-    # tr_data=self.read_claims_annotate(args,jlr,logger,method)
-    # logger.info(
-    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
-    # sys.exit(1)
+    def uofa_ir_and_annotate(self,args,jlr,method,logger):
+
+    # this code annotates the given file using pyprocessors. Run it only once in its lifetime.
+    tr_data=self.read_claims_annotate(args,jlr,logger,method)
+    logger.info(
+        "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
+    sys.exit(1)
 
     def uofa_training(self,args,jlr,method,logger):
         logger.warning("got inside uofatraining")
@@ -267,14 +272,14 @@ class UOFADataReader():
                 out_file.write(json.dumps(x)+"\n")
         return final_predictions
 
-    def annotate_and_save_doc_with_label_as_id(self,headline, body, label, API , json_file_tr_annotated_headline, json_file_tr_annotated_body,logger,folder_to_write_output):
-        logger.debug(f"got inside annotate_and_save_doc")
+    def annotate_and_save_doc_with_label_as_id(self,headline, body, label, API , json_file_tr_annotated_headline, json_file_tr_annotated_body,logger):
+        logger.debug(f"got inside annotate_and_save_doc_with_label_as_id")
         logger.debug(f"headline:{headline}")
         logger.debug(f"body:{body}")
         doc1 = API.fastnlp.annotate(headline)
         doc1.id = label
 
-        with open(os.getcwd()+folder_to_write_output+json_file_tr_annotated_headline, "a") as out:
+        with open(os.getcwd()+json_file_tr_annotated_headline, "a") as out:
             out.write(doc1.to_JSON())
             out.write("\n")
 
@@ -282,7 +287,7 @@ class UOFADataReader():
         logger.debug(doc2)
         doc2.id = label
 
-        with open(os.getcwd()+folder_to_write_output+json_file_tr_annotated_body, "a") as out:
+        with open(os.getcwd()+json_file_tr_annotated_body, "a") as out:
             out.write(doc2.to_JSON())
             out.write("\n")
 

@@ -279,8 +279,34 @@ if __name__ == "__main__":
 
 
         if (do_annotation and dataset == "fever"):
+
+            out_file_head_full_path=""
+            out_file_body_full_path=""
+            if (run_name == "train"):
+                print("run_name == train")
+                out_file_head_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_tr
+                out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_tr
+            else:
+                if (run_name == "dev"):
+                    print("run_name == dev")
+                    out_file_head_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_dev
+                    out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_dev
+                else:
+                    if (run_name == "test"):
+                        print("run_name == test")
+                        head_file = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_test
+                        out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_test
+
+            db = FeverDocDB(args.db)
+            jlr = JSONLineReader()
+            method = TopNDocsTopNSents(db, args.max_page, args.max_sent, args.model)
             mithun_logger.info(f"going to annotate dataset  {dataset} with run name:{run_name}.")
+            in_file_full_path=folder_where_files_to_annotate_is_kept+run_name+".jsonl"
+            mithun_logger.info(f"going to annotate dataset  {dataset} with run name={run_name} and in_file_full_path={in_file_full_path} and out_file_head_full_path={out_file_head_full_path}and out_file_body_full_path={out_file_body_full_path} .")
             fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
+            objUOFADataReader.read_claims_annotate( in_file_full_path,out_file_head_full_path, out_file_body_full_path, jlr, mithun_logger, method)
+
+
             mithun_logger.info(f"done with annotate dataset  {dataset} with run name:{run_name}.")
             sys.exit(1)
 
