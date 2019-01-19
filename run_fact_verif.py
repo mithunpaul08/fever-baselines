@@ -16,6 +16,7 @@ from retrieval.fever_doc_db import FeverDocDB
 from subprocess import call
 from common.dataset.reader import JSONLineReader
 from retrieval.top_n import TopNDocsTopNSents
+from retrieval.read_claims import UOFADataReader
 
 '''takes a data set and a dictionary of features and generate features based on the requirement. 
 EG: take claim evidence and create smartner based replaced text

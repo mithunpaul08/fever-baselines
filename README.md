@@ -80,9 +80,12 @@ Instead if you want to first train the code on fever and then test on fnc,  your
 ```
 
 
+##Logging
+Logs are written into `general_log.txt` in the home directory.
 
-### Annotation means it will take a given data dump (eg:dev) and annotate it with `pyprocessors` to create lemmas, pos tags etc. This is inturn provided as input to the actual training code. Refer example below.
-#### Example:
+## Annotation 
+means it will take a given data dump (eg:dev) and annotate it with `pyprocessors` to create lemmas, pos tags etc. This is inturn provided as input to the actual training code. Refer example below.
+##### Example:
 If you want to annotate the fever data set with pyprocessors your config will look like:
 
 ```
