@@ -197,18 +197,25 @@ if __name__ == "__main__":
     folder_where_files_to_annotate_is_kept = uofa_params.pop("folder_where_files_to_annotate_is_kept", {})
     assert type(folder_where_files_to_annotate_is_kept) is str
     do_annotation = uofa_params.pop("do_annotation", {})
+
+
     max_page = uofa_params.pop("max_page", {})
+    mithun_logger.info(f"value of max_page is: {max_page}and its type is: {type(max_page)}")
     assert type(max_page) is int
+
+
     max_sent = uofa_params.pop("max_sent", {})
+    mithun_logger.info(f"value of max_sent is: {max_sent} and its type is: {type(max_sent)}")
     assert type(max_sent) is int
 
-
+    path_to_baseline_tfidf_model = uofa_params.pop("path_to_baseline_tfidf_model", {})
+    mithun_logger.info(f"value of path_to_baseline_tfidf_model is: {path_to_baseline_tfidf_model} and its type is: {type(path_to_baseline_tfidf_model)}")
+    assert type(path_to_baseline_tfidf_model) is str
 
     mithun_logger.info(f"value of do_annotation is: {do_annotation}")
     mithun_logger.info(f"value of folder_where_files_to_annotate_is_kept is: {folder_where_files_to_annotate_is_kept}")
     mithun_logger.info(f"value of serialization_dir_base is: {serialization_dir_base}")
-    mithun_logger.info(f"value of max_page is: {max_page}")
-    mithun_logger.info(f"value of max_sent is: {max_sent}")
+
 
     #assert type(do_annotation) is str
 
@@ -237,6 +244,7 @@ if __name__ == "__main__":
         mithun_logger.info(
             (f"value of slice_percent is: {slice_percent}"))
         assert type(slice_percent) is int
+
 
 
 
