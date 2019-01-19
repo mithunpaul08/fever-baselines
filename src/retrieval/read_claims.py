@@ -152,13 +152,13 @@ class UOFADataReader():
 
 
 
-    def uofa_ir_and_annotate(self,args,jlr,method,logger):
-
-    # this code annotates the given file using pyprocessors. Run it only once in its lifetime.
-    tr_data=self.read_claims_annotate(args,jlr,logger,method)
-    logger.info(
-        "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
-    sys.exit(1)
+    # def uofa_ir_and_annotate(self,args,jlr,method,logger):
+    #
+    # # this code annotates the given file using pyprocessors. Run it only once in its lifetime.
+    # tr_data=self.read_claims_annotate(args,jlr,logger,method)
+    # logger.info(
+    #     "Finished writing annotated json to disk . going to quit. names of the files are:" + self.ann_head_tr + ";" + self.ann_body_tr)
+    # sys.exit(1)
 
     def uofa_training(self,args,jlr,method,logger):
         logger.warning("got inside uofatraining")
