@@ -196,6 +196,8 @@ if __name__ == "__main__":
     assert type(name_of_trained_model_to_use) is str
     folder_where_files_to_annotate_is_kept = uofa_params.pop("folder_where_files_to_annotate_is_kept", {})
     assert type(folder_where_files_to_annotate_is_kept) is str
+    do_annotation = uofa_params.pop("do_annotation", {})
+    assert type(do_annotation) is str
 
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
@@ -257,37 +259,34 @@ if __name__ == "__main__":
                                        token_indexers=TokenIndexer.dict_from_params(
                                            ds_params.pop('token_indexers', {})))
 
+
+
+
+
+
+
+        objUofaTrainTest = UofaTrainTest()
+        objUOFADataReader = UOFADataReader()
+
+        if (do_annotation and dataset == "fnc"):
+            path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
+            convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
+
+
+        if (do_annotation and dataset == "fever"):
+            mithun_logger.info(f"going to annotate dataset  {dataset} with run name:{run_name}.")
+            sys.exit(1)
+            fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
+            mithun_logger.info(f"done with annotate dataset  {dataset} with run name:{run_name}.")
+            sys.exit(1)
+
+        # step 3 -read data
         cwd = os.getcwd()
         mithun_logger.info(f"going to start reading data.")
         zipped_annotated_data, length_data = fever_reader.read(mithun_logger,
                                                                cwd + path_to_pyproc_annotated_data_folder)
 
         mithun_logger.info(f"done with reading data. going to generate features.")
-
-
-
-
-        #step 3 -read data
-
-        objUofaTrainTest = UofaTrainTest()
-        objUOFADataReader = UOFADataReader()
-
-        if (run_name == "annotation" and dataset == "fnc"):
-            path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
-            convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
-
-
-        if (run_name == "annotation" and dataset == "fever"):
-            fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
-
-
-
-
-
-
-
-
-
 
         data = None
         for feature in features:

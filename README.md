@@ -82,6 +82,8 @@ Instead if you want to first train the code on fever and then test on fnc,  your
 
 ##Logging
 Logs are written into `general_log.txt` in the home directory.
+A home directory is the one within fever-baselines folder Eg:`/work/mithunpaul/fever/dev_branch/fever-baselines/`
+So to keep an eye on the run you can do `tail -f general_log.txt`
 
 ## Annotation 
 means it will take a given data dump (eg:dev) and annotate it with `pyprocessors` to create lemmas, pos tags etc. This is inturn provided as input to the actual training code. Refer example below.
