@@ -293,6 +293,27 @@ class UOFADataReader():
 
         return
 
+    def save_plain_claim_ev(self,headline, body, label, API , json_file_tr_annotated_headline, json_file_tr_annotated_body,logger):
+        logger.debug(f"got inside annotate_and_save_doc_with_label_as_id")
+        logger.debug(f"headline:{headline}")
+        logger.debug(f"body:{body}")
+        doc1 = API.fastnlp.annotate(headline)
+        doc1.id = label
+
+        with open(os.getcwd()+json_file_tr_annotated_headline, "a") as out:
+            out.write(doc1.to_JSON())
+            out.write("\n")
+
+        doc2 = API.fastnlp.annotate(body)
+        logger.debug(doc2)
+        doc2.id = label
+
+        with open(os.getcwd()+json_file_tr_annotated_body, "a") as out:
+            out.write(doc2.to_JSON())
+            out.write("\n")
+
+        return
+
     def annotate_and_save_doc_with_number_as_id(self, headline,body, index, API, json_file_tr_annotated_headline,json_file_tr_annotated_body,
                               logger):
         logger.debug("got inside annotate_and_save_doc")
