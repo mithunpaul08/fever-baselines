@@ -31,7 +31,6 @@ Second time onwards use: `docker start procserv`
 - Almost always/mostly you will have to change only two entries `datasets_to_work_on` and `list_of_runs`
 - With `datasets_to_work_on` you tell the machine which all data sets you want to work on. 
 - Combined with `list_of_runs` it is an indication of what kind of process to run on what type of data set.
-
 Eg: 
 `
 "datasets_to_work_on": [
@@ -52,7 +51,8 @@ Eg:
 - Can add more than one like this: "dev,test,annotation". 
 - Note that it means, corresponding data set and corresponding runs. i.e if you add "fever,fnc" in datasets and "train,dev" on runs, it means, it will run train on fever and dev on fnc.
 - Whenever you run dev or test, make sure you copy the trained model to the home folder. Also paste the name of the model file to the variable `name_of_trained_model_to_use` .
- 
+- note to self: In server the trained models are stored at: `mithunpaul@jenny:/data1/home/mithun/fever_fnc_all_pkl_json_files/fever/training/pickles`
+
 ### Example:
 
 So if you want to run just dev on fake news data set this is how your config will look like:
