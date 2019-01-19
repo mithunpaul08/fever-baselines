@@ -197,12 +197,14 @@ if __name__ == "__main__":
     folder_where_files_to_annotate_is_kept = uofa_params.pop("folder_where_files_to_annotate_is_kept", {})
     assert type(folder_where_files_to_annotate_is_kept) is str
     do_annotation = uofa_params.pop("do_annotation", {})
-    assert type(do_annotation) is str
+    mithun_logger.info((f"value of do_annotation is: {do_annotation}"))
+    #assert type(do_annotation) is str
 
 
     for (dataset, run_name) in (zip(datasets_to_work_on, list_of_runs)):
 
         #Step 2.2- get relevant config details from config file
+
         mithun_logger.info((f"value of dataset is: {dataset}"))
         mithun_logger.info((f"value of run_name is: {run_name}"))
         fds= dataset + "_dataset_details"
