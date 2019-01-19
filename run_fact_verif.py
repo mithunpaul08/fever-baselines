@@ -277,7 +277,6 @@ if __name__ == "__main__":
 
         if (do_annotation and dataset == "fever"):
             mithun_logger.info(f"going to annotate dataset  {dataset} with run name:{run_name}.")
-            sys.exit(1)
             fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
             mithun_logger.info(f"done with annotate dataset  {dataset} with run name:{run_name}.")
             sys.exit(1)
