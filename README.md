@@ -1,21 +1,31 @@
 
 # UOFA- Fact Extraction and VERification
 
-This code is built on top of sheffield's fever baseline. So we assume you have installed all the required documents they mention in their [readme file](https://github.com/sheffieldnlp/fever-baselines)
 
+## Steps to install + run
+- install docker
+- start your docker daemon
+- docker pull myedibleenso/processors-server:latest
+- docker run -d -e _JAVA_OPTIONS="-Xmx3G" -p 127.0.0.1:8886:8888 --name procserv myedibleenso/processors-server
+- conda create --name fever python=3.7
+- conda activate fever
+- conda install pytorch torchvision -c pytorch (might be different for your machine)
+- pip install -r requirements.txt
+- PYTHONPATH=src python run_fact_verif.py -p config/fever_nn_ora_sent_updateEmbeds.json
+
+## Extra info
+This code is built on top of sheffield's fever baseline. So we assume you have installed all the required documents they mention in their [readme file](https://github.com/sheffieldnlp/fever-baselines)
 
 Apart from that you will need PyProcessors over Docker. After you have installed [Docker](https://www.docker.com/), do:
 
 
-- `Docker pull myedibleenso/processors-server:latest`
+- `docker pull myedibleenso/processors-server:latest`
 
 - `docker run -d -e _JAVA_OPTIONS="-Xmx3G" -p 127.0.0.1:8886:8888 --name procserv myedibleenso/processors-server`
 
 note: the docker run command is for the very first time you create this container. 
 
 Second time onwards use: `docker start procserv`
-
-
 
 
 ## In our project we are experimenting with fact verification but unlexicalized.
