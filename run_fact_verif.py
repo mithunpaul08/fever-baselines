@@ -196,8 +196,8 @@ if __name__ == "__main__":
     assert type(name_of_trained_model_to_use) is str
     folder_where_files_to_annotate_is_kept = uofa_params.pop("folder_where_files_to_annotate_is_kept", {})
     assert type(folder_where_files_to_annotate_is_kept) is str
-    do_annotation = uofa_params.pop("do_annotation", {})
-
+    do_annotation_live= uofa_params.pop("do_annotation_live", {})
+    use_fevers_IR_code = uofa_params.pop("use_fevers_IR_code", {})
 
     max_page = uofa_params.pop("max_page", {})
     mithun_logger.info(f"value of max_page is: {max_page}and its type is: {type(max_page)}")
@@ -212,9 +212,10 @@ if __name__ == "__main__":
     mithun_logger.info(f"value of path_to_baseline_tfidf_model is: {path_to_baseline_tfidf_model} and its type is: {type(path_to_baseline_tfidf_model)}")
     assert type(path_to_baseline_tfidf_model) is str
 
-    mithun_logger.info(f"value of do_annotation is: {do_annotation}")
+    mithun_logger.info(f"value of do_annotation is: {do_annotation_live}")
     mithun_logger.info(f"value of folder_where_files_to_annotate_is_kept is: {folder_where_files_to_annotate_is_kept}")
     mithun_logger.info(f"value of serialization_dir_base is: {serialization_dir_base}")
+    mithun_logger.info(f"value of use_fevers_IR_code is: {use_fevers_IR_code}")
 
 
     #assert type(do_annotation) is str
@@ -290,12 +291,44 @@ if __name__ == "__main__":
         objUofaTrainTest = UofaTrainTest()
         objUOFADataReader = UOFADataReader()
 
-        if (do_annotation and dataset == "fnc"):
+
+
+        ''' 
+        today's date:Fri Feb 22 12:50:09 MST 2019
+        if(do_annotation_live)
+        {
+        
+            if(do IR module from FEVER?)
+            {
+            data=run fever IR which we already have below
+            }
+            else
+            {
+            data=load sandeep's dump of post-IR data
+            }
+            
+            callpyproc for annotation
+            
+        }
+        
+        else
+        {
+        load annotated from disk. (objUOFADataReader.read_claims_annotate)
+    
+        }
+        
+        do_feature_generation
+        do_training: note that the way the config file is set up, if youare doing annotation you might have to kill
+        the run and run training again after loading that annotated data
+        '''
+        #read the fever data file and do annotatin using pyprocessors
+
+        if (do_annotation_live and dataset == "fnc"):
             path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
             convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
 
 
-        if (do_annotation and dataset == "fever"):
+        if (do_annotation_live and dataset == "fever"):
 
             out_file_head_full_path=""
             out_file_body_full_path=""
@@ -314,6 +347,7 @@ if __name__ == "__main__":
                         head_file = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_test
                         out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_test
 
+            if(use_fevers_IR_code):
 
             jlr = JSONLineReader()
             method = TopNDocsTopNSents(db, max_page, max_sent, args.model)
