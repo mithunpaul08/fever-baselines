@@ -374,8 +374,8 @@ if __name__ == "__main__":
         data = None
         for feature in features:
             #to run without any delexicalization. i.e NER replacement etc.
-            if(feature="fully_lexicalized"):
-                print()
+            if(feature=="fully_lexicalized"):
+                print("feature==fully_lexicalized")
             else:
                 # todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
                 fdl= feature + "_details"
