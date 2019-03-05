@@ -229,7 +229,10 @@ if __name__ == "__main__":
         mithun_logger.info(f"value of run_name is: {run_name}")
         fds= dataset + "_dataset_details"
         mithun_logger.info((f"value of fds is: {fds}"))
+
+
         dataset_details = uofa_params.pop(fds, {})
+
         mithun_logger.info((f"value of dataset_details is: {dataset_details}") )
         assert type(dataset_details) is  Params
         frn= run_name + "_partition_details"

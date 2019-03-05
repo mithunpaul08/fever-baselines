@@ -11,7 +11,7 @@
      ],
 
      "list_of_runs": [
-       " train"
+       "train"
      ],
      "fever_dataset_details": {
        "train_partition_details": {
