@@ -200,13 +200,13 @@ if __name__ == "__main__":
     use_fevers_IR_code = uofa_params.pop("use_fevers_IR_code", {})
     mithun_logger.info(f"value of use_fevers_IR_code is: {use_fevers_IR_code}and its type is: {type(use_fevers_IR_code)}")
 
-    if(use_fevers_IR_code):
-        max_page = uofa_params.pop("max_page", {})
-        mithun_logger.info(f"value of max_page is: {max_page}and its type is: {type(max_page)}")
-        assert type(max_page) is int
-        max_sent = uofa_params.pop("max_sent", {})
-        mithun_logger.info(f"value of max_sent is: {max_sent} and its type is: {type(max_sent)}")
-        assert type(max_sent) is int
+    #if(use_fevers_IR_code):
+    max_page = uofa_params.pop("max_page", {})
+    mithun_logger.info(f"value of max_page is: {max_page}and its type is: {type(max_page)}")
+    assert type(max_page) is int
+    max_sent = uofa_params.pop("max_sent", {})
+    mithun_logger.info(f"value of max_sent is: {max_sent} and its type is: {type(max_sent)}")
+    assert type(max_sent) is int
 
     path_to_baseline_tfidf_model = uofa_params.pop("path_to_baseline_tfidf_model", {})
     mithun_logger.info(f"value of path_to_baseline_tfidf_model is: {path_to_baseline_tfidf_model} and its type is: {type(path_to_baseline_tfidf_model)}")
