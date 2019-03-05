@@ -373,13 +373,16 @@ if __name__ == "__main__":
 
         data = None
         for feature in features:
-            # todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
-            fdl= feature + "_details"
-            mithun_logger.info(f"value of fdl is:{fdl}")
-            mithun_logger.info(f"value of feature is:{feature}")
-            feature_details=uofa_params.pop("fdl", {})
-
-            data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data)
+            #to run without any delexicalization. i.e NER replacement etc.
+            if(feature="fully_lexicalized"):
+                print()
+            else:
+                # todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
+                fdl= feature + "_details"
+                mithun_logger.info(f"value of fdl is:{fdl}")
+                mithun_logger.info(f"value of feature is:{feature}")
+                feature_details=uofa_params.pop("fdl", {})
+                data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data)
 
         if(type_of_classifier=="decomp_attention"):
             mithun_logger.info(f"found that the type_of_classifier is decomp attention")
