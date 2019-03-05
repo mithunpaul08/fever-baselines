@@ -54,9 +54,9 @@
        }
      },
      "max_sent": 5,
-     "max_page ": 5,
+     "max_page": 5,
      "do_annotation_live": false,
-     "use_fevers_IR_code":false,
+     "use_fevers_IR_code": false,
      "path_to_baseline_tfidf_model": "data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz",
      "folder_where_files_to_annotate_is_kept": "data/fever-data/",
      "serialization_dir": "logs/",
