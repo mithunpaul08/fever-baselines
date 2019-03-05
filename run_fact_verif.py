@@ -240,7 +240,7 @@ if __name__ == "__main__":
         path_to_pyproc_annotated_data_folder = data_partition_details.pop('path_to_pyproc_annotated_data_folder', {})
         mithun_logger.info(
             (f"value of path_to_pyproc_annotated_data_folder is: {path_to_pyproc_annotated_data_folder}"))
-        assert type(path_to_pyproc_annotated_data_folder) is not Params
+        assert type(path_to_pyproc_annotated_data_folder) is str
         slice_percent = data_partition_details.pop("slice_percent", {})
         mithun_logger.info(
             (f"value of slice_percent is: {slice_percent}"))
