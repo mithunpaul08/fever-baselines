@@ -291,8 +291,7 @@ if __name__ == "__main__":
         mithun_logger.info(
             (f"value of slice_percent is: {slice_percent}"))
         assert type(slice_percent) is int
-        slice_percent = data_partition_details.pop("slice_percent", {})
-
+        
 
 
 
