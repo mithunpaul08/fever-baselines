@@ -3,6 +3,7 @@ from allennlp.models import Model, archive_model, load_archive
 from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
 import argparse
 import sys,os
+from os.path import join,isfile
 import json,mmap,os,argparse,string,sys
 from src.rte.mithun.log import setup_custom_logger
 from types import *
@@ -123,7 +124,7 @@ def get_num_lines(file_path):
         return lines
 
 
-def read_rte_data(filename, args):
+def read_rte_data(filename):
         all_labels = []
         all_claims = []
         all_evidences = []
@@ -134,11 +135,6 @@ def read_rte_data(filename, args):
                 claim = x["claim"]
                 evidences = x["evidence"]
                 label = x["label"]
-
-                if (args.remove_punctuations == True):
-                    claim = claim.translate(str.maketrans('', '', string.punctuation))
-                    evidences = evidences.translate(str.maketrans('', '', string.punctuation))
-
                 all_claims.append(claim)
                 all_evidences.append(evidences)
                 all_labels.append(label)
@@ -149,13 +145,15 @@ def read_rte_data(filename, args):
 
 def load_data_from_disk(input_file_name,args,reader,mithun_logger):
     mithun_logger.info("inside load_data_from_disk")
-    all_claims, all_evidences, all_labels=read_rte_data(input_file_name,args)
+    all_claims, all_evidences, all_labels=read_rte_data(input_file_name)
     instances = []
     for index, (claim,evidence,label) in enumerate(zip(all_claims, all_evidences, all_labels)):
         instances.append(reader.text_to_instance(claim, evidence, label))
     if len(instances) == 0:
         mithun_logger.error("No instances were read from the given filepath {}. ""Is the path correct?")
         sys.exit(1)
+    else:
+        mithun_logger.error(f"total number of instances is {len(instances)}")
     mithun_logger.info(f"type of instances is :{type(instances)}")
     return Dataset(instances)
 
@@ -312,7 +310,7 @@ if __name__ == "__main__":
 
         create_features = uofa_params.pop("create_features", {})
 
-        if(create_features):
+
             #todo: check for if do their IR
             #  Step 2.6 - find is it dev or train that must be run
             # - if dev, extract trained model path
@@ -320,21 +318,21 @@ if __name__ == "__main__":
             # update: the feverdatareader we are using from the fever code needs the name of trained model. EVen for training. wtf..
             # update: so moved it to outside this for loop, since we are accessing it only once using uofa_params.pop anyway
 
-            db = FeverDocDB(path_to_saved_db)
-            archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
-            config = archive.config
-            ds_params = config["dataset_reader"]
-            model = archive.model
-            model.eval()
-            mithun_logger.info(f"going to initiate FEVERReaderUofa.")
-            fever_reader = FEVERReaderUofa(db,
-                                           sentence_level=ds_params.pop("sentence_level", False),
-                                           wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
-                                           claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
-                                           token_indexers=TokenIndexer.dict_from_params(
-                                               ds_params.pop('token_indexers', {})))
+        db = FeverDocDB(path_to_saved_db)
+        archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
+        config = archive.config
+        ds_params = config["dataset_reader"]
+        model = archive.model
+        model.eval()
+        mithun_logger.info(f"going to initiate FEVERReaderUofa.")
+        fever_reader = FEVERReaderUofa(db,
+                                       sentence_level=ds_params.pop("sentence_level", False),
+                                       wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
+                                       claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
+                                       token_indexers=TokenIndexer.dict_from_params(
+                                           ds_params.pop('token_indexers', {})))
 
-
+        if (create_features):
 
 
 
@@ -439,11 +437,14 @@ if __name__ == "__main__":
                 mithun_logger.info(f"current feature is:{feature}")
                 if(feature=="merge_smartner_supersense_tagging"):
                     path_to_pyproc_annotated_data_folder_and_run_name=  os.path.join(path_to_pyproc_annotated_data_folder,run_name)
-                    path_to_pyproc_annotated_data_folder_and_run_name_and_combined=  os.path.join(path_to_pyproc_annotated_data_folder,"combined_claim_evidences")
-                    in_file_full_path = path_to_pyproc_annotated_data_folder_and_run_name_and_combined + "smartner_sstags_merged "+".jsonl"
+                    path_to_pyproc_annotated_data_folder_and_run_name_and_combined=  os.path.join(path_to_pyproc_annotated_data_folder,"combined_claim_evidences/")
+                    #todo . move thie name of input file to config file hardcoding name of input file smartner_sstags_merged- one day before emnlp deadline, may13th 2019
+                    in_file_full_path = path_to_pyproc_annotated_data_folder_and_run_name_and_combined + "smartner_sstags_merged"+".jsonl"
                     mithun_logger.info(f"value ofi n_file_full_path:{in_file_full_path} ")
-                    #data=load_data_from_disk(input_file_name, args, reader, mithun_logger):
-
+                    if(isfile(in_file_full_path)):
+                        mithun_logger.info(f"found file exists. going to read ")
+                    data=load_data_from_disk(in_file_full_path, args, fever_reader, mithun_logger)
+                    sys.exit(1)
 
         if(type_of_classifier=="decomp_attention"):
             mithun_logger.info(f"found that the type_of_classifier is decomp attention")
