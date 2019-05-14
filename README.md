@@ -81,7 +81,7 @@ Instead if you want to first train the code on fever and then test on fnc,  your
 ```
 "datasets_to_work_on": [
        "fever",
-       "fnc"
+       "fever"
      ],
      "list_of_runs": [
        "train",
@@ -89,8 +89,25 @@ Instead if you want to first train the code on fever and then test on fnc,  your
      ],
 ```
 
+## Features
 
-##Logging
+everything above assumes that features are going to be generated on the fly Eg: create smartner tags.
+These can be specified as a list inside:  
+
+```
+"features": [
+       "fully_lexicalized",
+       "merge_smartner_supersense_tagging"
+     ],
+``` 
+
+## Load input files with features
+ 
+ Instead if you have the neutered data written to disk and you just want to load it before training do:
+ 
+`create_features =false`
+
+## Logging
 Logs are written into `general_log.txt` in the home directory.
 A home directory is the one within fever-baselines folder Eg:`/work/mithunpaul/fever/dev_branch/fever-baselines/`
 So to keep an eye on the run you can do `tail -f general_log.txt`
@@ -128,8 +145,6 @@ If you are developing code and don't want to train on the whole training dataset
      ],
 
 ```
-
-## Features:
 
 ## version tracker is kept [here](https://github.com/mithunpaul08/fever-baselines/blob/master/versions.md)
 

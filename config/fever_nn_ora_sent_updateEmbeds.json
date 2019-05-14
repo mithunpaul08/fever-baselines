@@ -55,6 +55,7 @@
      },
      "max_sent": 5,
      "max_page": 5,
+     "create_features": false,
      "do_annotation_live": false,
      "use_fevers_IR_code": false,
      "path_to_baseline_tfidf_model": "data/index/fever-tfidf-ngram=2-hash=16777216-tokenizer=simple.npz",
@@ -68,7 +69,7 @@
      "path_to_trained_models_folder": "data/models/",
      "type_of_classifier": "decomp_attention",
      "features": [
-       "fully_lexicalized"
+       "merge_smartner_supersense_tagging"
      ],
      "plain_NER_details": {
        "person_c1": false,

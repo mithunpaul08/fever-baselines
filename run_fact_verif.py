@@ -3,6 +3,7 @@ from allennlp.models import Model, archive_model, load_archive
 from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
 import argparse
 import sys,os
+import json,mmap,os,argparse,string,sys
 from src.rte.mithun.log import setup_custom_logger
 from types import *
 from src.scripts.rte.da.train_da import train_da
@@ -113,6 +114,50 @@ def generate_features(zipped_annotated_data,feature,feature_details,reader,mithu
     mithun_logger.info(f"type of instances is :{type(instances)}")
     return Dataset(instances)
 
+def get_num_lines(file_path):
+        fp = open(file_path, "r+")
+        buf = mmap.mmap(fp.fileno(), 0)
+        lines = 0
+        while buf.readline():
+            lines += 1
+        return lines
+
+
+def read_rte_data(filename, args):
+        all_labels = []
+        all_claims = []
+        all_evidences = []
+
+        with open(filename) as f:
+            for index, line in enumerate(tqdm(f, total=get_num_lines(filename))):
+                x = json.loads(line)
+                claim = x["claim"]
+                evidences = x["evidence"]
+                label = x["label"]
+
+                if (args.remove_punctuations == True):
+                    claim = claim.translate(str.maketrans('', '', string.punctuation))
+                    evidences = evidences.translate(str.maketrans('', '', string.punctuation))
+
+                all_claims.append(claim)
+                all_evidences.append(evidences)
+                all_labels.append(label)
+
+        return all_claims, all_evidences, all_labels
+
+
+
+def load_data_from_disk(input_file_name,args,reader,mithun_logger):
+    mithun_logger.info("inside load_data_from_disk")
+    all_claims, all_evidences, all_labels=read_rte_data(input_file_name,args)
+    instances = []
+    for index, (claim,evidence,label) in enumerate(zip(all_claims, all_evidences, all_labels)):
+        instances.append(reader.text_to_instance(claim, evidence, label))
+    if len(instances) == 0:
+        mithun_logger.error("No instances were read from the given filepath {}. ""Is the path correct?")
+        sys.exit(1)
+    mithun_logger.info(f"type of instances is :{type(instances)}")
+    return Dataset(instances)
 
 
 if __name__ == "__main__":
@@ -248,6 +293,7 @@ if __name__ == "__main__":
         mithun_logger.info(
             (f"value of slice_percent is: {slice_percent}"))
         assert type(slice_percent) is int
+        slice_percent = data_partition_details.pop("slice_percent", {})
 
 
 
@@ -264,125 +310,140 @@ if __name__ == "__main__":
         mithun_logger.info(
             (f"just finished creating a serialization_dir with path:{serialization_dir}"))
 
+        create_features = uofa_params.pop("create_features", {})
 
-        # Step 2.6 - find is it dev or train that must be run
-        # - if dev, extract trained model path
-        # - if train , nothing
-        # update: the feverdatareader we are using from the fever code needs the name of trained model. EVen for training. wtf..
-        # update: so moved it to outside this for loop, since we are accessing it only once using uofa_params.pop anyway
+        if(create_features):
+            #todo: check for if do their IR
+            #  Step 2.6 - find is it dev or train that must be run
+            # - if dev, extract trained model path
+            # - if train , nothing
+            # update: the feverdatareader we are using from the fever code needs the name of trained model. EVen for training. wtf..
+            # update: so moved it to outside this for loop, since we are accessing it only once using uofa_params.pop anyway
 
-        db = FeverDocDB(path_to_saved_db)
-        archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
-        config = archive.config
-        ds_params = config["dataset_reader"]
-        model = archive.model
-        model.eval()
-        mithun_logger.info(f"going to initiate FEVERReaderUofa.")
-        fever_reader = FEVERReaderUofa(db,
-                                       sentence_level=ds_params.pop("sentence_level", False),
-                                       wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
-                                       claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
-                                       token_indexers=TokenIndexer.dict_from_params(
-                                           ds_params.pop('token_indexers', {})))
-
-
-
-
-
-
-
-        objUofaTrainTest = UofaTrainTest()
-        objUOFADataReader = UOFADataReader()
+            db = FeverDocDB(path_to_saved_db)
+            archive = load_archive(path_to_trained_models_folder + name_of_trained_model_to_use, cuda_device)
+            config = archive.config
+            ds_params = config["dataset_reader"]
+            model = archive.model
+            model.eval()
+            mithun_logger.info(f"going to initiate FEVERReaderUofa.")
+            fever_reader = FEVERReaderUofa(db,
+                                           sentence_level=ds_params.pop("sentence_level", False),
+                                           wiki_tokenizer=Tokenizer.from_params(ds_params.pop('wiki_tokenizer', {})),
+                                           claim_tokenizer=Tokenizer.from_params(ds_params.pop('claim_tokenizer', {})),
+                                           token_indexers=TokenIndexer.dict_from_params(
+                                               ds_params.pop('token_indexers', {})))
 
 
 
-        ''' 
-        today's date:Fri Feb 22 12:50:09 MST 2019
-        if(do_annotation_live)
-        {
-        
-            if(do IR module from FEVER?)
+
+
+
+
+            objUofaTrainTest = UofaTrainTest()
+            objUOFADataReader = UOFADataReader()
+
+
+
+            ''' 
+            today's date:Fri Feb 22 12:50:09 MST 2019
+            if(do_annotation_live)
             {
-            data=run fever IR which we already have below
+            
+                if(do IR module from FEVER?)
+                {
+                data=run fever IR which we already have below
+                }
+                else
+                {
+                data=load sandeep's dump of post-IR data
+                }
+                
+                callpyproc for annotation
+                
             }
+            
             else
             {
-            data=load sandeep's dump of post-IR data
+            load annotated from disk. (objUOFADataReader.read_claims_annotate)
+        
             }
             
-            callpyproc for annotation
-            
-        }
-        
-        else
-        {
-        load annotated from disk. (objUOFADataReader.read_claims_annotate)
-    
-        }
-        
-        do_feature_generation
-        do_training: note that the way the config file is set up, if youare doing annotation you might have to kill
-        the run and run training again after loading that annotated data
-        '''
-        #read the fever data file and do annotatin using pyprocessors
+            do_feature_generation
+            do_training: note that the way the config file is set up, if youare doing annotation you might have to kill
+            the run and run training again after loading that annotated data
+            '''
+            #read the fever data file and do annotatin using pyprocessors
 
-        if (do_annotation_live and dataset == "fnc"):
-            path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
-            convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
+            if (do_annotation_live and dataset == "fnc"):
+                path_to_trained_models=path_to_trained_models_folder+ name_of_trained_model_to_use
+                convert_fnc_to_fever_and_annotate(FeverDocDB, path_to_trained_models,  mithun_logger,cuda_device,path_to_pyproc_annotated_data_folder)
 
 
-        if (do_annotation_live and dataset == "fever"):
+            if (do_annotation_live and dataset == "fever"):
 
-            out_file_head_full_path=""
-            out_file_body_full_path=""
-            if (run_name == "train"):
-                print("run_name == train")
-                out_file_head_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_tr
-                out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_tr
-            else:
-                if (run_name == "dev"):
-                    print("run_name == dev")
-                    out_file_head_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_dev
-                    out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_dev
+                out_file_head_full_path=""
+                out_file_body_full_path=""
+                if (run_name == "train"):
+                    print("run_name == train")
+                    out_file_head_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_tr
+                    out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_tr
                 else:
-                    if (run_name == "test"):
-                        print("run_name == test")
-                        head_file = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_test
-                        out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_test
+                    if (run_name == "dev"):
+                        print("run_name == dev")
+                        out_file_head_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_dev
+                        out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_dev
+                    else:
+                        if (run_name == "test"):
+                            print("run_name == test")
+                            head_file = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_head_test
+                            out_file_body_full_path = path_to_pyproc_annotated_data_folder + objUOFADataReader.ann_body_test
 
-            if(use_fevers_IR_code):
-                jlr = JSONLineReader()
-                method = TopNDocsTopNSents(db, max_page, max_sent, args.model)
-                mithun_logger.info(f"going to annotate dataset  {dataset} with run name:{run_name}.")
-                in_file_full_path=folder_where_files_to_annotate_is_kept+run_name+".jsonl"
-                mithun_logger.info(f"going to annotate dataset  {dataset} with run name={run_name} and in_file_full_path={in_file_full_path} and out_file_head_full_path={out_file_head_full_path}and out_file_body_full_path={out_file_body_full_path} .")
-                #fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
-                objUOFADataReader.read_claims_annotate( in_file_full_path,out_file_head_full_path, out_file_body_full_path, jlr, mithun_logger, method)
+                if(use_fevers_IR_code):
+                    jlr = JSONLineReader()
+                    method = TopNDocsTopNSents(db, max_page, max_sent, args.model)
+                    mithun_logger.info(f"going to annotate dataset  {dataset} with run name:{run_name}.")
+                    in_file_full_path=folder_where_files_to_annotate_is_kept+run_name+".jsonl"
+                    mithun_logger.info(f"going to annotate dataset  {dataset} with run name={run_name} and in_file_full_path={in_file_full_path} and out_file_head_full_path={out_file_head_full_path}and out_file_body_full_path={out_file_body_full_path} .")
+                    #fever_reader.annotation_on_the_fly(folder_where_files_to_annotate_is_kept, run_name, objUOFADataReader,path_to_pyproc_annotated_data_folder)
+                    objUOFADataReader.read_claims_annotate( in_file_full_path,out_file_head_full_path, out_file_body_full_path, jlr, mithun_logger, method)
 
 
-                mithun_logger.info(f"done with annotate dataset  {dataset} with run name:{run_name}.")
-                sys.exit(1)
+                    mithun_logger.info(f"done with annotate dataset  {dataset} with run name:{run_name}.")
+                    sys.exit(1)
 
-        # step 3 -read data
-        cwd = os.getcwd()
-        mithun_logger.info(f"going to start reading data.")
-        zipped_annotated_data, length_data = fever_reader.read(mithun_logger,
-                                                               cwd + path_to_pyproc_annotated_data_folder)
+            # step 3 -read data
+            cwd = os.getcwd()
+            mithun_logger.info(f"going to start reading data.")
+            zipped_annotated_data, length_data = fever_reader.read(mithun_logger,
+                                                                   cwd + path_to_pyproc_annotated_data_folder)
 
-        mithun_logger.info(f"done with reading data. going to generate features.")
+            mithun_logger.info(f"done with reading data. going to generate features.")
 
-        data = None
-        for feature in features:
-            #to run without any delexicalization. i.e NER replacement etc.
-            if(feature=="fully_lexicalized"):
-                print("feature==fully_lexicalized")
-            else:
-                # todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
-                fdl= feature + "_details"
-                mithun_logger.info(f"value of fdl is:{fdl}")
-                mithun_logger.info(f"value of feature is:{feature}")
-                feature_details=uofa_params.pop("fdl", {})
-                data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data)
+            data = None
+            for feature in features:
+                #to run without any delexicalization. i.e NER replacement etc.
+                if(feature=="fully_lexicalized"):
+                    print("feature==fully_lexicalized")
+                else:
+                    # todo: right now there is only one feature, NER ONE, so you will get away with data inside this for loop. However, need to dynamically add features
+                    fdl= feature + "_details"
+                    mithun_logger.info(f"value of fdl is:{fdl}")
+                    mithun_logger.info(f"value of feature is:{feature}")
+                    feature_details=uofa_params.pop("fdl", {})
+                    data=generate_features(zipped_annotated_data, feature, feature_details, fever_reader, mithun_logger,objUofaTrainTest,dataset,length_data)
+
+        else:
+            mithun_logger.info(f"found that features are not being created, but will be loaded from disk")
+            for feature in features:
+                mithun_logger.info(f"current feature is:{feature}")
+                if(feature=="merge_smartner_supersense_tagging"):
+                    path_to_pyproc_annotated_data_folder_and_run_name=  os.path.join(path_to_pyproc_annotated_data_folder,run_name)
+                    path_to_pyproc_annotated_data_folder_and_run_name_and_combined=  os.path.join(path_to_pyproc_annotated_data_folder,"combined_claim_evidences")
+                    in_file_full_path = path_to_pyproc_annotated_data_folder_and_run_name_and_combined + "smartner_sstags_merged "+".jsonl"
+                    mithun_logger.info(f"value ofi n_file_full_path:{in_file_full_path} ")
+                    #data=load_data_from_disk(input_file_name, args, reader, mithun_logger):
+
 
         if(type_of_classifier=="decomp_attention"):
             mithun_logger.info(f"found that the type_of_classifier is decomp attention")
