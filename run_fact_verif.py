@@ -1,8 +1,11 @@
 from allennlp.common import Params
 from allennlp.models import Model, archive_model, load_archive
 from allennlp.data import Vocabulary, Dataset, DataIterator, DatasetReader, Tokenizer, TokenIndexer
+from allennlp.data.instance import Instance
+from allennlp.data.fields import Field, TextField, LabelField
 import argparse
 import sys,os
+from typing import Dict
 from os.path import join,isfile
 import json,mmap,os,argparse,string,sys
 from src.rte.mithun.log import setup_custom_logger
@@ -141,14 +144,26 @@ def read_rte_data(filename):
 
         return all_claims, all_evidences, all_labels
 
+def text_to_instance(self,  # type: ignore
+                         premise: str,
+                         hypothesis: str,
+                         label: str = None) -> Instance:
+        # pylint: disable=arguments-differ
+        fields: Dict[str, Field] = {}
+        premise_tokens = self._wiki_tokenizer.tokenize(premise) if premise is not None else None
+        hypothesis_tokens = self._claim_tokenizer.tokenize(hypothesis)
+        fields['premise'] = TextField(premise_tokens, self._token_indexers) if premise is not None else None
+        fields['hypothesis'] = TextField(hypothesis_tokens, self._token_indexers)
+        if label is not None:
+            fields['label'] = LabelField(label)
+        return Instance(fields)
 
-
-def load_data_from_disk(input_file_name,args,reader,mithun_logger):
+def load_data_from_disk(input_file_name,mithun_logger):
     mithun_logger.info("inside load_data_from_disk")
     all_claims, all_evidences, all_labels=read_rte_data(input_file_name)
     instances = []
     for index, (claim,evidence,label) in enumerate(zip(all_claims, all_evidences, all_labels)):
-        instances.append(reader.text_to_instance(claim, evidence, label))
+        instances.append(text_to_instance(claim, evidence, label))
     if len(instances) == 0:
         mithun_logger.error("No instances were read from the given filepath {}. ""Is the path correct?")
         sys.exit(1)
@@ -291,7 +306,7 @@ if __name__ == "__main__":
         mithun_logger.info(
             (f"value of slice_percent is: {slice_percent}"))
         assert type(slice_percent) is int
-        
+
 
 
 
@@ -444,7 +459,7 @@ if __name__ == "__main__":
                     mithun_logger.info(f"value ofi n_file_full_path:{in_file_full_path} ")
                     if(isfile(in_file_full_path)):
                         mithun_logger.info(f"found file exists. going to read ")
-                    data=load_data_from_disk(in_file_full_path, args, fever_reader, mithun_logger)
+                    data=load_data_from_disk(in_file_full_path, mithun_logger)
 
 
         if(type_of_classifier=="decomp_attention"):
