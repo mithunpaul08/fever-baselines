@@ -150,7 +150,7 @@
          "num_layers":2,
          "hidden_dims":[
             200,
-            3
+            4
          ],
          "activations":[
             "relu",
@@ -169,7 +169,7 @@
             }
          ],
          [
-            ".*token_embedder_tokens\._projection.*weight",
+            ".*token_embedder_tokens._projection.*weight",
             {
                "type":"xavier_normal"
             }
