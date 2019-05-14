@@ -60,8 +60,8 @@ Eg:
 - here other options include: "test/train/dev". 
 - Can add more than one of these options together comma separated like this: "dev,test". 
 - Note that it means, corresponding data set and corresponding runs. i.e if you add "fever,fnc" in datasets and "train,dev" on runs, it means, it will run train on fever and dev on fnc.
-- If you had a training run, the trained model is usually stored in the path mentioned in `serialization_dir` in config file. Usually its timestamped inside the `logs` folder.
-- Whenever you run dev or test (with or without train), make sure you copy the trained model to the home folder. Also paste the name of the model file to the variable `name_of_trained_model_to_use` .
+- If you had a training run, the trained model is usually stored in the path mentioned in `serialization_dir` in config file. Usually its timestamped inside the `logs` folder Eg: `logs/fever_train_100/model.tar.gz`.
+- Whenever you run dev or test (with or without train), make sure you copy the trained model to the home folder. Also paste the name of the model file (`*.tar.gz`) to the variable `name_of_trained_model_to_use` .
 - note to self: In server the trained models are stored at: `mithunpaul@jenny:/data1/home/mithun/fever_fnc_all_pkl_json_files/fever/training/pickles`
 
 ### Example:

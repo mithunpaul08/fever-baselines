@@ -459,6 +459,8 @@ if __name__ == "__main__":
                     mithun_logger.info(f"value ofi n_file_full_path:{in_file_full_path} ")
                     if(isfile(in_file_full_path)):
                         mithun_logger.info(f"found file exists. going to read ")
+                    else:
+                        mithun_logger.error(f"cant find file in path:{in_file_full_path} ")
                     data=load_data_from_disk(in_file_full_path, args, fever_reader, mithun_logger)
 
 
@@ -469,6 +471,9 @@ if __name__ == "__main__":
                 train_model_uofa_version(params, cuda_device, serialization_dir, slice_percent , mithun_logger,data)
             else:
                 if(run_name== "dev"):
+                    mithun_logger.info(f"found that the run_name is train. Going to get into eval_model attention")
+                    mithun_logger.info(f"value of path_to_trained_models_folder is: {path_to_trained_models_folder}")
+                    mithun_logger.info(f"value of name_of_trained_model_to_use is: {name_of_trained_model_to_use}")
                     eval_model(data,mithun_logger,path_to_trained_models_folder,name_of_trained_model_to_use,cuda_device)
 
 
