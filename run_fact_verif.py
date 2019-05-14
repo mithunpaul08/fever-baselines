@@ -158,12 +158,12 @@ def text_to_instance(self,  # type: ignore
             fields['label'] = LabelField(label)
         return Instance(fields)
 
-def load_data_from_disk(input_file_name,mithun_logger):
+def load_data_from_disk(input_file_name,args,reader,mithun_logger):
     mithun_logger.info("inside load_data_from_disk")
     all_claims, all_evidences, all_labels=read_rte_data(input_file_name)
     instances = []
     for index, (claim,evidence,label) in enumerate(zip(all_claims, all_evidences, all_labels)):
-        instances.append(text_to_instance(claim, evidence, label))
+        instances.append(reader.text_to_instance(claim, evidence, label))
     if len(instances) == 0:
         mithun_logger.error("No instances were read from the given filepath {}. ""Is the path correct?")
         sys.exit(1)
@@ -459,7 +459,7 @@ if __name__ == "__main__":
                     mithun_logger.info(f"value ofi n_file_full_path:{in_file_full_path} ")
                     if(isfile(in_file_full_path)):
                         mithun_logger.info(f"found file exists. going to read ")
-                    data=load_data_from_disk(in_file_full_path, mithun_logger)
+                    data=load_data_from_disk(in_file_full_path, args, fever_reader, mithun_logger)
 
 
         if(type_of_classifier=="decomp_attention"):
