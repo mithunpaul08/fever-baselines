@@ -15,11 +15,11 @@
      ],
      "fever_dataset_details": {
        "train_partition_details": {
-         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/train/",
+         "path_to_pyproc_annotated_data_folder": "data/fever-data-ann/train/",
          "slice_percent": 100
        },
        "dev_partition_details": {
-         "path_to_pyproc_annotated_data_folder": "/data/fever-data-ann/dev/",
+         "path_to_pyproc_annotated_data_folder": "data/fever-data-ann/dev/",
          "slice_percent": 100,
          "in_file_to_read_fever_dev_data": "data/fever/dev.ns.pages.p1.jsonl"
        },
