@@ -298,6 +298,8 @@ if __name__ == "__main__":
 
 
         serialization_dir= serialization_dir_base+dataset+"_"+run_name + "_"+str(slice_percent)
+        mithun_logger.info(
+            (f"value of serialization_dir is: {serialization_dir}"))
 
         #remove the log folder if it exists.
         remove = "rm -rf " + serialization_dir
@@ -444,7 +446,7 @@ if __name__ == "__main__":
                     if(isfile(in_file_full_path)):
                         mithun_logger.info(f"found file exists. going to read ")
                     data=load_data_from_disk(in_file_full_path, args, fever_reader, mithun_logger)
-                    sys.exit(1)
+
 
         if(type_of_classifier=="decomp_attention"):
             mithun_logger.info(f"found that the type_of_classifier is decomp attention")
